@@ -57,14 +57,13 @@ export default function LeSeuil() {
             className="z-10 w-full max-w-md px-6 flex flex-col items-center"
           >
             {/* Logo / Symbol */}
-            <div className="w-24 h-24 mb-8 rounded-full bg-black/40 border border-white/10 flex items-center justify-center shadow-[0_0_50px_rgba(217,119,6,0.3)] backdrop-blur-md">
-              <Shield size={40} className="text-hearth-amber opacity-90 drop-shadow-md" />
+            <div className="mb-12">
+              <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-lg" style={{ fontFamily: 'Arial, sans-serif' }}>
+                Вайнах
+              </h1>
             </div>
 
             <div className="text-center space-y-3 mb-10">
-              <h1 className="text-3xl font-black text-vainakh-stone tracking-tight font-serif">
-                Нохчийн Кхерч
-              </h1>
               <p className="text-hearth-amber/80 text-sm tracking-widest uppercase font-bold">
                 Марша догIийла, Ваша
               </p>
@@ -113,8 +112,10 @@ export default function LeSeuil() {
               transition={{ duration: 1, ease: "easeOut" }}
               className="text-hearth-amber flex flex-col items-center gap-6"
             >
-              <Shield size={64} className="animate-pulse drop-shadow-[0_0_30px_rgba(217,119,6,0.5)]" />
-              <p className="font-serif text-2xl tracking-widest text-hearth-amber drop-shadow-md">
+              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter animate-pulse drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]" style={{ fontFamily: 'Arial, sans-serif' }}>
+                Вайнах
+              </h1>
+              <p className="text-xl tracking-widest text-white/80 drop-shadow-md font-medium">
                 Маршалла хуьлда...
               </p>
             </motion.div>

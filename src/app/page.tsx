@@ -251,7 +251,7 @@ export default function Home() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-[10px] font-black tracking-widest text-hearth-amber uppercase mb-1">Марша догIийла</p>
-              <h2 className="text-3xl font-black tracking-tight text-kherch-dark">Кхерч</h2>
+              <h2 className="text-3xl font-black tracking-tighter text-kherch-dark" style={{ fontFamily: 'Arial, sans-serif' }}>Вайнах</h2>
               <p className="text-sm text-kherch-dark/60 font-bold mt-1">Доступно {members.length} братьев/сестёр</p>
             </div>
             <button 
@@ -338,9 +338,10 @@ export default function Home() {
           <div className="mt-8 border-2 border-dashed border-kherch-dark/10 rounded-3xl p-5 text-center bg-vainakh-stone/50">
              <Heart size={24} className="mx-auto text-hearth-amber mb-2 opacity-90" />
              <h4 className="font-black text-kherch-dark text-sm mb-1">ГIо-Даккхар</h4>
-             <p className="text-xs text-kherch-dark/60 font-medium mb-4 leading-relaxed">Сила нашего народа — в единстве. Добавьте в Кхерч сестру или брата.</p>
+             <p className="text-xs text-kherch-dark/60 font-medium mb-4 leading-relaxed">Сила нашего народа — в единстве. Пригласите сестру или брата.</p>
              <Link href="/join" className="inline-block bg-kherch-dark text-vainakh-stone text-xs font-bold px-5 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md">
-               Пригласить в Кхерч
+               Пригласить
+
              </Link>
           </div>
         </div>

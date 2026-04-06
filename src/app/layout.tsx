@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Вайнахская Диаспора",
+  title: "Вайнах",
   description: "Единое пространство вайнахской диаспоры",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Вайнахская Диаспора",
+    title: "Вайнах",
   },
 };
 
