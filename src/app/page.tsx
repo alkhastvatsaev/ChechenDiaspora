@@ -441,9 +441,12 @@ export default function Home() {
         </div>
 
         {/* ActionFooter */}
-        <div className="p-4 border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0">
+        <div className="p-4 border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0 lg:hidden">
            <Link href="/heritage" className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
              <BookOpen size={18} className="opacity-70" /> Наследие
+           </Link>
+           <Link href="/belkhi" className="flex-[1.2] flex justify-center py-3.5 bg-kherch-dark hover:bg-black text-vainakh-stone rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-lg">
+             <Flame size={18} className="text-hearth-amber animate-pulse" /> Белхи
            </Link>
            <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
              <Heart size={18} className="opacity-70 text-hearth-amber" /> СагIа
