@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink } from 'lucide-react';
+import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart } from 'lucide-react';
 
 interface MemberProfileProps {
   member: any;
@@ -79,15 +79,32 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
             </div>
           </div>
 
+          <div className="mt-8 mb-6 p-4 md:p-5 bg-hearth-amber/5 border border-hearth-amber/20 rounded-2xl">
+            <h4 className="flex items-center gap-2 text-kherch-dark font-black tracking-tight mb-2 uppercase text-xs tracking-widest">
+              <Heart size={14} className="text-hearth-amber" /> 
+              Основа — Нохчалла
+            </h4>
+            <p className="text-xs text-kherch-dark/80 font-medium leading-relaxed">
+              Связь и взаимопомощь между нами строятся исключительно на чеченских адатах. Любая помощь, будь то совет в бизнесе или коде, изначально оказывается <strong>бесплатно</strong> (ГIо-Даккхар). 
+              Если брат или сестра желает отблагодарить — это их личный выбор и Ризк. Мы строим доверие, а не коммерцию.
+            </p>
+          </div>
+
           <div className="space-y-4 pt-4 border-t border-kherch-dark/5">
             <button className="w-full py-4.5 bg-kherch-dark text-vainakh-stone rounded-2xl font-black shadow-xl active:scale-[0.98] transition-all hover:bg-black hover:shadow-2xl flex items-center justify-center gap-2">
               Связаться с братом / сестрой <ExternalLink size={16} className="opacity-50" />
             </button>
             <div className="grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366] text-white rounded-2xl font-black shadow-lg shadow-[#25D366]/20 active:scale-[0.95] transition-all hover:brightness-110">
+              <button 
+                onClick={() => window.open(`https://wa.me/`, '_blank')}
+                className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366]/10 text-[#25D366] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#25D366]/20 border border-[#25D366]/20"
+              >
                 <Phone size={18} /> WhatsApp
               </button>
-              <button className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc] text-white rounded-2xl font-black shadow-lg shadow-[#0088cc]/20 active:scale-[0.95] transition-all hover:brightness-110">
+              <button 
+                onClick={() => window.open(`https://t.me/`, '_blank')}
+                className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#0088cc]/20 border border-[#0088cc]/20"
+              >
                 <MessageCircle size={18} /> Telegram
               </button>
             </div>
