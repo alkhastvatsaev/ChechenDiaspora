@@ -16,6 +16,19 @@ const Map = dynamic(() => import('@/components/Map'), {
   loading: () => <div className="w-full h-full bg-apple-light animate-pulse flex items-center justify-center font-bold text-gray-400">Загрузка карты...</div>
 });
 
+const sampleExperts = [
+  { id: 'S1', prenom: "Aslan", nom: "Bazarov", profession: "Avocat / Droit d'Asile", isLegalDefender: true, ville: "Strasbourg", pays: "France", village: "Shali", teip: "Shaloy", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Prêt à aider juridiquement mes frères." },
+  { id: 'S2', prenom: "Zelim", nom: "Umarov", profession: "Ingénieur Software", ville: "Berlin", pays: "Allemagne", village: "Gekhi", teip: "Gekhoy", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Je peux coacher les jeunes vers l'IT." },
+  { id: 'S3', prenom: "Amina", nom: "Isaeva", profession: "Traductrice assermentée", isTranslator: true, ville: "Vienne", pays: "Autriche", village: "Vedeno", teip: "Beltoy", lat: 48.2082, lng: 16.3738, isLive: true, approved: true, message: "Traduction Arabe/Allemand/Français." },
+  { id: 'S4', prenom: "Beslan", nom: "Tsaro", profession: "Notaire", ville: "Nice", pays: "France", village: "Gudermes", teip: "Gordaloy", lat: 43.7102, lng: 7.2620, isLive: false, approved: true },
+  { id: 'S5', prenom: "Mansour", nom: "Gakaev", profession: "Coach Sportif / MMA", ville: "Varsovie", pays: "Pologne", village: "Argun", teip: "Elistanzhoy", lat: 52.2297, lng: 21.0122, isLive: true, approved: true },
+  { id: 'S6', prenom: "Raisa", nom: "Kadyrova", profession: "Médecin Généraliste", ville: "Lyon", pays: "France", village: "Grozny", teip: "Shaloy", lat: 45.7640, lng: 4.8357, isLive: false, approved: true },
+  { id: 'S7', prenom: "Khamzat", nom: "Djabrailov", profession: "Politologue", ville: "Bruxelles", pays: "Belgique", village: "Urus-Martan", teip: "Chonkoy", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
+  { id: 'S8', prenom: "Ismail", nom: "Naurbiev", profession: "Architecte", ville: "Munich", pays: "Allemagne", village: "Sernovodsk", teip: "Orstkhoy", lat: 48.1351, lng: 11.5820, isLive: false, approved: true },
+  { id: 'S9', prenom: "Liana", nom: "Tutaeva", profession: "Designer Marketing", ville: "Paris", pays: "France", village: "Achkhoy-Martan", teip: "Tsetshoy", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
+  { id: 'S10', prenom: "Adam", nom: "Khadjiev", profession: "Expert Cyber-Sécurité", ville: "Zurich", pays: "Suisse", village: "Bamut", teip: "Akkiy", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
+];
+
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
@@ -23,6 +36,7 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<'amanat' | 'union-son' | 'union-daughter' | null>(null);
   
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,6 +46,7 @@ export default function Home() {
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Check if first visit in this session
   useEffect(() => {
@@ -60,28 +75,19 @@ export default function Home() {
     const membersRef = ref(db, 'members');
     const unsubscribe = onValue(membersRef, (snapshot) => {
       const data = snapshot.val();
+      const travelers = [
+        { id: 'T1', prenom: "Mansour", nom: "Dadaev", isTraveling: true, travelFrom: "Bruxelles", travelTo: "Grozny", approved: true },
+        { id: 'T2', prenom: "Liana", nom: "Isaeva", isTraveling: true, travelFrom: "Vienne", travelTo: "Grozny", approved: true }
+      ];
+
       if (data) {
         const membersList = Object.keys(data).map(key => ({
           id: key,
           ...data[key]
         }));
-        // Show approved OR sample ones (all sample have approved: true)
-        setMembers(membersList.filter(m => m.approved !== false));
+        setMembers([...membersList.filter(m => m.approved !== false), ...travelers]);
       } else {
-        // Fallback to sample experts for user visualization
-        const sampleExperts = [
-          { id: 'S1', prenom: "Aslan", nom: "Bazarov", profession: "Avocat / Droit d'Asile", isLegalDefender: true, ville: "Strasbourg", pays: "France", village: "Shali", teip: "Shaloy", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Prêt à aider juridiquement mes frères." },
-          { id: 'S2', prenom: "Zelim", nom: "Umarov", profession: "Ingénieur Software", ville: "Berlin", pays: "Allemagne", village: "Gekhi", teip: "Gekhoy", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Je peux coacher les jeunes vers l'IT." },
-          { id: 'S3', prenom: "Amina", nom: "Isaeva", profession: "Traductrice assermentée", isTranslator: true, ville: "Vienne", pays: "Autriche", village: "Vedeno", teip: "Beltoy", lat: 48.2082, lng: 16.3738, isLive: true, approved: true, message: "Traduction Arabe/Allemand/Français." },
-          { id: 'S4', prenom: "Beslan", nom: "Tsaro", profession: "Notaire", ville: "Nice", pays: "France", village: "Gudermes", teip: "Gordaloy", lat: 43.7102, lng: 7.2620, isLive: false, approved: true },
-          { id: 'S5', prenom: "Mansour", nom: "Gakaev", profession: "Coach Sportif / MMA", ville: "Varsovie", pays: "Pologne", village: "Argun", teip: "Elistanzhoy", lat: 52.2297, lng: 21.0122, isLive: true, approved: true },
-          { id: 'S6', prenom: "Raisa", nom: "Kadyrova", profession: "Médecin Généraliste", ville: "Lyon", pays: "France", village: "Grozny", teip: "Shaloy", lat: 45.7640, lng: 4.8357, isLive: false, approved: true },
-          { id: 'S7', prenom: "Khamzat", nom: "Djabrailov", profession: "Politologue", ville: "Bruxelles", pays: "Belgique", village: "Urus-Martan", teip: "Chonkoy", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
-          { id: 'S8', prenom: "Ismail", nom: "Naurbiev", profession: "Architecte", ville: "Munich", pays: "Allemagne", village: "Sernovodsk", teip: "Orstkhoy", lat: 48.1351, lng: 11.5820, isLive: false, approved: true },
-          { id: 'S9', prenom: "Liana", nom: "Tutaeva", profession: "Designer Marketing", ville: "Paris", pays: "France", village: "Achkhoy-Martan", teip: "Tsetshoy", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
-          { id: 'S10', prenom: "Adam", nom: "Khadjiev", profession: "Expert Cyber-Sécurité", ville: "Zurich", pays: "Suisse", village: "Bamut", teip: "Akkiy", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
-        ];
-        setMembers(sampleExperts);
+        setMembers([...sampleExperts, ...travelers]);
       }
     });
 
@@ -113,7 +119,6 @@ export default function Home() {
   // Filter Logic
   const filteredMembers = useMemo(() => {
     return members.filter(m => {
-      // Expert Type Filter
       if (selectedExpertType) {
         if (selectedExpertType === 'isLegalDefender' && !m.isLegalDefender) return false;
         if (selectedExpertType === 'isTranslator' && !m.isTranslator) return false;
@@ -151,11 +156,8 @@ export default function Home() {
   }, [members]);
 
   const liveCount = useMemo(() => {
-    // 10% des membres + ceux avec isLive: true
     return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
   }, [members]);
-
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const handleSuggestionSelect = (term: string, type?: string) => {
     if (type === 'expert') {
@@ -168,457 +170,177 @@ export default function Home() {
     setIsSearchFocused(false);
   };
 
-  const centerOnMe = () => {
-    if (userLocation) {
-      setMapCenter([...userLocation]);
-    }
-  };
-
-  const [isSharingLocation, setIsSharingLocation] = useState(false);
-
-  const shareLiveLocation = async () => {
-    if (!("geolocation" in navigator)) {
-      alert("La géolocalisation n'est pas supportée par votre navigateur.");
-      return;
-    }
-
-    setIsSharingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const liveRef = ref(db, 'members');
-          const newLiveMember = {
-            prenom: "Membre",
-            nom: "En ligne",
-            age: "??",
-            teip: "Vainakh",
-            village: "Daimohk",
-            profession: "Frère / Sœur en ligne",
-            ville: "Position Partagée",
-            lat: latitude,
-            lng: longitude,
-            whatsapp: "",
-            isLive: true,
-            approved: true,
-            lastSeen: Date.now()
-          };
-          
-          // Simulation d'un ajout "Live"
-          const newRef = push(liveRef);
-          await set(newRef, newLiveMember);
-          
-          alert("Votre position a été partagée avec la communauté ! Vous apparaissez maintenant sur la carte.");
-          setMapCenter([latitude, longitude]);
-        } catch (err) {
-          console.error("Erreur de partage:", err);
-          alert("Erreur lors du partage de la position.");
-        } finally {
-          setIsSharingLocation(false);
-        }
-      },
-      (error) => {
-        console.error("Geoloc error:", error);
-        alert("Impossible d'accéder à votre position. Veuillez autoriser la localisation.");
-        setIsSharingLocation(false);
-      },
-      { enableHighAccuracy: true }
-    );
-  };
-
   return (
-    <main className="relative w-full h-screen overflow-hidden bg-apple-light text-apple-dark font-sans">
-      
-      {showWelcome && (
-        <div className="absolute inset-0 z-[100] bg-white overflow-y-auto animate-in fade-in duration-700">
-          <div className="max-w-3xl mx-auto px-8 py-20 pb-40">
-            <div className="flex justify-center mb-12">
-               <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center shadow-2xl animate-pulse">
-                 <Flame className="w-10 h-10 text-hearth-amber" />
-               </div>
-            </div>
-
-            <div className="space-y-6 mb-16 text-center">
-              <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-[10px]">Вайнах / Vainakh</h4>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-[1.1] text-black uppercase">
-                Manifeste de la Diaspora<br/>
-                <span className="text-gray-400">Le Fardeau et l'Excellence</span>
-              </h1>
-              <p className="text-xl font-medium text-gray-500 leading-relaxed max-w-2xl mx-auto">
-                Une introspection absolue sur notre réalité en exil. Détruire le stigmate, non pas par la plainte, mais par l'irréfutable preuve de notre excellence.
-              </p>
-            </div>
-
-            <article className="prose prose-lg prose-gray max-w-none space-y-16 text-justify selection:bg-black selection:text-white">
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">01.</span> Les Racines de l'Exode
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    Comprendre la diaspora tchétchène moderne nécessite de regarder la vérité en face. Nous n'avons pas quitté les montagnes du Caucase par pur opportunisme économique. Nous avons été propulsés hors de nos terres (Daimohk) par la violence inouïe de deux guerres dévastatrices. Notre exil est avant tout un instinct de survie, un acte de protection pour nos familles, nos enfants et notre patrimoine génétique même.
-                  </p>
-                  <p>
-                    Arrivés en Europe – en France, en Allemagne, en Autriche, en Belgique – nos parents ont dû affronter un monde inconnu, une barrière linguistique de fer, et le traumatisme sourd de la perte. Pourtant, ils ont construit. Ils ont bâti des vies à partir des cendres.
-                  </p>
-                </div>
-              </section>
-
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">02.</span> Le Poids du Stigmate
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    Aujourd'hui, nous faisons face à un second front. Il n'est plus armé, il est sociétal, médiatique et administratif. En Europe et ailleurs, une étiquette lourde, injuste et stigmatisante a été collée sur le front de notre communauté.
-                  </p>
-                  <p>
-                    Le récit médiatique est brutal. La communauté est trop souvent observée à travers le prisme de la sécurité, de la suspicion, et de la criminalisation collective. Dans certains pays hôtes, le simple fait de porter un nom à consonance nord-caucasienne peut déclencher des vérifications supplémentaires, des refus de logement, des obstacles à l'embauche, voire un harcèlement administratif ou le spectre terrifiant d'une déportation.
-                  </p>
-                  <p>
-                    Nous sommes pris en étau. D'un côté, la menace des abus des notices rouges d'Interpol lancées par des entités étatiques vengeresses. De l'autre, la méfiance des pays d'accueil qui simplifient une histoire millénaire complexe en un raccourci xénophobe. Ce fardeau est lourd pour la jeunesse qui growit ici.
-                  </p>
-                </div>
-
-                <div className="bg-black text-white p-10 rounded-[2.5rem] mt-8 shadow-2xl space-y-6">
-                  <h3 className="text-2xl font-black">La Tragédie du 1% et le Silence des 99%</h3>
-                  <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed font-medium">
-                    <p>
-                      C'est la tragédie mathématique de l'attention publique. Les actions d'une infime minorité — le 1% qui s'égare, qui trahit l'éducation de nos pères, qui tombe dans la délinquance ou les idéologies mortifères — sont systématiquement instrumentalisées pour définir l'ensemble de notre peuple.
-                    </p>
-                    <p>
-                      Quand "l'un" commet une faute, l'origine ethnique occupe les gros titres. Mais qui parle des 99% ? Le monde ignore délibérément la majorité silencieuse de notre diaspora.
-                    </p>
-                    <p>
-                      Qui parle de ces milliers de médecins, d'infirmières, de chirurgiens d'origine tchétchène qui sauvent des vies chaque jour dans les hôpitaux européens ? Qui parle de nos brillants ingénieurs, de nos étudiants diplômés des plus grandes universités, de nos entrepreneurs qui créent de l'emploi et de la valeur dans la matrice même de la société française, allemande ou autrichienne ? Qui souligne que la majorité écrasante de notre peuple vit honnêtement, paie ses impôts, respecte les lois et élève ses enfants dans le respect et l'honneur strict ?
-                    </p>
-                    <p className="text-white font-black italic">
-                      Notre excellence est invisible, nos erreurs sont luminescentes. C'est le lot des exilés, et nous devons l'accepter pour mieux le combattre.
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">03.</span> Le Devoir de l'Invité (Le Haasha)
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    Notre tradition, le Nokhchalla, n'est pas qu'un mot vide. C'est un code de conduite rigoureux, forgé dans la roche. Au sommet de ce code se trouve un concept sacré : l'hospitalité.
-                  </p>
-                  <p>
-                    Mais l'hospitalité va dans les deux sens. Si l'hôte se doit de tout offrir à l'invité, l'invité (le Haasha) a le devoir absolu d'être irréprochable. En Europe, c'est nous les invités. Ces pays ont accordé l'asile à nos pères quand ils fuyaient les bombes. Ils ont nourri, soigné et scolarisé nos familles. Le Nokhchalla exige de nous une gratitude sans borne et un respect intransigeant des lois de nos sociétés d'accueil.
-                  </p>
-                  <blockquote className="border-l-4 border-black pl-6 py-2 text-black font-black text-xl italic">
-                    "Celui qui ne respecte pas le toit qui l'abrite n'est ni un héros, ni un homme d'honneur. Il est la honte de son Teip."
-                  </blockquote>
-                </div>
-              </section>
-
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">04.</span> Détruire les Préjugés par l'Excellence
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    Comment détruire ces stéréotypes qui pèsent sur l'avenir de nos enfants ? Ce ne sera ni par la victimisation constante, ni par la plainte incessante. Le monde ne respecte que la force intellectuelle, la contribution manifeste et le succès.
-                  </p>
-                  <p className="text-black font-black text-xl">
-                    Nous devons écraser le préjugé sous le poids de notre excellence.
-                  </p>
-                  <p>
-                    Aujourd'hui, l'acte de résistance le plus puissant, le patriotisme le plus élevé pour un jeune Vainakh, ce n'est pas l'agitation stérile. C'est d'obtenir un master, de créer une entreprise florissante, de devenir un avocat redoutable, un chercheur reconnu, un artiste brillant. Lorsque les institutions locales interagiront avec nous, elles ne verront pas des problèmes, elles verront la solution, la compétence, le savoir-être (O'zdangalla).
-                  </p>
-                </div>
-              </section>
-
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">05.</span> L'Arme de l'Éducation (Кхетам)
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    L'éducation, pure et simple, est notre porte de salut. Les parents de notre communauté ont sacrifié leur santé dans des usines et sur des chantiers en Europe, non pas pour que leurs enfants reproduisent la précarité ou s'égarent dans l'illusion de la facilité de la rue, mais pour qu'ils s'assoient sur les bancs des grandes écoles. Ne trahisons pas leur sacrifice.
-                  </p>
-                  <p>
-                    C'est pourquoi, au sein de cet outil, de cette plateforme, <strong className="text-black">le Mentorat est central</strong>. Ceux de la première vague qui ont réussi à percer le plafond de verre (ingénieurs, juristes, cadres) ont le devoir moral absolu, imposé par la fraternité, de tendre la main et de guider la jeunesse qui doute.
-                  </p>
-                </div>
-              </section>
-
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">06.</span> La Fonction du Foyer "Вайнах"
-                </h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-                  <p>
-                    C'est la raison d'être de cette application. Elle n'est pas un réseau social conçu pour tuer le temps ou flatter des egos. C'est une <strong className="text-black">infrastructure numérique stricte, fonctionnelle, dédiée à la protection et à l'ascension</strong> de notre communauté.
-                  </p>
-                  <ul className="space-y-4 mt-6">
-                    <li className="flex gap-4">
-                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
-                      <span><strong className="text-black">Un Bouclier Juridique :</strong> Identifier instantanément nos avocats et traducteurs assermentés pour protéger ceux d'entre nous menacés d'abus administratifs et sécuriser notre présence légale permanente.</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
-                      <span><strong className="text-black">Un Relais de Mentorat :</strong> Mettre en relation l'excellence technique, médicale ou intellectuelle d'un membre avec l'ambition légitime d'un autre.</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
-                      <span><strong className="text-black">Un Réseau Économique :</strong> Favoriser les affaires, l'embauche, et garantir le logement par la caution de nos frères et sœurs solides économiquement.</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
-                      <span><strong className="text-black">Un Devoir Sacré :</strong> Faciliter la logistique et fonds pour gérer les épreuves ultimes, notamment le respect digne et le rapatriement funéraire de nos anciens.</span>
-                    </li>
-                  </ul>
-                </div>
-              </section>
-
-              <section className="pt-20 border-t border-gray-100">
-                <div className="text-center space-y-8">
-                  <h3 className="text-3xl font-black text-black">Épilogue</h3>
-                  <div className="space-y-6 text-gray-600 font-medium text-lg italic">
-                    <p>Personne ne viendra nous sauver, si ce n'est nous-mêmes, par la grâce de Dieu.</p>
-                    <p>Soyons les meilleurs citoyens, soyons les plus éduqués, soyons d'une droiture inébranlable et d'une utilité incontestable pour le monde qui nous entoure.</p>
-                    <p>Puisons dans notre identité millénaire la fierté non pas pour être arrogants, mais pour trouver la force d'être irréprochables. N'ayons aucune patience, aucune complaisance envers ceux d'entre nous qui dévient et salissent l'histoire de leurs ancêtres. Elevons les autres.</p>
-                  </div>
-                  <p className="text-2xl font-black text-black mt-12 tracking-[0.2em] uppercase">Далла аьтто бойла вай.</p>
-                  
-                  <button 
-                    onClick={dismissWelcome}
-                    className="w-full mt-12 py-6 bg-black text-white rounded-2xl font-black text-sm tracking-[0.2em] uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-                  >
-                    J&apos;AI LU ET J&apos;ACCEPTE LA MISSION <ArrowRight size={18} />
-                  </button>
-                </div>
-              </section>
-            </article>
-          </div>
-        </div>
-      )}
-
-      {/* Main Layout Container with Expert Sidebar */}
-      <div className="flex h-[100dvh] relative overflow-hidden w-full">
-        
-      
-        {/* Background Map layer */}
-        <div className="flex-1 relative">
+    <main className="flex h-full flex-col bg-apple-light overflow-hidden">
+      <div className="relative flex-1 flex overflow-hidden">
+        {/* Map Layer */}
+        <div className="absolute inset-0 z-0">
           <Map 
             members={filteredMembers} 
             center={mapCenter} 
-            onMemberClick={(m) => setSelectedMember(m)}
             showHeatmap={showHeatmap}
+            onMemberClick={setSelectedMember}
           />
         </div>
 
-      {/* Top Glassmorphism Header & Search */}
-      <div className="absolute top-0 w-full z-10 px-4 pt-safe-top">
-        <header className="mt-4 mx-auto max-w-2xl space-y-3">
-          <div className="bg-white/90 backdrop-blur-xl shadow-2xl border border-black/5 rounded-[2rem] flex items-center justify-between px-4 py-2.5">
-            <button 
-              className="w-11 h-11 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors shrink-0"
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <Menu size={22} className="text-gray-800" />
-            </button>
-            
-            <div className="flex-1 px-3 flex items-center gap-2">
-              <Search size={18} className="text-gray-400 shrink-0" />
-              <input 
-                type="text" 
-                placeholder="Поиск..."
-                className="w-full bg-transparent border-none outline-none text-base font-medium placeholder:text-gray-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-              />
-            </div>
-
-            <div className="flex items-center gap-1 shrink-0 border-l border-black/5 ml-2 pl-2">
-              <button 
-                onClick={shareLiveLocation}
-                disabled={isSharingLocation}
-                className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${isSharingLocation ? 'animate-pulse text-hearth-amber' : 'hover:bg-black/5 text-gray-400 hover:text-hearth-amber'}`}
-                title="Partager ma position live"
-              >
-                <Target size={20} />
-              </button>
-
-              <button 
-                onClick={centerOnMe}
-                className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-all text-gray-400 hover:text-chechen-blue"
-                title="Ma position"
-              >
-                <MapPin size={20} />
-              </button>
-            </div>
-          </div>
-
-          {/* Intelligent Search Suggestions */}
-          <AnimatePresence>
-            {isSearchFocused && (
-              <>
-                {/* Backdrop to close focus */}
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setIsSearchFocused(false)}
-                  className="fixed inset-0 z-[-1]"
-                />
-                
-                <motion.div 
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  className="bg-white/90 backdrop-blur-2xl shadow-2xl border border-black/5 rounded-[2rem] p-6 mt-3 flex flex-col gap-5 overflow-hidden"
-                >
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 ml-1">Быстрый поиск / Experts</p>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        { id: 'isLegalDefender', label: 'Адвокат / Avocats', icon: Gavel, color: 'text-red-500' },
-                        { id: 'isTranslator', label: 'Переводчик / Traducteurs', icon: Languages, color: 'text-blue-500' },
-                        { id: 'isGuide', label: 'Админ. помощь / Guide', icon: MapIcon, color: 'text-emerald-500' },
-                        { id: 'openToMentorship', label: 'Ментор / Mentors', icon: GraduationCap, color: 'text-amber-500' },
-                      ].map((item) => (
-                        <button 
-                          key={item.id}
-                          onClick={() => handleSuggestionSelect(item.id, 'expert')}
-                          className={`flex items-center gap-2 px-4 py-2.5 bg-white border border-black/5 rounded-xl text-xs font-bold hover:scale-105 active:scale-95 transition-all shadow-sm ${selectedExpertType === item.id ? 'ring-2 ring-black bg-gray-50' : ''}`}
-                        >
-                          <item.icon size={14} className={item.color} />
-                          {item.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 ml-1">Популярные запросы</p>
-                    <div className="flex flex-wrap gap-2">
-                      {['Ingénieur', 'Marketing', 'Développeur', 'Strasbourg', 'Berlin', 'Vienne'].map((tag) => (
-                        <button 
-                          key={tag}
-                          onClick={() => handleSuggestionSelect(tag)}
-                          className="px-4 py-2 bg-gray-50/50 hover:bg-gray-100 border border-black/5 rounded-xl text-xs font-bold text-gray-600 transition-all active:scale-95"
-                        >
-                          {tag}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {selectedExpertType && (
+        {/* Omnibar & Search UI */}
+        <div className="absolute top-0 left-0 right-0 z-40 p-4 sm:p-8 pointer-events-none">
+           <div className="max-w-2xl mx-auto space-y-3">
+              <div className="relative pointer-events-auto">
+                 <div className={`flex items-center bg-white/90 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl border transition-all duration-500 ${isSearchFocused ? 'border-black/20 ring-4 ring-black/5 scale-[1.02]' : 'border-black/5 hover:border-black/10'}`}>
                     <button 
-                      onClick={() => {setSelectedExpertType(''); setIsSearchFocused(false);}}
-                      className="mt-2 text-[10px] font-black uppercase tracking-widest text-red-500 hover:opacity-70 transition-opacity text-center w-full"
+                      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                      className="w-12 h-12 flex items-center justify-center text-kherch-dark hover:bg-black/5 rounded-2xl transition-colors"
                     >
-                      Сбросить фильтры / Clear filters
+                       <Menu size={20} />
                     </button>
-                  )}
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+                    
+                    <div className="flex-1 flex items-center px-2">
+                       <Search size={18} className="text-kherch-dark/30 mr-3" />
+                       <input 
+                         type="text" 
+                         placeholder="Avocat, Strasbourg, Billtoy..."
+                         className="w-full bg-transparent border-none outline-none text-sm font-bold text-kherch-dark placeholder:text-kherch-dark/20 h-10"
+                         value={searchQuery}
+                         onChange={(e) => setSearchQuery(e.target.value)}
+                         onFocus={() => setIsSearchFocused(true)}
+                       />
+                    </div>
 
-          {/* Expanded Filters (Legacy Teips) */}
-          {showFilters && (
-            <div className="bg-white/80 backdrop-blur-md shadow-lg border border-black/5 rounded-2xl p-4 animate-scale-in flex flex-wrap gap-2">
-              <button 
-                onClick={() => setSelectedTeip('')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedTeip ? 'bg-chechen-blue text-white border-chechen-blue shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
-              >
-                Все тайпы
-              </button>
-              {teips.map(teip => (
-                <button 
-                  key={teip}
-                  onClick={() => setSelectedTeip(teip === selectedTeip ? '' : teip)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedTeip === teip ? 'bg-chechen-blue text-white border-chechen-blue shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
-                >
-                  {teip}
-                </button>
-              ))}
-            </div>
-          )}
-        </header>
-      </div>
+                    <div className="flex items-center gap-1 pr-1">
+                       <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-vainakh-stone rounded-xl border border-black/5">
+                          <span className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></span>
+                          <span className="text-[10px] font-black text-kherch-dark tracking-widest">{liveCount} LIVE</span>
+                       </div>
+                    </div>
+                 </div>
 
+                 {/* Intelligent Suggestions Panel */}
+                 <AnimatePresence>
+                    {isSearchFocused && (
+                       <motion.div 
+                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                         animate={{ opacity: 1, y: 0, scale: 1 }}
+                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                         className="absolute top-20 left-0 right-0 bg-white/95 backdrop-blur-3xl rounded-[2rem] border border-black/5 shadow-2xl p-6 overflow-hidden max-h-[70vh] overflow-y-auto"
+                       >
+                          <div className="flex justify-between items-center mb-6">
+                             <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Suggestions intelligentes</h4>
+                             <button onClick={() => setIsSearchFocused(false)} className="text-gray-400 hover:text-black transition-colors">
+                                <X size={16} />
+                             </button>
+                          </div>
 
-      {/* Profile Modal */}
-      {selectedMember && (
-        <MemberProfile 
-          member={selectedMember} 
-          onClose={() => setSelectedMember(null)} 
-        />
-      )}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                             <section>
+                                <div className="flex items-center gap-2 mb-4 text-kherch-dark/40">
+                                   <Target size={14} />
+                                   <span className="text-[10px] font-bold uppercase tracking-widest">Expertises prioritaires</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                   {[
+                                      { label: 'Avocat', icon: <Gavel size={12}/>, type: 'isLegalDefender' },
+                                      { label: 'Notaire', icon: <Briefcase size={12}/> },
+                                      { label: 'Médecin', icon: <Heart size={12} className="text-rose-500"/> },
+                                      { label: 'Traducteur', icon: <Languages size={12}/>, type: 'isTranslator' },
+                                      { label: 'Mentor', icon: <GraduationCap size={12}/>, type: 'openToMentorship' }
+                                   ].map((item) => (
+                                      <button 
+                                        key={item.label}
+                                        onClick={() => handleSuggestionSelect(item.type || item.label, item.type ? 'expert' : undefined)}
+                                        className="flex items-center gap-2 px-4 py-2.5 bg-vainakh-stone/50 hover:bg-vainakh-stone rounded-xl text-xs font-bold transition-all border border-black/5 hover:scale-105"
+                                      >
+                                         {item.icon} {item.label}
+                                      </button>
+                                   ))}
+                                </div>
+                             </section>
 
-      {/* Language Modal */}
-      <LanguageModal 
-        isOpen={isLanguageModalOpen} 
-        onClose={() => setIsLanguageModalOpen(false)} 
-      />
+                             <section>
+                                <div className="flex items-center gap-2 mb-4 text-kherch-dark/40">
+                                   <Globe size={14} />
+                                   <span className="text-[10px] font-bold uppercase tracking-widest">Villes actives</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                   {['Strasbourg', 'Paris', 'Vienne', 'Berlin', 'Grozny', 'Nice'].map(city => (
+                                      <button 
+                                        key={city}
+                                        onClick={() => handleSuggestionSelect(city)}
+                                        className="px-4 py-2.5 bg-white/50 hover:bg-white rounded-xl text-xs font-bold transition-all border border-black/5 hover:shadow-sm"
+                                      >
+                                         {city}
+                                      </button>
+                                   ))}
+                                </div>
+                             </section>
+                          </div>
+                          
+                          <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
+                             <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                   <Search size={10} /> {searchQuery || '...'}
+                                </div>
+                             </div>
+                             <p className="text-[10px] text-gray-400 font-medium">Recherche parmi {members.length} membres</p>
+                          </div>
+                       </motion.div>
+                    )}
+                 </AnimatePresence>
+              </div>
 
-      {/* Community Sidebar / Mutual Aid Hub (Kherch) */}
-      <div 
-        className={`absolute top-0 left-0 w-full md:w-[28rem] h-full bg-vainakh-stone/95 backdrop-blur-2xl shadow-2xl z-20 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-      >
-        <div className="p-5 sm:p-6 pb-2 pt-safe-top flex-shrink-0 border-b border-kherch-dark/5">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <p className="text-[10px] font-black tracking-widest text-hearth-amber uppercase mb-1">Марша догIийла</p>
-              <h2 className="text-3xl font-black tracking-tighter text-kherch-dark" style={{ fontFamily: 'Arial, sans-serif' }}>Вайнах</h2>
-              <p className="text-sm text-kherch-dark/60 font-bold mt-1">Доступно {members.length} братьев/сестёр</p>
-            </div>
-            <button 
-              className="p-2 hover:bg-kherch-dark/5 rounded-full transition-colors self-start"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <X size={24} className="text-kherch-dark/50" />
-            </button>
-          </div>
+              {/* Quick Filters (Pills) */}
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pointer-events-auto">
+                 <button 
+                   onClick={() => handleExpertFilter('isLegalDefender')}
+                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'isLegalDefender' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
+                 >
+                    <Gavel size={14} /> Юристы
+                 </button>
+                 <button 
+                   onClick={() => handleExpertFilter('isTranslator')}
+                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'isTranslator' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
+                 >
+                    <Languages size={14} /> Переводчики
+                 </button>
+                 <button 
+                   onClick={() => handleExpertFilter('openToMentorship')}
+                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'openToMentorship' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
+                 >
+                    <GraduationCap size={14} /> Наставники
+                 </button>
+                 <button className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm text-[10px] font-black uppercase tracking-widest">
+                    <Truck size={14} /> Логистика
+                 </button>
+              </div>
+           </div>
+        </div>
 
-          {/* Live Status Header Widget */}
-          <div className="mb-6 p-4 bg-white/50 backdrop-blur-md rounded-2xl border border-kherch-dark/5 flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 bg-kherch-dark rounded-xl flex items-center justify-center text-vainakh-stone">
-                  <Users size={20} />
+        {/* Sidebar Container */}
+        <div className={`absolute top-0 left-0 bottom-0 z-50 w-full sm:w-[420px] bg-vainakh-stone/95 backdrop-blur-3xl shadow-2xl transform transition-all duration-700 ease-in-out border-r border-kherch-dark/5 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          {/* Sidebar Header */}
+          <div className="p-8 pb-6 bg-vainakh-stone/50 border-b border-kherch-dark/5 flex-shrink-0">
+             <div className="flex justify-between items-start mb-8">
+                <div>
+                  <h2 className="text-2xl font-black text-kherch-dark tracking-tighter mb-1">Кхерч / Diaspora</h2>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Sovereign Network v1.0</p>
                 </div>
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-              </div>
-              <div className="text-left">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">В сети / Online</p>
-                <p className="text-sm font-black text-kherch-dark">{liveCount} братьев и сестер</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-end">
-              <p className="text-[10px] font-black uppercase tracking-[0.1em] text-emerald-600 animate-pulse">Live Now</p>
-              <div className="flex gap-0.5 mt-1 h-3 items-end">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className={`w-0.5 bg-emerald-500/40 rounded-full animate-bounce h-${i % 2 === 0 ? 'full' : '1/2'}`} style={{ animationDelay: `${i * 0.15}s` }}></div>
-                ))}
-              </div>
-            </div>
-          </div>
+                <button 
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="w-12 h-12 bg-black/5 hover:bg-black/10 text-kherch-dark rounded-2xl flex items-center justify-center transition-all active:scale-90"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+             </div>
 
-          {/* Manifesto Entry Point - High Visibility */}
-          <Link 
-            href="/manifesto" 
-            className="mb-6 p-4 bg-black text-white rounded-2xl flex items-center justify-between group hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
-            onClick={() => setIsSidebarOpen(false)}
-          >
-            <div className="flex items-center gap-3">
-              <Flame className="w-5 h-5 text-hearth-amber animate-pulse" />
-              <div className="text-left">
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Manifeste</p>
-                <p className="text-sm font-bold tracking-tight">Le fardeau et l&apos;excellence</p>
-              </div>
-            </div>
-            <ChevronLeft size={18} className="rotate-180 opacity-40 group-hover:opacity-100 transition-opacity" />
+          <Link href="/join" className="group w-full bg-kherch-dark text-vainakh-stone rounded-[2rem] p-6 flex items-center justify-between shadow-xl hover:scale-[1.02] active:scale-95 transition-all mb-8 relative overflow-hidden">
+             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-12 transition-transform">
+                <ShieldCheck size={80} />
+             </div>
+             <div className="relative z-10">
+                <h3 className="text-lg font-black tracking-tight mb-0.5">Вступить в общину</h3>
+                <p className="text-[10px] font-bold text-vainakh-stone/60 uppercase tracking-widest">Rejoindre le Hub</p>
+             </div>
+             <ChevronLeft size={18} className="rotate-180 opacity-40 group-hover:opacity-100 transition-opacity" />
           </Link>
           
           {/* Search inside sidebar */}
@@ -667,7 +389,7 @@ export default function Home() {
                     </div>
                  </div>
                  <button 
-                  onClick={() => {/* Declare travel logic */}}
+                  onClick={() => setActiveModal('amanat')}
                   className="bg-black text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
                  >
                    Я еду
@@ -676,8 +398,8 @@ export default function Home() {
 
               {/* Active Travels Scroller */}
               <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-                 {filteredMembers.filter(m => m.isTraveling).length > 0 ? (
-                    filteredMembers.filter(m => m.isTraveling).map(m => (
+                 {members.filter(m => m.isTraveling).length > 0 ? (
+                    members.filter(m => m.isTraveling).map(m => (
                        <div key={m.id} className="flex-shrink-0 w-48 bg-white rounded-2xl p-3 border border-black/5 shadow-sm">
                           <div className="flex items-center gap-2 mb-2">
                              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center text-[10px] font-black">
@@ -726,21 +448,18 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-1.5 text-kherch-dark/60 text-xs font-medium">
                     <MapPin size={12} className="opacity-50" />
-                    <span className="truncate">{member.ville || 'N/A'}, {member.pays}</span>
+                    <span>{member.ville}</span>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center py-12 flex flex-col items-center opacity-70">
-              <div className="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center mb-4 shadow-sm border border-kherch-dark/5">
-                <Heart size={24} className="text-hearth-amber" />
-              </div>
-              <p className="text-kherch-dark/60 font-bold">Ожидаем братьев и сестёр...</p>
-            </div>
+             <div className="text-center py-20 opacity-30">
+                <Search size={40} className="mx-auto mb-4" />
+                <p className="text-xs font-bold uppercase tracking-widest">Никого не найдено</p>
+             </div>
           )}
 
-          {/* Crowdsourcing Call to Action */}
           {/* MARSHA MODULE - TRADITIONAL MARRIAGE (ADAT) */}
           <div className="mt-6 bg-vainakh-stone border border-kherch-dark/5 rounded-[2rem] p-6 shadow-sm">
              <div className="flex items-center gap-3 mb-4">
@@ -759,7 +478,7 @@ export default function Home() {
 
              <div className="space-y-3">
                 <button 
-                  onClick={() => {/* Form logic for son */}}
+                  onClick={() => setActiveModal('union-son')}
                   className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-blue-500/20 hover:bg-blue-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
                 >
                    <div className="flex items-center gap-3">
@@ -772,7 +491,7 @@ export default function Home() {
                 </button>
 
                 <button 
-                  onClick={() => {/* Form logic for daughter */}}
+                  onClick={() => setActiveModal('union-daughter')}
                   className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-rose-500/20 hover:bg-rose-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
                 >
                    <div className="flex items-center gap-3">
@@ -796,8 +515,7 @@ export default function Home() {
              <h4 className="font-black text-kherch-dark text-sm mb-1">ГIо-Даккхар</h4>
              <p className="text-xs text-kherch-dark/60 font-medium mb-4 leading-relaxed">Сила нашего народа — в единстве. Пригласите сестру или брата.</p>
              <Link href="/join" className="inline-block bg-kherch-dark text-vainakh-stone text-xs font-bold px-5 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md">
-               Пригласить
-
+                Пригласить
              </Link>
           </div>
         </div>
@@ -816,6 +534,106 @@ export default function Home() {
         </div>
         </div>
       </div>
+
+      {/* MODALS - AMANAT & UNION */}
+      <AnimatePresence>
+        {activeModal && (
+          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveModal(null)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
+            >
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="absolute right-6 top-6 w-10 h-10 bg-black/5 hover:bg-black/10 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              {activeModal === 'amanat' ? (
+                <>
+                  <div className="flex items-center gap-4 mb-8">
+                     <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center text-white">
+                        <Plane size={24} className="rotate-45" />
+                     </div>
+                     <div>
+                        <h2 className="text-xl font-black text-kherch-dark tracking-tight">Déclarer un Amanat</h2>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Entraide au voyage</p>
+                     </div>
+                  </div>
+                  <div className="space-y-4">
+                     <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Départ</label>
+                           <input type="text" placeholder="Ex: Bruxelles" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-black/5 outline-none" />
+                        </div>
+                        <div className="space-y-1.5">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Arrivée</label>
+                           <input type="text" placeholder="Ex: Grozny" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-black/5 outline-none" />
+                        </div>
+                     </div>
+                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Date de départ</label>
+                        <input type="date" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
+                     </div>
+                     <button className="w-full py-5 bg-black text-vainakh-stone rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all mt-4">
+                        Publier mon voyage
+                     </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-8">
+                     <div className={`w-14 h-14 ${activeModal === 'union-son' ? 'bg-blue-500' : 'bg-rose-500'} rounded-2xl flex items-center justify-center text-white`}>
+                        {activeModal === 'union-son' ? <Users size={24} /> : <Sparkles size={24} />}
+                     </div>
+                     <div>
+                        <h2 className="text-xl font-black text-kherch-dark tracking-tight">
+                           {activeModal === 'union-son' ? 'Pour mon fils' : 'Pour ma fille'}
+                        </h2>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Union Familiale (Adat)</p>
+                     </div>
+                  </div>
+                  <div className="space-y-4">
+                     <p className="text-xs text-kherch-dark/60 font-medium leading-relaxed px-2 bg-white/50 p-4 rounded-2xl border border-black/5 mb-6">
+                        Conformément au <strong>Nokhchalla</strong>, cette demande est traitée avec la plus grande discrétion. Seuls les parents vérifiés pourront voir cette intention d&apos;union.
+                     </p>
+                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Prénom de l&apos;enfant</label>
+                        <input type="text" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
+                     </div>
+                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Âge</label>
+                        <input type="number" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
+                     </div>
+                     <button className={`w-full py-5 ${activeModal === 'union-son' ? 'bg-blue-600' : 'bg-rose-600'} text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all mt-4`}>
+                        Déposer l&apos;intention
+                     </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedMember && (
+          <MemberProfile member={selectedMember} onClose={() => setSelectedMember(null)} />
+        )}
+      </AnimatePresence>
+
+      <LanguageModal isOpen={isLanguageModalOpen} onClose={() => setIsLanguageModalOpen(false)} />
     </main>
   );
 }
