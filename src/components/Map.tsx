@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
-import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
+import diasporaBorders from '@/data/diaspora_borders.json';
 
 // Custom Premium Marker Icon (Modern Dot) replacing the old GPS pin
 const premiumDotIcon = L.divIcon({
@@ -58,25 +58,20 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
       >
         {center && <ChangeView center={center} />}
         
-        {/* Diaspora Hub Borders representing exact city limits/frontiers */}
+        {/* Diaspora Hub Borders representing exact municipal/administrative limits */}
         {showHeatmap && (
-          <>
-            {DIASPORA_HUBS.map((hub, idx) => (
-              <Circle
-                key={idx}
-                center={[hub.lat, hub.lng]}
-                radius={20000} // 20KM border to highlight the city area massively
-                pathOptions={{
-                  color: '#007A33',
-                  opacity: 0.8,
-                  weight: 2,
-                  fillColor: '#007A33',
-                  fillOpacity: 0.05,
-                  dashArray: '8, 8' // Gives a 'frontier / border' style
-                }}
-              />
-            ))}
-          </>
+          // @ts-ignore
+          <GeoJSON 
+            data={diasporaBorders as any}
+            style={{
+              color: '#007A33',
+              weight: 2,
+              opacity: 0.9,
+              fillColor: '#007A33',
+              fillOpacity: 0.1,
+              // Solid line requested by user rather than dashed
+            }}
+          />
         )}
 
         <ZoomControl position="bottomright" />
