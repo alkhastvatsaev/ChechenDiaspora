@@ -45,9 +45,50 @@ const homelandLabelIcon = (name: string, type: string) => L.divIcon({
 const createClusterCustomIcon = function (cluster: any) {
   const count = cluster.getChildCount();
   return L.divIcon({
-    html: `<div style="width: 40px; height: 40px; background-color: rgba(28, 28, 30, 0.9); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: inherit; font-size: 14px; border: 2px solid #007AFF; backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0,0,0,0.15);">${count}</div>`,
+    html: `<div style="width: 40px; height: 40px; background-color: rgba(28, 28, 30, 0.9); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: inherit; font-size: 14px; border: 2px solid #007AFF; backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); font-smoothing: antialiased;">${count}</div>`,
     className: 'bg-transparent',
     iconSize: L.point(40, 40, true),
+  });
+};
+
+// --- NEW APPLE-STYLE MEMBER MARKER ---
+const memberAvatarIcon = (member: any) => {
+  const initials = `${member.prenom?.[0] || ''}${member.nom?.[0] || ''}`.toUpperCase();
+  const isExpert = member.isLegalDefender || member.isTranslator || member.isGuide || member.openToMentorship;
+  
+  // Icon based on expertise
+  let ExpertIcon = '';
+  if (member.isLegalDefender) ExpertIcon = '⚖️';
+  else if (member.isTranslator) ExpertIcon = '🗣️';
+  else if (member.isGuide) ExpertIcon = '🗺️';
+  else if (member.openToMentorship) ExpertIcon = '🎓';
+
+  const borderColor = member.isLive ? '#10b981' : 'white'; // Emerald for live, White for others
+  const shadowColor = member.isLive ? 'rgba(16, 185, 129, 0.6)' : 'rgba(0, 0, 0, 0.1)';
+
+  return L.divIcon({
+    className: 'bg-transparent',
+    html: `
+      <div class="relative group">
+        ${member.isLive ? `<div class="absolute -inset-2 bg-emerald-500/20 rounded-full animate-ping opacity-75"></div>` : ''}
+        <div class="relative w-12 h-12 bg-white rounded-2xl shadow-2xl border-2 flex items-center justify-center overflow-hidden transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out" 
+             style="border-color: ${borderColor}; box-shadow: 0 8px 24px ${shadowColor};">
+          ${member.imageUrl 
+            ? `<img src="${member.imageUrl}" class="w-full h-full object-cover" />`
+            : `<span class="text-xs font-black text-slate-800 tracking-tighter">${initials}</span>`
+          }
+          
+          ${isExpert ? `
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-lg shadow-lg flex items-center justify-center text-[10px] border border-black/5">
+              ${ExpertIcon}
+            </div>
+          ` : ''}
+        </div>
+        <div class="absolute -top-1 -right-1 w-3 h-3 ${member.isLive ? 'bg-emerald-500' : 'bg-gray-300'} border-2 border-white rounded-full shadow-sm"></div>
+      </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 24]
   });
 };
 
@@ -220,26 +261,24 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           className="map-tiles-premium"
         />
 
-        {!showHeatmap && (
-          <MarkerClusterGroup
-            chunkedLoading
-            showCoverageOnHover={false}
-            maxClusterRadius={50}
-            iconCreateFunction={createClusterCustomIcon}
-          >
-            {members.map(member => (
-              <Marker 
-                key={member.id} 
-                position={[member.lat, member.lng]}
-                icon={premiumDotIcon}
-                eventHandlers={{
-                  click: () => onMemberClick?.(member)
-                }}
-              >
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        )}
+        <MarkerClusterGroup
+          chunkedLoading
+          showCoverageOnHover={false}
+          maxClusterRadius={50}
+          iconCreateFunction={createClusterCustomIcon}
+        >
+          {members.map(member => (
+            <Marker 
+              key={member.id} 
+              position={[member.lat, member.lng]}
+              icon={memberAvatarIcon(member)}
+              eventHandlers={{
+                click: () => onMemberClick?.(member)
+              }}
+            >
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );
