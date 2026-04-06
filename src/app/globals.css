@@ -20,7 +20,12 @@
 
 /* Hide leaflet attribution for cleaner look */
 .leaflet-control-attribution {
-  display: none;
+  display: none !important;
+}
+
+/* Hyper-premium minimalist map tiles: Grayscale, brightened, and completely integrated into the background */
+.map-tiles-premium {
+  filter: grayscale(100%) opacity(0.4) contrast(0.85);
 }
 
 @keyframes slide-up {

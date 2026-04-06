@@ -9,15 +9,23 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
 import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
 
-// Custom Marker Icon for a more professional look
-const customIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+// Custom Premium Marker Icon (Modern Dot) replacing the old GPS pin
+const premiumDotIcon = L.divIcon({
+  className: 'bg-transparent',
+  html: `<div style="width: 14px; height: 14px; background-color: #007A33; border-radius: 50%; box-shadow: 0 0 12px rgba(0, 122, 51, 0.8); border: 2px solid white;"></div>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7]
 });
+
+// Custom Premium Cluster Icon
+const createClusterCustomIcon = function (cluster: any) {
+  const count = cluster.getChildCount();
+  return L.divIcon({
+    html: `<div style="width: 40px; height: 40px; background-color: rgba(28, 28, 30, 0.9); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: inherit; font-size: 14px; border: 2px solid #007A33; backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0,0,0,0.15);">${count}</div>`,
+    className: 'bg-transparent',
+    iconSize: L.point(40, 40, true),
+  });
+};
 
 interface MapProps {
   members?: any[];
@@ -40,7 +48,7 @@ function ChangeView({ center }: { center: [number, number] | null }) {
 
 export default function Map({ members = [], center, onMemberClick, showHeatmap = true }: MapProps) {
   return (
-    <div className="w-full h-full absolute top-0 left-0 z-0 bg-gray-100">
+    <div className="w-full h-full absolute top-0 left-0 z-0 bg-apple-light">
       <MapContainer 
         center={center || [43.318, 45.694]} 
         zoom={3} 
@@ -74,8 +82,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         <ZoomControl position="bottomright" />
         
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          attribution=""
+          className="map-tiles-premium"
         />
 
         {!showHeatmap && (
@@ -83,12 +92,13 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             chunkedLoading
             showCoverageOnHover={false}
             maxClusterRadius={50}
+            iconCreateFunction={createClusterCustomIcon}
           >
             {members.map(member => (
               <Marker 
                 key={member.id} 
                 position={[member.lat, member.lng]}
-                icon={customIcon}
+                icon={premiumDotIcon}
                 eventHandlers={{
                   click: () => onMemberClick?.(member)
                 }}
