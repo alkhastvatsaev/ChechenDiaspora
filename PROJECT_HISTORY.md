@@ -60,8 +60,30 @@ Nous avons franchi une étape majeure pour rendre l'application prête au déplo
     *   Passphrase Hub : `Вайнах`
     *   Admin Panel : `/admin` (Code: `chechnyalive`)
 
-## 8. Prochaines Étapes Prioritaires
+## 9. Phase "Mission-First" & Immersion (Dernières Mises à Jour)
 
-1.  **Importation Massive** : Commencer le "Peuplement" réel de la base avec les 2000 contacts existants.
-2.  **SOS Notifications (Орца)** : Finaliser le système de notifications Push pour le bouton d'urgence.
-3.  **Mode Hors-Ligne (PWA)** : Optimiser la mise en cache pour que le Dictionnaire et la Carte soient consultables sans connexion (utile en déplacement).
+L'application a franchi un cap idéologique majeur pour placer la mission de la diaspora au cœur de l'expérience utilisateur :
+
+*   **Immersion Manifeste (Première Connexion)** : 
+    *   Fini le simple accueil. Désormais, tout utilisateur accédant au Foyer pour la première fois doit lire et valider le **Manifeste Complet** ("Le Fardeau et l'Excellence"). 
+    *   Ce texte de fond (philosophique et sociologique) gravite autour de la destruction du stigmate par l'excellence. L'accès à la carte est conditionnée par l'acceptation de cette mission.
+*   **Levier Tactique & Experts (Sidebar Gauche)** : 
+    *   Mise en place d'une barre d'accès rapide sur le côté gauche de la carte pour identifier instantanément les experts de la communauté : **Avocats**, **Traducteurs assermentés**, **Guides administratifs** et **Mentors**.
+    *   Un clic sur l'icône (ex: Gavel pour Avocat) déclenche un filtrage dynamique de la base de données pour afficher uniquement les personnes capables d'apporter une aide spécialisée immédiate.
+*   **Module "Belkhi" (Entraide & Annonces)** : 
+    *   Création d'un moteur de petites annonces communautaires (`/belkhi`) intégré en temps réel avec Firebase.
+    *   Catégories stratégiques : Emploi, Logement, Aide d'Urgence, Business.
+    *   Design épuré "Apple-style" pour favoriser les échanges directs (Appel/WhatsApp) dans l'esprit du Belkhi traditionnel.
+
+## 10. État Actuel du Déploiement
+
+*   **Identité** : L'application n'est plus un annuaire, c'est un **Bouclier Communautaire**.
+*   **Accessibilité** : Entièrement responsive (L'Expert Sidebar s'adapte sur mobile via des onglets tactiques en bas à gauche).
+*   **Vercel / GitHub** : Déploiement continu activé sur `main`.
+*   **Sécurité** : Passphrase `Вайнах` et session-lock pour le Manifeste.
+
+## 11. Prochaines Étapes Finales
+
+1.  **Peuplement de l'Excellence** : Mapper les 1000+ nouveaux contacts avec les tags d'expertise (`isLegalDefender`, `isTranslator`, `isGuide`, `openToMentorship`).
+2.  **Notifications SOS (Орца)** : Finaliser le pont entre le bouton d'urgence et les profils `isLegalDefender` (Avocats) pour une assistance en temps réel.
+3.  **Finalisation Offline (PWA)** : Optimiser le service worker pour garantir l'accès au Dictionnaire et à la liste des Experts sans réseau.

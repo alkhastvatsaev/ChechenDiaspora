@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Map as MapIcon } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
@@ -30,6 +30,7 @@ export default function Home() {
   const [showFilters, setShowFilters] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
 
   // Check if first visit in this session
   useEffect(() => {
@@ -42,6 +43,15 @@ export default function Home() {
   const dismissWelcome = () => {
     setShowWelcome(false);
     sessionStorage.setItem('vainakh_seen_welcome', 'true');
+  };
+
+  const handleExpertFilter = (type: string) => {
+    const nextType = selectedExpertType === type ? null : type;
+    setSelectedExpertType(nextType);
+    if (nextType) {
+      setSearchQuery('');
+      setIsSidebarOpen(true);
+    }
   };
 
   // Listen to members in Realtime Database
@@ -89,6 +99,14 @@ export default function Home() {
   // Filter Logic
   const filteredMembers = useMemo(() => {
     return members.filter(m => {
+      // Expert Type Filter
+      if (selectedExpertType) {
+        if (selectedExpertType === 'isLegalDefender' && !m.isLegalDefender) return false;
+        if (selectedExpertType === 'isTranslator' && !m.isTranslator) return false;
+        if (selectedExpertType === 'isGuide' && !m.isGuide) return false;
+        if (selectedExpertType === 'openToMentorship' && !m.openToMentorship) return false;
+      }
+
       const fullName = `${m.prenom} ${m.nom}`.toLowerCase();
       const searchTerms = searchQuery.toLowerCase().split(' ').filter(val => val.length > 0);
       
@@ -105,7 +123,7 @@ export default function Home() {
       
       return matchesSearch && matchesTeip && matchesProfession;
     });
-  }, [members, searchQuery, selectedTeip, selectedProfession]);
+  }, [members, searchQuery, selectedTeip, selectedProfession, selectedExpertType]);
 
   // Derived Filters
   const teips = useMemo(() => {
@@ -127,77 +145,134 @@ export default function Home() {
   return (
     <main className="relative w-full h-screen overflow-hidden bg-apple-light text-apple-dark font-sans">
       
-      {/* Manifesto Welcome Overlay (Mission First Logic) */}
       {showWelcome && (
-        <div className="absolute inset-0 z-[100] overflow-y-auto animate-in fade-in duration-700">
-          {/* Transparent Backdrop with Gradient Edges as requested */}
-          <div className="fixed inset-0 bg-transparent pointer-events-none">
-             <div className="absolute inset-0 bg-gradient-to-b from-[#fbfbfd] via-[#fbfbfd]/90 to-[#fbfbfd] backdrop-blur-[2px]"></div>
-             <div className="absolute inset-0 bg-white/40"></div>
-          </div>
+        <div className="absolute inset-0 z-[100] bg-white overflow-y-auto animate-in fade-in duration-700">
+          <div className="max-w-3xl mx-auto px-8 py-20 pb-40">
+            <div className="flex justify-center mb-12">
+               <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center shadow-2xl animate-pulse">
+                 <Flame className="w-10 h-10 text-hearth-amber" />
+               </div>
+            </div>
 
-          <div className="relative min-h-screen flex flex-col items-center justify-start pt-20 pb-32 px-6">
-            <div className="max-w-2xl w-full space-y-16">
-              
-              {/* Header inside welcome */}
-              <div className="space-y-6 text-center">
-                <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-2xl mx-auto mb-8 animate-bounce-subtle">
-                  <Flame className="w-8 h-8 text-hearth-amber" />
-                </div>
-                <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-xs">Manifeste de la Diaspora</h4>
-                <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-black">
-                  Вайнах: <br/>Le Fardeau et l&apos;Excellence.
-                </h1>
-                <p className="text-xl font-medium text-gray-500 leading-relaxed max-w-lg mx-auto">
-                  La force du 99%. Détruire le stigmate par l&apos;irréfutable preuve de notre droiture et de notre compétence.
+            <div className="space-y-6 mb-16 text-center">
+              <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-[10px]">Вайнах / Vainakh</h4>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[1.1] text-black">
+                MANIFESTE DE LA DIASPORA
+              </h1>
+              <p className="text-xl font-medium text-gray-500 leading-relaxed max-w-2xl mx-auto">
+                Détruire le stigmate, non pas par la plainte, mais par l&apos;irréfutable preuve de notre excellence.
+              </p>
+            </div>
+
+            <article className="prose prose-lg prose-gray max-w-none space-y-16 text-justify selection:bg-black selection:text-white">
+              <section className="space-y-4">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">01.</span> Les Racines de l&apos;Exode
+                </h2>
+                <p className="text-gray-600 leading-relaxed font-medium">
+                  Nous n&apos;avons pas quitté les montagnes du Caucase par opportunisme. Nous avons été propulsés par la violence. Notre exil est un instinct de survie pour protéger nos familles et notre patrimoine génétique même. Arrivés en Europe, nos parents ont bâti des vies à partir des cendres.
                 </p>
-              </div>
+              </section>
 
-              {/* Condensed Thesis for Quick Reading */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-6 bg-white/80 backdrop-blur-xl rounded-[2rem] border border-black/5 shadow-sm space-y-3">
-                  <div className="w-10 h-10 bg-red-600/10 rounded-full flex items-center justify-center">
-                    <Gavel size={20} className="text-red-600" />
-                  </div>
-                  <h3 className="font-black text-black">Le Bouclier</h3>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">Protéger nos frères et sœurs contre les injustices légales et administratives de l&apos;exil.</p>
+              <section className="space-y-4">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">02.</span> Le Poids du Stigmate
+                </h2>
+                <p className="text-gray-600 leading-relaxed font-medium">
+                  Aujourd&apos;hui, nous faisons face à un second front : médiatique et administratif. Une étiquette lourde et injuste a été collée sur notre communauté. Le récit médiatique est brutal, nous observant à travers le prisme de la suspicion. Nous sommes pris en étau entre les abus d&apos;entités vengeresses et la méfiance des pays d&apos;accueil.
+                </p>
+                <div className="bg-black text-white p-8 rounded-3xl mt-6">
+                  <h3 className="text-xl font-bold mb-4">La Tragédie du 1%</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Les actions d&apos;une infime minorité — le 1% qui trahit l&apos;éducation de nos pères — sont instrumentalisées pour définir l&apos;ensemble de notre peuple. Mais qui parle des 99% ? Les médecins, ingénieurs, et entrepreneurs qui sauvent des vies et créent de la valeur chaque jour ?
+                  </p>
                 </div>
-                <div className="p-6 bg-white/80 backdrop-blur-xl rounded-[2rem] border border-black/5 shadow-sm space-y-3">
-                  <div className="w-10 h-10 bg-chechen-blue/10 rounded-full flex items-center justify-center">
-                    <GraduationCap size={20} className="text-chechen-blue" />
-                  </div>
-                  <h3 className="font-black text-black">L&apos;Elévation</h3>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">Utiliser la réussite des aînés pour guider la jeunesse vers l&apos;excellence académique.</p>
-                </div>
-              </div>
+              </section>
 
-              {/* CTA to Enter App */}
-              <div className="flex flex-col items-center gap-6 pt-10">
+              <section className="space-y-4">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">03.</span> Le Devoir de l&apos;Invité (Le Haasha)
+                </h2>
+                <p className="text-gray-600 leading-relaxed font-medium">
+                  Le Nokhchalla est un code de conduite rigoureux. En Europe, nous sommes les invités. L&apos;invité (le Haasha) a le devoir absolu d&apos;être irréprochable. Le respect des lois de nos sociétés d&apos;accueil n&apos;est pas une option, c&apos;est une exigence de notre honneur.
+                </p>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">04.</span> L&apos;Arme de l&apos;Éducation
+                </h2>
+                <p className="text-gray-600 leading-relaxed font-medium">
+                  Le patriotisme le plus élevé pour un jeune Vainakh aujourd&apos;hui est d&apos;obtenir son master, de devenir un avocat redoutable, un chercheur reconnu ou un entrepreneur brillant. Nous devons écraser le préjugé sous le poids de notre excellence intellectuelle.
+                </p>
+              </section>
+
+              <section className="pt-10">
+                <p className="text-xl font-black text-center mb-10 tracking-widest leading-relaxed uppercase">Далла аьтто бойла вай.</p>
                 <button 
                   onClick={dismissWelcome}
-                  className="group bg-black text-white px-10 py-5 rounded-full font-black text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                  className="w-full py-6 bg-black text-white rounded-2xl font-black text-sm tracking-widest uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
                 >
-                  Entrer dans le Foyer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  J&apos;AI LU ET J&apos;ACCEPTE LA MISSION <ArrowRight size={18} />
                 </button>
-                <Link 
-                  href="/manifesto" 
-                  className="text-gray-400 hover:text-black font-bold text-sm uppercase tracking-widest transition-colors mb-20"
-                >
-                  Lire le manifeste complet
-                </Link>
-              </div>
-            </div>
+              </section>
+            </article>
           </div>
         </div>
       )}
+
+      {/* Main Layout Container with Expert Sidebar */}
+      <div className="flex h-[100dvh] relative overflow-hidden w-full">
+        
+        {/* EXPERT QUICK ACCESS SIDEBAR (LEFT) */}
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4">
+           {[
+             { id: 'isLegalDefender', icon: Gavel, label: 'Avocats', color: 'bg-red-500' },
+             { id: 'isTranslator', icon: Languages, label: 'Traducteurs', color: 'bg-blue-500' },
+             { id: 'isGuide', icon: MapIcon, label: 'Administratif', color: 'bg-emerald-500' },
+             { id: 'openToMentorship', icon: GraduationCap, label: 'Mentors', color: 'bg-amber-500' },
+           ].map((expert) => (
+             <button
+               key={expert.id}
+               onClick={() => handleExpertFilter(expert.id)}
+               className={`group relative flex items-center justify-center w-14 h-14 rounded-2xl transition-all shadow-xl backdrop-blur-xl border border-white/20 
+                 ${selectedExpertType === expert.id ? `${expert.color} text-white scale-110 shadow-inner` : 'bg-white/80 text-black hover:bg-white'}`}
+             >
+               <expert.icon size={24} />
+               <div className="absolute left-full ml-4 px-3 py-1.5 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 whitespace-nowrap pointer-events-none z-50 shadow-2xl">
+                 {expert.label}
+               </div>
+             </button>
+           ))}
+        </div>
+
+        {/* Mobile Expert Tab (Bottom Left) */}
+        <div className="absolute left-4 bottom-28 z-40 lg:hidden flex flex-col gap-2">
+           <button 
+             onClick={() => handleExpertFilter('isLegalDefender')}
+             className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg border border-white/20 backdrop-blur-md transition-all 
+               ${selectedExpertType === 'isLegalDefender' ? 'bg-red-500 text-white' : 'bg-white/80 text-red-500'}`}
+           >
+             <Gavel size={20} />
+           </button>
+           <button 
+             onClick={() => handleExpertFilter('isGuide')}
+             className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg border border-white/20 backdrop-blur-md transition-all 
+               ${selectedExpertType === 'isGuide' ? 'bg-emerald-500 text-white' : 'bg-white/80 text-emerald-500'}`}
+           >
+             <MapIcon size={20} />
+           </button>
+        </div>
       
-      {/* Background Map layer */}
-      <Map 
-        members={filteredMembers} 
-        center={mapCenter} 
-        onMemberClick={(m) => setSelectedMember(m)}
-        showHeatmap={showHeatmap}
-      />
+        {/* Background Map layer */}
+        <div className="flex-1 relative">
+          <Map 
+            members={filteredMembers} 
+            center={mapCenter} 
+            onMemberClick={(m) => setSelectedMember(m)}
+            showHeatmap={showHeatmap}
+          />
+        </div>
 
       {/* Top Glassmorphism Header & Search */}
       <div className="absolute top-0 w-full z-10 px-4 pt-safe-top">
@@ -451,6 +526,7 @@ export default function Home() {
            <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
              <Heart size={18} className="opacity-70 text-hearth-amber" /> СагIа
            </button>
+        </div>
         </div>
       </div>
     </main>
