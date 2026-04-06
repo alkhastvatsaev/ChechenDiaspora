@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
@@ -29,6 +29,20 @@ export default function Home() {
   const [selectedProfession, setSelectedProfession] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Check if first visit in this session
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem('vainakh_seen_welcome');
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const dismissWelcome = () => {
+    setShowWelcome(false);
+    sessionStorage.setItem('vainakh_seen_welcome', 'true');
+  };
 
   // Listen to members in Realtime Database
   useEffect(() => {
@@ -112,6 +126,70 @@ export default function Home() {
 
   return (
     <main className="relative w-full h-screen overflow-hidden bg-apple-light text-apple-dark font-sans">
+      
+      {/* Manifesto Welcome Overlay (Mission First Logic) */}
+      {showWelcome && (
+        <div className="absolute inset-0 z-[100] overflow-y-auto animate-in fade-in duration-700">
+          {/* Transparent Backdrop with Gradient Edges as requested */}
+          <div className="fixed inset-0 bg-transparent pointer-events-none">
+             <div className="absolute inset-0 bg-gradient-to-b from-[#fbfbfd] via-[#fbfbfd]/90 to-[#fbfbfd] backdrop-blur-[2px]"></div>
+             <div className="absolute inset-0 bg-white/40"></div>
+          </div>
+
+          <div className="relative min-h-screen flex flex-col items-center justify-start pt-20 pb-32 px-6">
+            <div className="max-w-2xl w-full space-y-16">
+              
+              {/* Header inside welcome */}
+              <div className="space-y-6 text-center">
+                <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-2xl mx-auto mb-8 animate-bounce-subtle">
+                  <Flame className="w-8 h-8 text-hearth-amber" />
+                </div>
+                <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-xs">Manifeste de la Diaspora</h4>
+                <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-black">
+                  Вайнах: <br/>Le Fardeau et l&apos;Excellence.
+                </h1>
+                <p className="text-xl font-medium text-gray-500 leading-relaxed max-w-lg mx-auto">
+                  La force du 99%. Détruire le stigmate par l&apos;irréfutable preuve de notre droiture et de notre compétence.
+                </p>
+              </div>
+
+              {/* Condensed Thesis for Quick Reading */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-6 bg-white/80 backdrop-blur-xl rounded-[2rem] border border-black/5 shadow-sm space-y-3">
+                  <div className="w-10 h-10 bg-red-600/10 rounded-full flex items-center justify-center">
+                    <Gavel size={20} className="text-red-600" />
+                  </div>
+                  <h3 className="font-black text-black">Le Bouclier</h3>
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed">Protéger nos frères et sœurs contre les injustices légales et administratives de l&apos;exil.</p>
+                </div>
+                <div className="p-6 bg-white/80 backdrop-blur-xl rounded-[2rem] border border-black/5 shadow-sm space-y-3">
+                  <div className="w-10 h-10 bg-chechen-blue/10 rounded-full flex items-center justify-center">
+                    <GraduationCap size={20} className="text-chechen-blue" />
+                  </div>
+                  <h3 className="font-black text-black">L&apos;Elévation</h3>
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed">Utiliser la réussite des aînés pour guider la jeunesse vers l&apos;excellence académique.</p>
+                </div>
+              </div>
+
+              {/* CTA to Enter App */}
+              <div className="flex flex-col items-center gap-6 pt-10">
+                <button 
+                  onClick={dismissWelcome}
+                  className="group bg-black text-white px-10 py-5 rounded-full font-black text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                >
+                  Entrer dans le Foyer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+                <Link 
+                  href="/manifesto" 
+                  className="text-gray-400 hover:text-black font-bold text-sm uppercase tracking-widest transition-colors mb-20"
+                >
+                  Lire le manifeste complet
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Background Map layer */}
       <Map 

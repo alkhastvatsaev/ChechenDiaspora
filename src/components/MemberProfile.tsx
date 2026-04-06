@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart, GraduationCap, Gavel, Truck } from 'lucide-react';
+import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart, GraduationCap, Gavel, Truck, Map as MapIcon } from 'lucide-react';
 
 interface MemberProfileProps {
   member: any;
@@ -71,6 +71,12 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-vainakh-stone rounded-xl shadow-lg shadow-black/20">
                   <Truck size={12} strokeWidth={3} />
                   <span className="text-[10px] font-black uppercase tracking-widest text-vainakh-stone">Кашмаш / Ритуал</span>
+                </div>
+              )}
+              {member.isGuide && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-600/20">
+                  <MapIcon size={12} strokeWidth={3} />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">ГIо-Деш / Guide</span>
                 </div>
               )}
             </div>
