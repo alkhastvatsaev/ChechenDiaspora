@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Map as MapIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
@@ -140,6 +141,19 @@ export default function Home() {
     // 10% des membres + ceux avec isLive: true
     return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
   }, [members]);
+
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  const handleSuggestionSelect = (term: string, type?: string) => {
+    if (type === 'expert') {
+      setSelectedExpertType(term);
+      setSearchQuery('');
+    } else {
+      setSearchQuery(term);
+      setSelectedExpertType('');
+    }
+    setIsSearchFocused(false);
+  };
 
   const centerOnMe = () => {
     if (userLocation) {
@@ -405,6 +419,7 @@ export default function Home() {
                 className="w-full bg-transparent border-none outline-none text-base font-medium placeholder:text-gray-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
               />
             </div>
 
@@ -428,7 +443,75 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Expanded Filters */}
+          {/* Intelligent Search Suggestions */}
+          <AnimatePresence>
+            {isSearchFocused && (
+              <>
+                {/* Backdrop to close focus */}
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsSearchFocused(false)}
+                  className="fixed inset-0 z-[-1]"
+                />
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  className="bg-white/90 backdrop-blur-2xl shadow-2xl border border-black/5 rounded-[2rem] p-6 mt-3 flex flex-col gap-5 overflow-hidden"
+                >
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 ml-1">Быстрый поиск / Experts</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { id: 'isLegalDefender', label: 'Адвокат / Avocats', icon: Gavel, color: 'text-red-500' },
+                        { id: 'isTranslator', label: 'Переводчик / Traducteurs', icon: Languages, color: 'text-blue-500' },
+                        { id: 'isGuide', label: 'Админ. помощь / Guide', icon: MapIcon, color: 'text-emerald-500' },
+                        { id: 'openToMentorship', label: 'Ментор / Mentors', icon: GraduationCap, color: 'text-amber-500' },
+                      ].map((item) => (
+                        <button 
+                          key={item.id}
+                          onClick={() => handleSuggestionSelect(item.id, 'expert')}
+                          className={`flex items-center gap-2 px-4 py-2.5 bg-white border border-black/5 rounded-xl text-xs font-bold hover:scale-105 active:scale-95 transition-all shadow-sm ${selectedExpertType === item.id ? 'ring-2 ring-black bg-gray-50' : ''}`}
+                        >
+                          <item.icon size={14} className={item.color} />
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 ml-1">Популярные запросы</p>
+                    <div className="flex flex-wrap gap-2">
+                      {['Ingénieur', 'Marketing', 'Développeur', 'Strasbourg', 'Berlin', 'Vienne'].map((tag) => (
+                        <button 
+                          key={tag}
+                          onClick={() => handleSuggestionSelect(tag)}
+                          className="px-4 py-2 bg-gray-50/50 hover:bg-gray-100 border border-black/5 rounded-xl text-xs font-bold text-gray-600 transition-all active:scale-95"
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {selectedExpertType && (
+                    <button 
+                      onClick={() => {setSelectedExpertType(''); setIsSearchFocused(false);}}
+                      className="mt-2 text-[10px] font-black uppercase tracking-widest text-red-500 hover:opacity-70 transition-opacity text-center w-full"
+                    >
+                      Сбросить фильтры / Clear filters
+                    </button>
+                  )}
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+
+          {/* Expanded Filters (Legacy Teips) */}
           {showFilters && (
             <div className="bg-white/80 backdrop-blur-md shadow-lg border border-black/5 rounded-2xl p-4 animate-scale-in flex flex-wrap gap-2">
               <button 
