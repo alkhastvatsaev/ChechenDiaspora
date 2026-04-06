@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { collection, addDoc } from 'firebase/firestore';
+import { ref, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 
@@ -36,8 +36,10 @@ export default function Join() {
         lng = parseFloat(data[0].lon);
       }
 
-      // Step 2: Add to Firestore with "approved: false"
-      await addDoc(collection(db, "members"), {
+      // Step 2: Add to RTDB with "approved: false"
+      const membersRef = ref(db, 'members');
+      const newMemberRef = push(membersRef);
+      await set(newMemberRef, {
         ...formData,
         lat,
         lng,

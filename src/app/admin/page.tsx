@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { ref, onValue, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { ArrowLeft, Check, X, UserCheck, ShieldAlert, Lock, LogOut } from 'lucide-react';
 
@@ -16,21 +16,26 @@ export default function Admin() {
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    // Fetch members with approved: false
-    const q = query(collection(db, "members"), where("approved", "==", false));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data: any[] = [];
-      querySnapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() });
-      });
-      setPendingMembers(data);
+    // Fetch members and filter for approved: false in memory
+    const membersRef = ref(db, 'members');
+    const unsubscribe = onValue(membersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).filter(m => m.approved === false);
+        setPendingMembers(list);
+      } else {
+        setPendingMembers([]);
+      }
     });
+
     return () => unsubscribe();
   }, [isLoggedIn]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple, hardcoded password for now. In production, this would be more robust.
     if (password === 'chechnyalive') {
       setIsLoggedIn(true);
       setError('');
@@ -42,7 +47,7 @@ export default function Admin() {
 
   const handleApprove = async (id: string) => {
     try {
-      await updateDoc(doc(db, "members", id), {
+      await update(ref(db, `members/${id}`), {
         approved: true,
         approvedAt: new Date().toISOString()
       });
@@ -54,7 +59,7 @@ export default function Admin() {
   const handleReject = async (id: string) => {
     if (window.confirm("Удалить эту заявку?")) {
       try {
-        await deleteDoc(doc(db, "members", id));
+        await remove(ref(db, `members/${id}`));
       } catch (e) {
         console.error("Error rejecting:", e);
       }

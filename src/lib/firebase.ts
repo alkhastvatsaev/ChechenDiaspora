@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -8,9 +8,10 @@ const firebaseConfig = {
   projectId: "chechen-diaspora-v12345",
   storageBucket: "chechen-diaspora-v12345.firebasestorage.app",
   messagingSenderId: "862785484485",
-  appId: "1:862785484485:web:2759735808c36df34422ac"
+  appId: "1:862785484485:web:2759735808c36df34422ac",
+  databaseURL: "https://chechen-diaspora-v12345-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getDatabase(app);
 export const auth = getAuth(app);

@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe } from 'lucide-react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
 
@@ -27,16 +27,23 @@ export default function Home() {
   const [showFilters, setShowFilters] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
 
-  // Listen to ONLY approved members
+  // Listen to members in Realtime Database
   useEffect(() => {
-    const q = query(collection(db, "members"), where("approved", "==", true));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const membersData: any[] = [];
-      querySnapshot.forEach((doc) => {
-        membersData.push({ id: doc.id, ...doc.data() });
-      });
-      setMembers(membersData);
+    const membersRef = ref(db, 'members');
+    const unsubscribe = onValue(membersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const membersList = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+        // Filter for approved: true
+        setMembers(membersList.filter(m => m.approved === true));
+      } else {
+        setMembers([]);
+      }
     });
+
     return () => unsubscribe();
   }, []);
 
