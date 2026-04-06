@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, Circle } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
-import 'leaflet.heat'; // Add heatmap plugin
+import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
 
 // Custom Marker Icon for a more professional look
 const customIcon = new L.Icon({
@@ -26,33 +26,7 @@ interface MapProps {
   showHeatmap?: boolean;
 }
 
-function HeatmapLayer({ points }: { points: [number, number, number][] }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!map || points.length === 0) return;
-
-    // Heatmap instance
-    const heatLayer = (L as any).heatLayer(points, {
-      radius: 35,
-      blur: 20,
-      maxZoom: 14,
-      minOpacity: 0.4,
-      gradient: { 
-        0.2: '#10B981', // Emerald Medium
-        0.5: '#059669', // Dark Emerald
-        0.8: '#1C6B42', // Chechen Green
-        1.0: '#064E3B'  // Deep Forest
-      }
-    }).addTo(map);
-
-    return () => {
-      map.removeLayer(heatLayer);
-    };
-  }, [map, points]);
-
-  return null;
-}
+// Heatmap logic is removed. We use explicitly designated boundaries.
 
 function ChangeView({ center }: { center: [number, number] | null }) {
   const map = useMap();
@@ -76,18 +50,32 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
       >
         {center && <ChangeView center={center} />}
         
-        {/* Heatmap Layer */}
+        {/* Diaspora Hub Borders representing exact city limits/frontiers */}
         {showHeatmap && (
-          <HeatmapLayer 
-            points={members.map(m => [m.lat, m.lng, 0.5])} 
-          />
+          <>
+            {DIASPORA_HUBS.map((hub, idx) => (
+              <Circle
+                key={idx}
+                center={[hub.lat, hub.lng]}
+                radius={20000} // 20KM border to highlight the city area massively
+                pathOptions={{
+                  color: '#007A33',
+                  opacity: 0.8,
+                  weight: 2,
+                  fillColor: '#007A33',
+                  fillOpacity: 0.05,
+                  dashArray: '8, 8' // Gives a 'frontier / border' style
+                }}
+              />
+            ))}
+          </>
         )}
 
         <ZoomControl position="bottomright" />
         
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
         {!showHeatmap && (
