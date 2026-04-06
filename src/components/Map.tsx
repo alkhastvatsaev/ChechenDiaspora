@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON } from 'react-leaflet';
+import { useEffect, useState, Fragment } from 'react';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON, Circle } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -129,15 +129,31 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               }}
             />
             
-            {/* City Names over tracers */}
-            {DIASPORA_HUBS.map(hub => (
-              <Marker 
-                key={`${hub.name}-${hub.country}`}
-                position={[hub.lat, hub.lng]}
-                icon={cityLabelIcon(hub.name)}
-                interactive={false}
-              />
-            ))}
+            {/* City Names & Automated Tracers (Contours) */}
+            {DIASPORA_HUBS.map(hub => {
+              const uniqueKey = `${hub.name}-${hub.country}`;
+              return (
+                <Fragment key={uniqueKey}>
+                  <Marker 
+                    position={[hub.lat, hub.lng]}
+                    icon={cityLabelIcon(hub.name)}
+                    interactive={false}
+                  />
+                  {/* Automated circular contour (tracer) for every hub in the db */}
+                  <Circle
+                    center={[hub.lat, hub.lng]}
+                    radius={12000} // ~12km radius to represent the city area
+                    pathOptions={{
+                      color: '#007AFF',
+                      weight: 2,
+                      opacity: 0.6,
+                      fillColor: '#007AFF',
+                      fillOpacity: 0.05
+                    }}
+                  />
+                </Fragment>
+              );
+            })}
           </>
         )}
 
