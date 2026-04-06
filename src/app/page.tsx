@@ -156,65 +156,159 @@ export default function Home() {
 
             <div className="space-y-6 mb-16 text-center">
               <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-[10px]">Вайнах / Vainakh</h4>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[1.1] text-black">
-                MANIFESTE DE LA DIASPORA
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-[1.1] text-black uppercase">
+                Manifeste de la Diaspora<br/>
+                <span className="text-gray-400">Le Fardeau et l'Excellence</span>
               </h1>
               <p className="text-xl font-medium text-gray-500 leading-relaxed max-w-2xl mx-auto">
-                Détruire le stigmate, non pas par la plainte, mais par l&apos;irréfutable preuve de notre excellence.
+                Une introspection absolue sur notre réalité en exil. Détruire le stigmate, non pas par la plainte, mais par l'irréfutable preuve de notre excellence.
               </p>
             </div>
 
             <article className="prose prose-lg prose-gray max-w-none space-y-16 text-justify selection:bg-black selection:text-white">
-              <section className="space-y-4">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">01.</span> Les Racines de l&apos;Exode
+                  <span className="text-gray-200">01.</span> Les Racines de l'Exode
                 </h2>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                  Nous n&apos;avons pas quitté les montagnes du Caucase par opportunisme. Nous avons été propulsés par la violence. Notre exil est un instinct de survie pour protéger nos familles et notre patrimoine génétique même. Arrivés en Europe, nos parents ont bâti des vies à partir des cendres.
-                </p>
-              </section>
-
-              <section className="space-y-4">
-                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">02.</span> Le Poids du Stigmate
-                </h2>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                  Aujourd&apos;hui, nous faisons face à un second front : médiatique et administratif. Une étiquette lourde et injuste a été collée sur notre communauté. Le récit médiatique est brutal, nous observant à travers le prisme de la suspicion. Nous sommes pris en étau entre les abus d&apos;entités vengeresses et la méfiance des pays d&apos;accueil.
-                </p>
-                <div className="bg-black text-white p-8 rounded-3xl mt-6">
-                  <h3 className="text-xl font-bold mb-4">La Tragédie du 1%</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    Les actions d&apos;une infime minorité — le 1% qui trahit l&apos;éducation de nos pères — sont instrumentalisées pour définir l&apos;ensemble de notre peuple. Mais qui parle des 99% ? Les médecins, ingénieurs, et entrepreneurs qui sauvent des vies et créent de la valeur chaque jour ?
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Comprendre la diaspora tchétchène moderne nécessite de regarder la vérité en face. Nous n'avons pas quitté les montagnes du Caucase par pur opportunisme économique. Nous avons été propulsés hors de nos terres (Daimohk) par la violence inouïe de deux guerres dévastatrices. Notre exil est avant tout un instinct de survie, un acte de protection pour nos familles, nos enfants et notre patrimoine génétique même.
+                  </p>
+                  <p>
+                    Arrivés en Europe – en France, en Allemagne, en Autriche, en Belgique – nos parents ont dû affronter un monde inconnu, une barrière linguistique de fer, et le traumatisme sourd de la perte. Pourtant, ils ont construit. Ils ont bâti des vies à partir des cendres.
                   </p>
                 </div>
               </section>
 
-              <section className="space-y-4">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">03.</span> Le Devoir de l&apos;Invité (Le Haasha)
+                  <span className="text-gray-200">02.</span> Le Poids du Stigmate
                 </h2>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                  Le Nokhchalla est un code de conduite rigoureux. En Europe, nous sommes les invités. L&apos;invité (le Haasha) a le devoir absolu d&apos;être irréprochable. Le respect des lois de nos sociétés d&apos;accueil n&apos;est pas une option, c&apos;est une exigence de notre honneur.
-                </p>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Aujourd'hui, nous faisons face à un second front. Il n'est plus armé, il est sociétal, médiatique et administratif. En Europe et ailleurs, une étiquette lourde, injuste et stigmatisante a été collée sur le front de notre communauté.
+                  </p>
+                  <p>
+                    Le récit médiatique est brutal. La communauté est trop souvent observée à travers le prisme de la sécurité, de la suspicion, et de la criminalisation collective. Dans certains pays hôtes, le simple fait de porter un nom à consonance nord-caucasienne peut déclencher des vérifications supplémentaires, des refus de logement, des obstacles à l'embauche, voire un harcèlement administratif ou le spectre terrifiant d'une déportation.
+                  </p>
+                  <p>
+                    Nous sommes pris en étau. D'un côté, la menace des abus des notices rouges d'Interpol lancées par des entités étatiques vengeresses. De l'autre, la méfiance des pays d'accueil qui simplifient une histoire millénaire complexe en un raccourci xénophobe. Ce fardeau est lourd pour la jeunesse qui growit ici.
+                  </p>
+                </div>
+
+                <div className="bg-black text-white p-10 rounded-[2.5rem] mt-8 shadow-2xl space-y-6">
+                  <h3 className="text-2xl font-black">La Tragédie du 1% et le Silence des 99%</h3>
+                  <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed font-medium">
+                    <p>
+                      C'est la tragédie mathématique de l'attention publique. Les actions d'une infime minorité — le 1% qui s'égare, qui trahit l'éducation de nos pères, qui tombe dans la délinquance ou les idéologies mortifères — sont systématiquement instrumentalisées pour définir l'ensemble de notre peuple.
+                    </p>
+                    <p>
+                      Quand "l'un" commet une faute, l'origine ethnique occupe les gros titres. Mais qui parle des 99% ? Le monde ignore délibérément la majorité silencieuse de notre diaspora.
+                    </p>
+                    <p>
+                      Qui parle de ces milliers de médecins, d'infirmières, de chirurgiens d'origine tchétchène qui sauvent des vies chaque jour dans les hôpitaux européens ? Qui parle de nos brillants ingénieurs, de nos étudiants diplômés des plus grandes universités, de nos entrepreneurs qui créent de l'emploi et de la valeur dans la matrice même de la société française, allemande ou autrichienne ? Qui souligne que la majorité écrasante de notre peuple vit honnêtement, paie ses impôts, respecte les lois et élève ses enfants dans le respect et l'honneur strict ?
+                    </p>
+                    <p className="text-white font-black italic">
+                      Notre excellence est invisible, nos erreurs sont luminescentes. C'est le lot des exilés, et nous devons l'accepter pour mieux le combattre.
+                    </p>
+                  </div>
+                </div>
               </section>
 
-              <section className="space-y-4">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                  <span className="text-gray-200">04.</span> L&apos;Arme de l&apos;Éducation
+                  <span className="text-gray-200">03.</span> Le Devoir de l'Invité (Le Haasha)
                 </h2>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                  Le patriotisme le plus élevé pour un jeune Vainakh aujourd&apos;hui est d&apos;obtenir son master, de devenir un avocat redoutable, un chercheur reconnu ou un entrepreneur brillant. Nous devons écraser le préjugé sous le poids de notre excellence intellectuelle.
-                </p>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Notre tradition, le Nokhchalla, n'est pas qu'un mot vide. C'est un code de conduite rigoureux, forgé dans la roche. Au sommet de ce code se trouve un concept sacré : l'hospitalité.
+                  </p>
+                  <p>
+                    Mais l'hospitalité va dans les deux sens. Si l'hôte se doit de tout offrir à l'invité, l'invité (le Haasha) a le devoir absolu d'être irréprochable. En Europe, c'est nous les invités. Ces pays ont accordé l'asile à nos pères quand ils fuyaient les bombes. Ils ont nourri, soigné et scolarisé nos familles. Le Nokhchalla exige de nous une gratitude sans borne et un respect intransigeant des lois de nos sociétés d'accueil.
+                  </p>
+                  <blockquote className="border-l-4 border-black pl-6 py-2 text-black font-black text-xl italic">
+                    "Celui qui ne respecte pas le toit qui l'abrite n'est ni un héros, ni un homme d'honneur. Il est la honte de son Teip."
+                  </blockquote>
+                </div>
               </section>
 
-              <section className="pt-10">
-                <p className="text-xl font-black text-center mb-10 tracking-widest leading-relaxed uppercase">Далла аьтто бойла вай.</p>
-                <button 
-                  onClick={dismissWelcome}
-                  className="w-full py-6 bg-black text-white rounded-2xl font-black text-sm tracking-widest uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-                >
-                  J&apos;AI LU ET J&apos;ACCEPTE LA MISSION <ArrowRight size={18} />
-                </button>
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">04.</span> Détruire les Préjugés par l'Excellence
+                </h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Comment détruire ces stéréotypes qui pèsent sur l'avenir de nos enfants ? Ce ne sera ni par la victimisation constante, ni par la plainte incessante. Le monde ne respecte que la force intellectuelle, la contribution manifeste et le succès.
+                  </p>
+                  <p className="text-black font-black text-xl">
+                    Nous devons écraser le préjugé sous le poids de notre excellence.
+                  </p>
+                  <p>
+                    Aujourd'hui, l'acte de résistance le plus puissant, le patriotisme le plus élevé pour un jeune Vainakh, ce n'est pas l'agitation stérile. C'est d'obtenir un master, de créer une entreprise florissante, de devenir un avocat redoutable, un chercheur reconnu, un artiste brillant. Lorsque les institutions locales interagiront avec nous, elles ne verront pas des problèmes, elles verront la solution, la compétence, le savoir-être (O'zdangalla).
+                  </p>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">05.</span> L'Arme de l'Éducation (Кхетам)
+                </h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    L'éducation, pure et simple, est notre porte de salut. Les parents de notre communauté ont sacrifié leur santé dans des usines et sur des chantiers en Europe, non pas pour que leurs enfants reproduisent la précarité ou s'égarent dans l'illusion de la facilité de la rue, mais pour qu'ils s'assoient sur les bancs des grandes écoles. Ne trahisons pas leur sacrifice.
+                  </p>
+                  <p>
+                    C'est pourquoi, au sein de cet outil, de cette plateforme, <strong className="text-black">le Mentorat est central</strong>. Ceux de la première vague qui ont réussi à percer le plafond de verre (ingénieurs, juristes, cadres) ont le devoir moral absolu, imposé par la fraternité, de tendre la main et de guider la jeunesse qui doute.
+                  </p>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                  <span className="text-gray-200">06.</span> La Fonction du Foyer "Вайнах"
+                </h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    C'est la raison d'être de cette application. Elle n'est pas un réseau social conçu pour tuer le temps ou flatter des egos. C'est une <strong className="text-black">infrastructure numérique stricte, fonctionnelle, dédiée à la protection et à l'ascension</strong> de notre communauté.
+                  </p>
+                  <ul className="space-y-4 mt-6">
+                    <li className="flex gap-4">
+                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
+                      <span><strong className="text-black">Un Bouclier Juridique :</strong> Identifier instantanément nos avocats et traducteurs assermentés pour protéger ceux d'entre nous menacés d'abus administratifs et sécuriser notre présence légale permanente.</span>
+                    </li>
+                    <li className="flex gap-4">
+                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
+                      <span><strong className="text-black">Un Relais de Mentorat :</strong> Mettre en relation l'excellence technique, médicale ou intellectuelle d'un membre avec l'ambition légitime d'un autre.</span>
+                    </li>
+                    <li className="flex gap-4">
+                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
+                      <span><strong className="text-black">Un Réseau Économique :</strong> Favoriser les affaires, l'embauche, et garantir le logement par la caution de nos frères et sœurs solides économiquement.</span>
+                    </li>
+                    <li className="flex gap-4">
+                      <span className="w-1.5 h-1.5 bg-black rounded-full mt-2.5 shrink-0"></span>
+                      <span><strong className="text-black">Un Devoir Sacré :</strong> Faciliter la logistique et fonds pour gérer les épreuves ultimes, notamment le respect digne et le rapatriement funéraire de nos anciens.</span>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+
+              <section className="pt-20 border-t border-gray-100">
+                <div className="text-center space-y-8">
+                  <h3 className="text-3xl font-black text-black">Épilogue</h3>
+                  <div className="space-y-6 text-gray-600 font-medium text-lg italic">
+                    <p>Personne ne viendra nous sauver, si ce n'est nous-mêmes, par la grâce de Dieu.</p>
+                    <p>Soyons les meilleurs citoyens, soyons les plus éduqués, soyons d'une droiture inébranlable et d'une utilité incontestable pour le monde qui nous entoure.</p>
+                    <p>Puisons dans notre identité millénaire la fierté non pas pour être arrogants, mais pour trouver la force d'être irréprochables. N'ayons aucune patience, aucune complaisance envers ceux d'entre nous qui dévient et salissent l'histoire de leurs ancêtres. Elevons les autres.</p>
+                  </div>
+                  <p className="text-2xl font-black text-black mt-12 tracking-[0.2em] uppercase">Далла аьтто бойла вай.</p>
+                  
+                  <button 
+                    onClick={dismissWelcome}
+                    className="w-full mt-12 py-6 bg-black text-white rounded-2xl font-black text-sm tracking-[0.2em] uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                  >
+                    J&apos;AI LU ET J&apos;ACCEPTE LA MISSION <ArrowRight size={18} />
+                  </button>
+                </div>
               </section>
             </article>
           </div>
