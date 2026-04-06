@@ -26,7 +26,7 @@ export default function HeritagePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-apple-light text-apple-dark font-sans selection:bg-chechen-green/20">
+    <div className="min-h-screen bg-apple-light text-apple-dark font-sans selection:bg-chechen-blue/20">
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-apple-light/80 backdrop-blur-xl border-b border-black/5">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between pt-safe-top">
@@ -43,8 +43,8 @@ export default function HeritagePage() {
         
         {/* Intro */}
         <section className="text-center space-y-8 animate-slide-up">
-          <div className="inline-flex items-center justify-center p-5 bg-chechen-green/5 rounded-full mb-4">
-            <Mountain className="w-12 h-12 text-chechen-green" strokeWidth={1.5} />
+          <div className="inline-flex items-center justify-center p-5 bg-chechen-blue/5 rounded-full mb-4">
+            <Mountain className="w-12 h-12 text-chechen-blue" strokeWidth={1.5} />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight">
             Нохчалла.
@@ -87,9 +87,9 @@ export default function HeritagePage() {
               <strong>Тукхум</strong> — это дипломатический и военно-политический союз нескольких тайпов. Исторически созданные для региональной защиты, 9 тукхумов составляют весь чеченский народ.
             </p>
           </div>
-          <div className="bg-chechen-green/5 rounded-[3rem] aspect-square p-12 flex flex-col justify-center items-center text-center shadow-inner md:col-start-1 md:row-start-1">
-            <Network className="w-24 h-24 text-chechen-green/40 mb-6" strokeWidth={1} />
-            <p className="font-bold text-chechen-green/50 text-lg uppercase tracking-widest">Единство через братство.</p>
+          <div className="bg-chechen-blue/5 rounded-[3rem] aspect-square p-12 flex flex-col justify-center items-center text-center shadow-inner md:col-start-1 md:row-start-1">
+            <Network className="w-24 h-24 text-chechen-blue/40 mb-6" strokeWidth={1} />
+            <p className="font-bold text-chechen-blue/50 text-lg uppercase tracking-widest">Единство через братство.</p>
           </div>
         </section>
 
@@ -143,9 +143,9 @@ export default function HeritagePage() {
 
             <div className="relative pl-8 md:pl-0">
               <div className="md:grid md:grid-cols-4 gap-8 items-start">
-                <div className="md:text-right font-bold text-xl text-chechen-green pb-2 md:pb-0 pt-1">Наши дни</div>
-                <div className="md:col-span-3 space-y-3 bg-white p-6 rounded-3xl shadow-sm border border-chechen-green/20 hover:shadow-md transition-shadow">
-                  <h3 className="text-2xl font-bold text-chechen-green">Возрождение и Диаспора</h3>
+                <div className="md:text-right font-bold text-xl text-chechen-blue pb-2 md:pb-0 pt-1">Наши дни</div>
+                <div className="md:col-span-3 space-y-3 bg-white p-6 rounded-3xl shadow-sm border border-chechen-blue/20 hover:shadow-md transition-shadow">
+                  <h3 className="text-2xl font-bold text-chechen-blue">Возрождение и Диаспора</h3>
                   <p className="text-gray-600 text-lg leading-relaxed">Пройдя через две разрушительные войны в новейшей истории, Грозный восстал из пепла. А сотни тысяч чеченцев сформировали крепкую глобальную диаспору, сохраняющую свои корни вдали от гор.</p>
                 </div>
               </div>

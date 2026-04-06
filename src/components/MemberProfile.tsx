@@ -36,7 +36,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
 
         {/* Profile Details */}
         <div className="px-8 pb-10 -mt-10 relative">
-          <div className="w-24 h-24 bg-white rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-chechen-green mb-5 border-4 border-white transform hover:rotate-3 transition-transform">
+          <div className="w-24 h-24 bg-white rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-chechen-blue mb-5 border-4 border-white transform hover:rotate-3 transition-transform">
             {member.prenom?.[0]}{member.nom?.[0]}
           </div>
 
@@ -45,7 +45,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
               {member.prenom} {member.nom}
             </h2>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-chechen-green/10 text-chechen-green text-xs font-black uppercase tracking-widest rounded-full border border-chechen-green/20">
+              <span className="px-3 py-1 bg-chechen-blue/10 text-chechen-blue text-xs font-black uppercase tracking-widest rounded-full border border-chechen-blue/20">
                 {member.profession}
               </span>
               <span className="px-3 py-1 bg-gray-100 text-gray-400 text-xs font-black uppercase tracking-widest rounded-full border border-black/5">

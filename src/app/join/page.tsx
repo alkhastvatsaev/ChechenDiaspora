@@ -58,7 +58,7 @@ export default function Join() {
       <div className="min-h-screen bg-apple-light flex items-center justify-center p-6 animate-scale-in">
         <div className="max-w-sm w-full bg-white rounded-3xl shadow-xl p-8 text-center space-y-4 border border-black/5">
           <div className="flex justify-center">
-            <CheckCircle size={64} className="text-chechen-green" />
+            <CheckCircle size={64} className="text-chechen-blue" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">Баркалла!</h2>
           <p className="text-gray-500 leading-relaxed font-medium">
@@ -94,45 +94,45 @@ export default function Join() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Имя</label>
-              <input required type="text" name="prenom" value={formData.prenom} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Султан" />
+              <input required type="text" name="prenom" value={formData.prenom} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Султан" />
             </div>
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Фамилия</label>
-              <input required type="text" name="nom" value={formData.nom} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Вацаев" />
+              <input required type="text" name="nom" value={formData.nom} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Вацаев" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Возраст</label>
-              <input required type="number" name="age" value={formData.age} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="30" />
+              <input required type="number" name="age" value={formData.age} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="30" />
             </div>
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Профессия</label>
-              <input required type="text" name="profession" value={formData.profession} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Врач / Программист" />
+              <input required type="text" name="profession" value={formData.profession} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Врач / Программист" />
             </div>
           </div>
 
           <div className="space-y-4 pt-2 border-t border-gray-50">
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">ЦIер мичар ву хьо (Родное село)</label>
-              <input required type="text" name="village" value={formData.village} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Шали" />
+              <input required type="text" name="village" value={formData.village} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Шали" />
             </div>
 
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Хьо тайпан мила ву (Тайп)</label>
-              <input required type="text" name="teip" value={formData.teip} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Алхаст" />
+              <input required type="text" name="teip" value={formData.teip} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Алхаст" />
             </div>
 
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Город проживания</label>
-              <input required type="text" name="ville" value={formData.ville} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-medium placeholder:text-gray-300" placeholder="Страсбург, Франция" />
+              <input required type="text" name="ville" value={formData.ville} onChange={handleChange} className="w-full px-4 py-3.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-medium placeholder:text-gray-300" placeholder="Страсбург, Франция" />
             </div>
           </div>
 
           <button 
             type="submit"
-            className="w-full py-4.5 bg-chechen-green text-white rounded-2xl font-extrabold shadow-lg shadow-chechen-green/20 hover:shadow-xl transition-all active:scale-[0.98] mt-2"
+            className="w-full py-4.5 bg-chechen-blue text-white rounded-2xl font-extrabold shadow-lg shadow-chechen-blue/20 hover:shadow-xl transition-all active:scale-[0.98] mt-2"
           >
             Отправить анкету
           </button>

@@ -71,8 +71,8 @@ export default function Admin() {
       <div className="min-h-screen bg-apple-light flex items-center justify-center p-6">
         <div className="max-w-sm w-full bg-white rounded-3xl shadow-xl p-8 border border-black/5 space-y-6 animate-scale-in">
           <div className="text-center space-y-2">
-            <div className="w-16 h-16 bg-chechen-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Lock size={32} className="text-chechen-green" />
+            <div className="w-16 h-16 bg-chechen-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Lock size={32} className="text-chechen-blue" />
             </div>
             <h1 className="text-2xl font-black tracking-tight">Вход в панель</h1>
             <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Только для администраторов</p>
@@ -83,7 +83,7 @@ export default function Admin() {
               <input 
                 type="password" 
                 placeholder="Введите пароль..."
-                className="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-chechen-green/20 focus:border-chechen-green/30 transition-all font-bold"
+                className="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-bold"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoFocus
@@ -92,7 +92,7 @@ export default function Admin() {
             </div>
             <button 
               type="submit"
-              className="w-full py-4 bg-chechen-green text-white rounded-2xl font-black shadow-lg shadow-chechen-green/20 active:scale-95 transition-all"
+              className="w-full py-4 bg-chechen-blue text-white rounded-2xl font-black shadow-lg shadow-chechen-blue/20 active:scale-95 transition-all"
             >
               Войти
             </button>
@@ -125,7 +125,7 @@ export default function Admin() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="hidden md:flex p-2 bg-chechen-green/10 text-chechen-green rounded-xl px-4 py-2 text-sm font-bold items-center gap-2 border border-chechen-green/5">
+            <div className="hidden md:flex p-2 bg-chechen-blue/10 text-chechen-blue rounded-xl px-4 py-2 text-sm font-bold items-center gap-2 border border-chechen-blue/5">
               <UserCheck size={18} /> Admin Access
             </div>
             <button 
@@ -160,7 +160,7 @@ export default function Admin() {
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span className="bg-gray-100/50 px-3 py-1 rounded-full text-xs font-bold text-gray-600 border border-black/[0.03] uppercase tracking-tighter">{member.age} лет</span>
                       <span className="bg-gray-100/50 px-3 py-1 rounded-full text-xs font-bold text-gray-600 border border-black/[0.03] uppercase tracking-tighter">{member.village} ({member.teip})</span>
-                      <span className="bg-chechen-green/5 text-chechen-green px-3 py-1 rounded-full text-xs font-bold border border-chechen-green/10 uppercase tracking-tighter">{member.ville}</span>
+                      <span className="bg-chechen-blue/5 text-chechen-blue px-3 py-1 rounded-full text-xs font-bold border border-chechen-blue/10 uppercase tracking-tighter">{member.ville}</span>
                     </div>
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function Admin() {
                   </button>
                   <button 
                     onClick={() => handleApprove(member.id)}
-                    className="flex-1 md:flex-none p-4 px-10 bg-chechen-green text-white hover:bg-opacity-90 rounded-2xl shadow-lg shadow-chechen-green/20 transition-all font-extrabold flex items-center justify-center gap-2 active:scale-95"
+                    className="flex-1 md:flex-none p-4 px-10 bg-chechen-blue text-white hover:bg-opacity-90 rounded-2xl shadow-lg shadow-chechen-blue/20 transition-all font-extrabold flex items-center justify-center gap-2 active:scale-95"
                   >
                     <Check size={20} /> <span className="">Одобрить</span>
                   </button>

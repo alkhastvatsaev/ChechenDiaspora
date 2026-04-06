@@ -137,7 +137,7 @@ export default function Home() {
             </div>
 
             <button 
-              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showHeatmap ? 'bg-chechen-green/10 text-chechen-green' : 'text-gray-800'}`}
+              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showHeatmap ? 'bg-chechen-blue/10 text-chechen-blue' : 'text-gray-800'}`}
               onClick={() => setShowHeatmap(!showHeatmap)}
               title={showHeatmap ? "Показать участников" : "Показать плотность"}
             >
@@ -145,7 +145,7 @@ export default function Home() {
             </button>
 
             <button 
-              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showFilters ? 'bg-chechen-green/10 text-chechen-green' : 'text-gray-800'}`}
+              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showFilters ? 'bg-chechen-blue/10 text-chechen-blue' : 'text-gray-800'}`}
               onClick={() => setShowFilters(!showFilters)}
             >
               <Filter size={24} />
@@ -157,7 +157,7 @@ export default function Home() {
             <div className="bg-white/80 backdrop-blur-md shadow-lg border border-black/5 rounded-2xl p-4 animate-scale-in flex flex-wrap gap-2">
               <button 
                 onClick={() => setSelectedTeip('')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedTeip ? 'bg-chechen-green text-white border-chechen-green shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedTeip ? 'bg-chechen-blue text-white border-chechen-blue shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
               >
                 Все тайпы
               </button>
@@ -165,7 +165,7 @@ export default function Home() {
                 <button 
                   key={teip}
                   onClick={() => setSelectedTeip(teip === selectedTeip ? '' : teip)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedTeip === teip ? 'bg-chechen-green text-white border-chechen-green shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedTeip === teip ? 'bg-chechen-blue text-white border-chechen-blue shadow-md' : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'}`}
                 >
                   {teip}
                 </button>
@@ -186,7 +186,7 @@ export default function Home() {
 
         <Link 
           href="/join"
-          className="bg-chechen-green text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+          className="bg-chechen-blue text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
         >
           <UserPlus size={28} />
         </Link>
@@ -198,8 +198,8 @@ export default function Home() {
           onClick={() => setIsLanguageModalOpen(true)}
           className="bg-white/90 backdrop-blur-md text-apple-dark p-3 pr-5 rounded-[2rem] shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-black/5"
         >
-          <div className="bg-chechen-green/10 p-3 rounded-full">
-            <BookOpen size={20} className="text-chechen-green" />
+          <div className="bg-chechen-blue/10 p-3 rounded-full">
+            <BookOpen size={20} className="text-chechen-blue" />
           </div>
           <div className="text-left hidden sm:block">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Изучение</p>
@@ -238,9 +238,9 @@ export default function Home() {
           </div>
           
           <div className="flex-1 flex flex-col gap-2 overflow-y-auto pr-2">
-            <div className="bg-chechen-green/5 p-4 rounded-2xl border border-chechen-green/10 mb-4">
-              <p className="text-xs font-bold text-chechen-green uppercase tracking-widest mb-1 opacity-60">Статистика</p>
-              <p className="text-2xl font-black text-chechen-green">{members.length} <span className="text-sm font-bold opacity-60">участников</span></p>
+            <div className="bg-chechen-blue/5 p-4 rounded-2xl border border-chechen-blue/10 mb-4">
+              <p className="text-xs font-bold text-chechen-blue uppercase tracking-widest mb-1 opacity-60">Статистика</p>
+              <p className="text-2xl font-black text-chechen-blue">{members.length} <span className="text-sm font-bold opacity-60">участников</span></p>
             </div>
 
             <Link 
@@ -248,7 +248,7 @@ export default function Home() {
               className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <BookOpen size={20} className="text-chechen-green/80" /> Нохчалла (Наследие)
+              <BookOpen size={20} className="text-chechen-blue/80" /> Нохчалла (Наследие)
             </Link>
             <Link 
               href="/join" 
@@ -257,8 +257,8 @@ export default function Home() {
             >
               <UserPlus size={20} className="text-gray-400" /> Присоединиться
             </Link>
-            <button className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-chechen-green transition-colors">
-              <Heart size={20} className="text-chechen-green/60" /> Пожертвования (СагIа)
+            <button className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-chechen-blue transition-colors">
+              <Heart size={20} className="text-chechen-blue/60" /> Пожертвования (СагIа)
             </button>
 
             <div className="mt-8">
@@ -268,7 +268,7 @@ export default function Home() {
                 {Array.from(new Set(members.map(m => m.ville))).slice(0, 5).map(city => (
                   <div key={city} className="flex items-center justify-between py-2 px-4 rounded-lg bg-gray-50/50 text-xs font-bold">
                     <span className="text-gray-600 truncate">{city}</span>
-                    <span className="text-chechen-green bg-white px-2 py-0.5 rounded-md shadow-sm">{members.filter(m => m.ville === city).length}</span>
+                    <span className="text-chechen-blue bg-white px-2 py-0.5 rounded-md shadow-sm">{members.filter(m => m.ville === city).length}</span>
                   </div>
                 ))}
               </div>

@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌍 Chechen Diaspora Hub (PWA)
 
-## Getting Started
+## 📋 À Propos
+Un carnet de contacts "Open Source" et communautaire conçu pour maximiser l'influence et le développement de la diaspora tchétchène dans le monde entier. 
 
-First, run the development server:
+Cette plateforme permet à n'importe quel membre de la communauté (muni du mot de passe) d'accéder à une base de données stratégique regroupant des experts dans divers domaines : avocats, notaires, politiciens, ingénieurs et plus encore.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎯 Vision : "Le Leverage de la Diaspora"
+L'objectif est d'utiliser la force du réseau pour que chaque individu puisse s'épanouir et réussir. En centralisant des milliers de contacts de confiance et en permettant à chaque arrivant d'ajouter sa pierre à l'édifice, nous créons un moteur d'entraide puissant.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Fonctionnalités Clés
+- 🗺️ **Carte Globalisée** : Visualisation des membres et des pôles de population dans le monde entier.
+- 🔍 **Recherche Avancée** : Filtres par profession, Teip (Clan) et villages d'origine.
+- 📱 **PWA (Progressive Web App)** : Installable sur n'importe quel mobile pour un accès rapide.
+- 🔒 **Accès Communautaire** : Sécurisé par un mot de passe partagé réservé à la diaspora.
+- 📚 **Préservation du Patrimoine** : Section dédiée à la culture (Nohchalla) et apprentissage de la langue.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Stack Technique
+- **Framework** : Next.js 15 (App Router)
+- **Base de données** : Firebase Realtime Database
+- **Cartographie** : Leaflet.js
+- **Style** : Tailwind CSS / Vanilla CSS (Modern Apple-inspired aesthetics)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Contribution
+La base est enrichie en permanence par ses membres. Si vous possédez des contacts stratégiques ou souhaitez rejoindre la communauté, utilisez le bouton "Присоединиться" dans l'application.

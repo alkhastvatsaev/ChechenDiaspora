@@ -107,5 +107,35 @@ export const DIASPORA_HUBS: DiasporaHub[] = [
   { name: "Ras al-Ain", country: "Syria", lat: 36.8488, lng: 40.0664 },
   { name: "Qamishli", country: "Syria", lat: 37.0500, lng: 41.2222 },
   { name: "Raqqa", country: "Syria", lat: 35.9528, lng: 39.0069 },
-  { name: "Deir ez-Zor", country: "Syria", lat: 35.3344, lng: 40.1417 }
+  { name: "Deir ez-Zor", country: "Syria", lat: 35.3344, lng: 40.1417 },
+
+  // Kazakhstan
+  { name: "Almaty", country: "Kazakhstan", lat: 43.2389, lng: 76.8897 },
+  { name: "Astana", country: "Kazakhstan", lat: 51.1694, lng: 71.4491 },
+  { name: "Karaganda", country: "Kazakhstan", lat: 49.8019, lng: 73.1031 },
+  { name: "Pavlodar", country: "Kazakhstan", lat: 52.2873, lng: 76.9674 },
+
+  // Jordan (additional)
+  { name: "Sukhne", country: "Jordan", lat: 32.1283, lng: 36.0622 },
+  { name: "Azraq", country: "Jordan", lat: 31.8317, lng: 36.8283 },
+
+  // Iraq
+  { name: "Kirkouk", country: "Iraq", lat: 35.4670, lng: 44.3921 },
+
+  // Egypt
+  { name: "Le Caire", country: "Egypt", lat: 30.0444, lng: 31.2357 },
+
+  // USA & Canada
+  { name: "Chicago", country: "USA", lat: 41.8781, lng: -87.6298 },
+  { name: "Los Angeles", country: "USA", lat: 34.0522, lng: -118.2437 },
+  { name: "Montréal", country: "Canada", lat: 45.5017, lng: -73.5673 },
+  { name: "Toronto", country: "Canada", lat: 43.6532, lng: -79.3832 },
+
+  // Europe (additional)
+  { name: "Zurich", country: "Switzerland", lat: 47.3769, lng: 8.5417 },
+  { name: "Copenhague", country: "Denmark", lat: 55.6761, lng: 12.5683 },
+  { name: "Stockholm", country: "Sweden", lat: 59.3293, lng: 18.0686 },
+  { name: "Varsovie", country: "Poland", lat: 52.2297, lng: 21.0122 },
+  { name: "Brest", country: "France", lat: 48.3904, lng: -4.4861 },
+  { name: "Nantes", country: "France", lat: 47.2184, lng: -1.5536 }
 ];

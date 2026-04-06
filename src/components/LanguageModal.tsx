@@ -27,8 +27,8 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
 
         {/* Header Header */}
         <div className="pt-10 pb-6 px-8 text-center bg-apple-light/50 border-b border-black/5">
-          <div className="w-16 h-16 bg-chechen-green/10 rounded-2xl mx-auto flex items-center justify-center mb-4">
-            <BookOpen size={32} className="text-chechen-green" strokeWidth={1.5} />
+          <div className="w-16 h-16 bg-chechen-blue/10 rounded-2xl mx-auto flex items-center justify-center mb-4">
+            <BookOpen size={32} className="text-chechen-blue" strokeWidth={1.5} />
           </div>
           <h2 className="text-2xl font-black tracking-tight text-apple-dark">Учи Чеченский Язык</h2>
           <p className="text-gray-500 mt-2 font-medium text-sm">Лучшая онлайн-школа для диаспоры</p>
@@ -36,9 +36,9 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
 
         {/* Content */}
         <div className="p-8 space-y-6">
-          <div className="bg-gradient-to-br from-chechen-green/5 to-transparent p-5 rounded-2xl border border-chechen-green/10">
+          <div className="bg-gradient-to-br from-chechen-blue/5 to-transparent p-5 rounded-2xl border border-chechen-blue/10">
             <h3 className="font-bold text-lg text-apple-dark mb-1 flex items-center gap-2">
-              <Globe2 size={18} className="text-chechen-green" /> ISHKOLA
+              <Globe2 size={18} className="text-chechen-blue" /> ISHKOLA
             </h3>
             <p className="text-sm text-gray-500">
               Проверенная онлайн-школа с 13-летним опытом. Высший стандарт качества.
