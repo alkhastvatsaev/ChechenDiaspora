@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON, Circle, Polygon } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -9,6 +9,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
 import diasporaBorders from '@/data/diaspora_borders.json';
 import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
+import { HOMELAND_POINTS, CHECHNYA_BORDER_POINTS } from '@/data/chechen_homeland';
 
 // Custom Premium Marker Icon (Modern Dot) replacing the old GPS pin
 const premiumDotIcon = L.divIcon({
@@ -18,12 +19,23 @@ const premiumDotIcon = L.divIcon({
   iconAnchor: [7, 7]
 });
 
-// Custom Icon for City Labels
+// City Label Icon for Diaspora (Blue)
 const cityLabelIcon = (name: string) => L.divIcon({
   className: 'bg-transparent',
-  html: `<div style="display: flex; flex-direction: column; align-items: center;">
-          <div style="width: 8px; height: 8px; background-color: #007AFF; border-radius: 50%; border: 1.5px solid white;"></div>
-          <div style="margin-top: 2px; font-weight: 700; font-size: 10px; color: #1C1C1E; text-shadow: 0 0 4px white, 0 0 4px white; white-space: nowrap; pointer-events: none; opacity: 0.8;">${name}</div>
+  html: `<div class="flex flex-col items-center">
+           <div class="w-1.5 h-1.5 bg-blue-600 rounded-full border border-white shadow-xs"></div>
+           <span class="text-[9px] font-semibold text-blue-800 whitespace-nowrap bg-white/70 px-0.5 rounded select-none opacity-80">${name}</span>
+         </div>`,
+  iconSize: [0, 0],
+  iconAnchor: [0, 0]
+});
+
+// Homeland Label Icon (Green) for Chechnya
+const homelandLabelIcon = (name: string, type: string) => L.divIcon({
+  className: 'bg-transparent',
+  html: `<div class="flex flex-col items-center">
+           <div class="${type === 'city' ? 'w-3 h-3 bg-green-700 shadow-[0_0_10px_rgba(22,101,52,0.8)]' : 'w-2 h-2 bg-green-500'} rounded-full border-2 border-white mb-1"></div>
+           <span class="text-[10px] ${type === 'city' ? 'font-black scale-110' : 'font-bold'} text-green-900 whitespace-nowrap bg-white/95 px-1 rounded shadow-md border border-green-200 select-none">${name}</span>
          </div>`,
   iconSize: [0, 0],
   iconAnchor: [0, 0]
@@ -154,6 +166,44 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 </Fragment>
               );
             })}
+
+            {/* --- HOMELAND (CHECHNYA) SPECIAL HIGHLIGHT --- */}
+            
+            {/* Republic Boundary Highlight in Green */}
+            <Polygon
+              positions={CHECHNYA_BORDER_POINTS}
+              pathOptions={{
+                color: '#16a34a', // Emerald 600
+                weight: 3,
+                opacity: 0.8,
+                fillColor: '#16a34a',
+                fillOpacity: 0.15,
+                dashArray: '5, 10'
+              }}
+            />
+
+            {/* Homeland Cities & Ayuls (Villages) */}
+            {HOMELAND_POINTS.map(point => (
+              <Marker 
+                key={`homeland-${point.name}`}
+                position={[point.lat, point.lng]}
+                icon={homelandLabelIcon(point.name, point.type)}
+                interactive={true}
+              >
+                {/* Visual Glow for Homeland Points */}
+                <Circle 
+                  center={[point.lat, point.lng]}
+                  radius={point.type === 'city' ? 3000 : 1500}
+                  pathOptions={{
+                    color: '#16a34a',
+                    weight: 1,
+                    opacity: 0.4,
+                    fillColor: '#16a34a',
+                    fillOpacity: 0.1
+                  }}
+                />
+              </Marker>
+            ))}
           </>
         )}
 
