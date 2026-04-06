@@ -2,29 +2,41 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, communityMember } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user && !communityMember && pathname !== '/login') {
-        router.push('/login');
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && !loading) {
+      const isAuth = user || communityMember;
+      if (!isAuth && pathname !== '/login') {
+        router.replace('/login');
       }
     }
-  }, [user, communityMember, loading, router, pathname]);
+  }, [user, communityMember, loading, router, pathname, isMounted]);
 
-  if (loading) {
-    return <div className="min-h-screen bg-kherch-dark flex items-center justify-center animate-pulse" />;
-  }
-
-  // Allow rendering if user is authenticated OR community verified OR if we are on the login page
-  if (user || communityMember || pathname === '/login') {
+  // Immediately render if we are on the login page to avoid recursion/loops
+  if (pathname === '/login') {
     return <>{children}</>;
   }
 
-  return <div className="min-h-screen bg-kherch-dark flex items-center justify-center" />;
+  if (!isMounted || loading) {
+    return <div className="min-h-screen bg-kherch-dark flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-hearth-amber/20 border-t-hearth-amber rounded-full animate-spin"></div>
+    </div>;
+  }
+
+  if (user || communityMember) {
+    return <>{children}</>;
+  }
+
+  return <div className="min-h-screen bg-kherch-dark" />;
 }
