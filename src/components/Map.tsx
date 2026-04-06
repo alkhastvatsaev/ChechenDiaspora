@@ -56,12 +56,12 @@ const memberAvatarIcon = (member: any) => {
   const initials = `${member.prenom?.[0] || ''}${member.nom?.[0] || ''}`.toUpperCase();
   const isExpert = member.isLegalDefender || member.isTranslator || member.isGuide || member.openToMentorship;
   
-  // Icon based on expertise
-  let ExpertIcon = '';
-  if (member.isLegalDefender) ExpertIcon = '⚖️';
-  else if (member.isTranslator) ExpertIcon = '🗣️';
-  else if (member.isGuide) ExpertIcon = '🗺️';
-  else if (member.openToMentorship) ExpertIcon = '🎓';
+  // Color based on expertise
+  let ExpertColor = '';
+  if (member.isLegalDefender) ExpertColor = '#ef4444'; // Red
+  else if (member.isTranslator) ExpertColor = '#3b82f6'; // Blue
+  else if (member.isGuide) ExpertColor = '#10b981'; // Emerald
+  else if (member.openToMentorship) ExpertColor = '#f59e0b'; // Amber
 
   const borderColor = member.isLive ? '#10b981' : 'white'; // Emerald for live, White for others
   const shadowColor = member.isLive ? 'rgba(16, 185, 129, 0.6)' : 'rgba(0, 0, 0, 0.1)';
@@ -79,8 +79,7 @@ const memberAvatarIcon = (member: any) => {
           }
           
           ${isExpert ? `
-            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-lg shadow-lg flex items-center justify-center text-[10px] border border-black/5">
-              ${ExpertIcon}
+            <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full shadow-lg border-2 border-white" style="background-color: ${ExpertColor};">
             </div>
           ` : ''}
         </div>
