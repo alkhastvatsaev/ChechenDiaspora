@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
@@ -694,6 +694,56 @@ export default function Home() {
           )}
 
           {/* Crowdsourcing Call to Action */}
+          {/* MARSHA MODULE - TRADITIONAL MARRIAGE (ADAT) */}
+          <div className="mt-6 bg-vainakh-stone border border-kherch-dark/5 rounded-[2rem] p-6 shadow-sm">
+             <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
+                   <Heart size={20} />
+                </div>
+                <div>
+                   <h4 className="text-sm font-black text-kherch-dark tracking-tight">Марша / Union Familiale</h4>
+                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Adat & Tradition</p>
+                </div>
+             </div>
+             
+             <p className="text-xs text-kherch-dark/70 font-medium leading-relaxed mb-6">
+                Le futur de notre peuple repose sur la force de nos familles. Conformément à nos traditions, cette section permet aux parents de initier des unions dans la dignité et le respect du <strong>Nokhchalla</strong>.
+             </p>
+
+             <div className="space-y-3">
+                <button 
+                  onClick={() => {/* Form logic for son */}}
+                  className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-blue-500/20 hover:bg-blue-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
+                >
+                   <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
+                         <Users size={14} />
+                      </div>
+                      <span className="text-xs font-bold text-kherch-dark">Je cherche pour mon fils</span>
+                   </div>
+                   <ChevronLeft size={16} className="rotate-180 opacity-20 group-hover:opacity-100 transition-opacity" />
+                </button>
+
+                <button 
+                  onClick={() => {/* Form logic for daughter */}}
+                  className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-rose-500/20 hover:bg-rose-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
+                >
+                   <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500">
+                         <Sparkles size={14} />
+                      </div>
+                      <span className="text-xs font-bold text-kherch-dark text-left">Je cherche pour ma fille</span>
+                   </div>
+                   <ChevronLeft size={16} className="rotate-180 opacity-20 group-hover:opacity-100 transition-opacity" />
+                </button>
+             </div>
+
+             <div className="mt-6 flex items-center gap-2 px-2 opacity-40">
+                <ShieldCheck size={12} />
+                <span className="text-[9px] font-black uppercase tracking-widest leading-none">Processus respectant l&apos;Adat et la pudeur</span>
+             </div>
+          </div>
+
           <div className="mt-8 border-2 border-dashed border-kherch-dark/10 rounded-3xl p-5 text-center bg-vainakh-stone/50">
              <Heart size={24} className="mx-auto text-hearth-amber mb-2 opacity-90" />
              <h4 className="font-black text-kherch-dark text-sm mb-1">ГIо-Даккхар</h4>
