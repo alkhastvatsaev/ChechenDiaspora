@@ -194,11 +194,10 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               positions={CHECHNYA_BORDER_POINTS}
               pathOptions={{
                 color: '#16a34a', // Emerald 600
-                weight: 3,
-                opacity: 0.8,
+                weight: 3.5, // Even thicker for prominence
+                opacity: 0.9,
                 fillColor: '#16a34a',
-                fillOpacity: 0.15,
-                dashArray: '5, 10'
+                fillOpacity: 0.1,
               }}
             />
 
