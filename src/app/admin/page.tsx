@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ref, onValue, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { ArrowLeft, Check, X, UserCheck, ShieldAlert, Lock, LogOut } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Admin() {
   const router = useRouter();
@@ -40,24 +40,25 @@ export default function Admin() {
       setIsLoggedIn(true);
       setError('');
     } else {
-      setError('Неверный пароль');
+      setError('Mot de passe incorrect.');
       setPassword('');
     }
   };
 
-  const handleApprove = async (id: string) => {
+  const handleApprove = async (id: string, prenom: string) => {
     try {
       await update(ref(db, `members/${id}`), {
         approved: true,
         approvedAt: new Date().toISOString()
       });
+      // Optionnel : Notifier l'admin
     } catch (e) {
       console.error("Error approving:", e);
     }
   };
 
   const handleReject = async (id: string) => {
-    if (window.confirm("Удалить эту заявку?")) {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette demande ?")) {
       try {
         await remove(ref(db, `members/${id}`));
       } catch (e) {
@@ -68,122 +69,150 @@ export default function Admin() {
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-apple-light flex items-center justify-center p-6">
-        <div className="max-w-sm w-full bg-white rounded-3xl shadow-xl p-8 border border-black/5 space-y-6 animate-scale-in">
-          <div className="text-center space-y-2">
-            <div className="w-16 h-16 bg-chechen-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Lock size={32} className="text-chechen-blue" />
+      <div className="min-h-screen bg-[#fbfbfd] flex flex-col items-center justify-center p-6 text-[#1d1d1f] selection:bg-black selection:text-white">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-sm"
+        >
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/10">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
             </div>
-            <h1 className="text-2xl font-black tracking-tight">Вход в панель</h1>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Только для администраторов</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>Accès Sécurisé</h1>
+            <p className="text-sm text-[#86868b] uppercase tracking-widest font-bold">Khel • modération</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-1">
+            <div>
               <input 
                 type="password" 
-                placeholder="Введите пароль..."
-                className="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-chechen-blue/20 focus:border-chechen-blue/30 transition-all font-bold"
+                placeholder="Mot de passe"
+                className="w-full bg-white px-5 py-4 rounded-2xl text-center text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoFocus
               />
-              {error && <p className="text-red-500 text-xs font-bold pl-2 pt-1">{error}</p>}
+              {error && <p className="text-[#ff3b30] text-sm text-center mt-3 font-medium">{error}</p>}
             </div>
             <button 
               type="submit"
-              className="w-full py-4 bg-chechen-blue text-white rounded-2xl font-black shadow-lg shadow-chechen-blue/20 active:scale-95 transition-all"
+              className="w-full bg-[#1d1d1f] hover:bg-black text-white py-4 rounded-2xl text-lg font-bold shadow-[0_5px_20px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all"
             >
-              Войти
+              Déverrouiller
             </button>
           </form>
           
-          <button 
-            onClick={() => router.push('/')}
-            className="w-full text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors uppercase tracking-widest pt-2"
-          >
-            Вернуться на карту
-          </button>
-        </div>
+          <div className="mt-8 text-center">
+            <button 
+              onClick={() => router.push('/')}
+              className="text-[#86868b] hover:text-[#1d1d1f] text-sm font-medium transition-colors"
+            >
+              Retour à la carte
+            </button>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-apple-light p-4 pt-safe-top md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#fbfbfd] text-[#1d1d1f] selection:bg-black selection:text-white pb-safe">
+      <div className="max-w-4xl mx-auto px-6 py-12 md:py-20">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 border-b border-gray-50">
-          <div className="flex items-center gap-4">
-            <button onClick={() => router.push('/')} className="p-2.5 hover:bg-white rounded-full transition-all border border-transparent hover:border-black/5 hover:shadow-sm">
-              <ArrowLeft size={24} className="text-gray-800" />
-            </button>
-            <div>
-              <h1 className="text-2xl font-extrabold tracking-tight">Панель администратора</h1>
-              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">Новые заявки ({pendingMembers.length})</p>
-            </div>
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16"
+        >
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>
+              Кхел
+            </h1>
+            <p className="text-lg text-[#86868b] font-medium">Panneau de modération & des admissions.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex p-2 bg-chechen-blue/10 text-chechen-blue rounded-xl px-4 py-2 text-sm font-bold items-center gap-2 border border-chechen-blue/5">
-              <UserCheck size={18} /> Admin Access
+          
+          <div className="flex gap-4 items-center">
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/5 rounded-full text-sm font-bold text-[#86868b]">
+              <span className="w-2 h-2 rounded-full bg-[#34c759]"></span> Live
             </div>
             <button 
               onClick={() => setIsLoggedIn(false)}
-              className="p-2.5 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all border border-transparent"
+              className="px-5 py-2.5 bg-black/5 hover:bg-[#ff3b30]/10 hover:text-[#ff3b30] rounded-full text-sm font-bold transition-colors"
             >
-              <LogOut size={20} />
+              Verrouiller
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Pending List */}
-        {pendingMembers.length === 0 ? (
-          <div className="bg-white rounded-3xl p-16 text-center shadow-sm border border-black/5 space-y-3 animate-scale-in">
-            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-black/[0.03]">
-              <Check size={36} className="text-gray-300" />
-            </div>
-            <h3 className="text-xl font-bold tracking-tight">Заявок пока нет!</h3>
-            <p className="text-gray-500 font-medium max-w-xs mx-auto">Все новые лица уже проверены и добавлены на карту.</p>
+        {/* List */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between mb-6 px-1">
+            <h2 className="text-xl font-bold tracking-tight">En attente</h2>
+            <span className="bg-[#1d1d1f] text-white px-3 py-1 rounded-full text-sm font-bold">{pendingMembers.length}</span>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 animate-slide-up">
-            {pendingMembers.map((member) => (
-              <div key={member.id} className="bg-white rounded-3xl p-6 shadow-sm border border-black/5 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                
-                <div className="flex items-center gap-5 w-full">
-                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-2xl font-black text-gray-400 border border-black/[0.03]">
-                    {member.prenom?.[0]}{member.nom?.[0]}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-extrabold">{member.prenom} {member.nom}</h3>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="bg-gray-100/50 px-3 py-1 rounded-full text-xs font-bold text-gray-600 border border-black/[0.03] uppercase tracking-tighter">{member.age} лет</span>
-                      <span className="bg-gray-100/50 px-3 py-1 rounded-full text-xs font-bold text-gray-600 border border-black/[0.03] uppercase tracking-tighter">{member.village} ({member.teip})</span>
-                      <span className="bg-chechen-blue/5 text-chechen-blue px-3 py-1 rounded-full text-xs font-bold border border-chechen-blue/10 uppercase tracking-tighter">{member.ville}</span>
+
+          {pendingMembers.length === 0 ? (
+            <div className="bg-white rounded-3xl p-16 text-center shadow-sm border border-black/5 flex flex-col items-center justify-center">
+               <svg className="w-16 h-16 text-[#86868b] mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+               </svg>
+              <h3 className="text-xl font-bold mb-2">Tout est à jour</h3>
+              <p className="text-[#86868b] font-medium">Il n'y a aucune nouvelle demande d'admission.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {pendingMembers.map((member) => (
+                <div key={member.id} className="bg-white rounded-3xl p-6 shadow-sm border border-black/5 flex flex-col md:flex-row items-center justify-between gap-6 transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:scale-[1.01]">
+                  
+                  <div className="flex items-center gap-5 w-full">
+                    <div className="w-14 h-14 shrink-0 bg-[#fbfbfd] rounded-full flex items-center justify-center text-lg font-bold text-[#1d1d1f] border border-black/5">
+                      {member.prenom?.[0]}{member.nom?.[0]}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-1 tracking-tight">{member.prenom} {member.nom}</h3>
+                      <div className="flex flex-wrap gap-x-3 gap-y-2 mt-1 text-sm font-medium text-[#86868b]">
+                        <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> {member.age} ans</span>
+                        <span>•</span>
+                        <span>{member.profession}</span>
+                        <span>•</span>
+                        <span className="text-[#1d1d1f] font-bold">{member.ville}</span>
+                      </div>
+                      <div className="mt-2 text-xs font-bold text-[#86868b] uppercase tracking-wider">
+                        Teyp {member.teip} — Originaire de {member.village}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t md:border-0 border-gray-50">
-                  <button 
-                    onClick={() => handleReject(member.id)}
-                    className="flex-1 md:flex-none p-3.5 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-bold flex items-center justify-center gap-2 ring-1 ring-red-100"
-                  >
-                    <X size={20} /> <span className="md:hidden">Отклонить</span>
-                  </button>
-                  <button 
-                    onClick={() => handleApprove(member.id)}
-                    className="flex-1 md:flex-none p-4 px-10 bg-chechen-blue text-white hover:bg-opacity-90 rounded-2xl shadow-lg shadow-chechen-blue/20 transition-all font-extrabold flex items-center justify-center gap-2 active:scale-95"
-                  >
-                    <Check size={20} /> <span className="">Одобрить</span>
-                  </button>
-                </div>
+                  <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t md:border-0 border-black/5">
+                    <button 
+                      onClick={() => handleReject(member.id)}
+                      className="flex-1 md:flex-none w-12 h-12 flex items-center justify-center bg-[#fbfbfd] text-[#ff3b30] hover:bg-[#ff3b30] hover:text-white rounded-full transition-colors shrink-0"
+                      title="Rejeter"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <button 
+                      onClick={() => handleApprove(member.id, member.prenom)}
+                      className="flex-1 md:flex-none px-6 h-12 bg-[#1d1d1f] text-white hover:bg-black rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shrink-0"
+                    >
+                      <span>Accepter</span>
+                    </button>
+                  </div>
 
-              </div>
-            ))}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
 
       </div>
     </div>
