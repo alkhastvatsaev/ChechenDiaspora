@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
@@ -261,6 +261,22 @@ export default function Home() {
               <X size={24} className="text-kherch-dark/50" />
             </button>
           </div>
+
+          {/* Manifesto Entry Point - High Visibility */}
+          <Link 
+            href="/manifesto" 
+            className="mb-6 p-4 bg-black text-white rounded-2xl flex items-center justify-between group hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <div className="flex items-center gap-3">
+              <Flame className="w-5 h-5 text-hearth-amber animate-pulse" />
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Manifeste</p>
+                <p className="text-sm font-bold tracking-tight">Le fardeau et l&apos;excellence</p>
+              </div>
+            </div>
+            <ChevronLeft size={18} className="rotate-180 opacity-40 group-hover:opacity-100 transition-opacity" />
+          </Link>
           
           {/* Search inside sidebar */}
           <div className="relative mb-4">

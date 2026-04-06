@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart } from 'lucide-react';
+import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart, GraduationCap, Gavel, Truck } from 'lucide-react';
 
 interface MemberProfileProps {
   member: any;
@@ -51,6 +51,28 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
               <span className="px-3 py-1 bg-white/50 text-kherch-dark text-[10px] font-bold uppercase tracking-widest rounded-full border border-kherch-dark/10">
                 {member.teip}
               </span>
+            </div>
+
+            {/* Strategic High-Leverage Badges */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              {member.isLegalDefender && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white rounded-xl shadow-lg shadow-red-600/20 animate-pulse-slow">
+                  <Gavel size={12} strokeWidth={3} />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Бакъо / Юрист</span>
+                </div>
+              )}
+              {member.openToMentorship && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-chechen-blue text-white rounded-xl shadow-lg shadow-chechen-blue/20">
+                  <GraduationCap size={12} strokeWidth={3} />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Кхетам / Ментор</span>
+                </div>
+              )}
+              {member.isFuneralLogistics && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-vainakh-stone rounded-xl shadow-lg shadow-black/20">
+                  <Truck size={12} strokeWidth={3} />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-vainakh-stone">Кашмаш / Ритуал</span>
+                </div>
+              )}
             </div>
           </div>
 
