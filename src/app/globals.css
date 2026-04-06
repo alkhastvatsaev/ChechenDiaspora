@@ -4,6 +4,10 @@
   --color-chechen-blue: #007AFF;
   --color-apple-light: #FBFBFD;
   --color-apple-dark: #1C1C1E;
+  --color-hearth-amber: #E25822;
+  --color-hearth-glow: #F28C38;
+  --color-vainakh-stone: #EBE8E3;
+  --color-kherch-dark: #2A2723;
 }
 
 @layer base {

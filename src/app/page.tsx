@@ -191,17 +191,26 @@ export default function Home() {
       <div className="absolute bottom-8 right-6 z-10 pb-safe-bottom flex flex-col gap-3">
         <button 
           onClick={centerOnMe}
-          className="bg-white text-gray-800 p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center border border-black/5"
+          className="bg-white text-kherch-dark p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center border border-black/5"
         >
           <Target size={28} />
         </button>
+      </div>
 
-        <Link 
-          href="/join"
-          className="bg-chechen-blue text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+      {/* Massive ORTSA (SOS / Emergency Mutual Aid) Button */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 pb-safe-bottom flex flex-col items-center">
+        <button 
+          onClick={() => alert("ОРЦА: Сигнал бедствия хуьлуш ду... (В разработке)")}
+          className="relative group bg-hearth-amber text-white px-8 md:px-10 py-4 rounded-full shadow-[0_0_30px_rgba(226,88,34,0.4)] hover:shadow-[0_0_40px_rgba(226,88,34,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-hearth-glow/50 font-black overflow-hidden"
         >
-          <UserPlus size={28} />
-        </Link>
+          {/* Subtle pulse effect inside button */}
+          <span className="absolute inset-0 w-full h-full bg-white opacity-0 group-hover:opacity-20 transition-opacity rounded-full"></span>
+          <span className="absolute -inset-1 bg-hearth-glow rounded-full blur opacity-40 group-hover:opacity-60 animate-pulse"></span>
+          
+          <ShieldCheck size={24} className="relative z-10" />
+          <span className="relative z-10 tracking-widest uppercase text-lg">Орца</span>
+        </button>
+        <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase tracking-widest bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow-sm hidden md:block">Экстренная помощь</p>
       </div>
 
       {/* Language Learning Action Button - Prominently on Bottom Left */}
@@ -234,21 +243,22 @@ export default function Home() {
         onClose={() => setIsLanguageModalOpen(false)} 
       />
 
-      {/* Directory Sidebar */}
+      {/* Community Sidebar / Mutual Aid Hub (Kherch) */}
       <div 
-        className={`absolute top-0 left-0 w-full md:w-[28rem] h-full bg-white/95 backdrop-blur-xl shadow-2xl z-20 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`absolute top-0 left-0 w-full md:w-[28rem] h-full bg-vainakh-stone/95 backdrop-blur-2xl shadow-2xl z-20 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="p-6 pb-2 pt-safe-top flex-shrink-0 border-b border-gray-100">
+        <div className="p-5 sm:p-6 pb-2 pt-safe-top flex-shrink-0 border-b border-kherch-dark/5">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-2xl font-black tracking-tight text-gray-900">Каталог Диаспоры</h2>
-              <p className="text-sm text-gray-500 font-medium">Контактная база ({members.length})</p>
+              <p className="text-[10px] font-black tracking-widest text-hearth-amber uppercase mb-1">Марша догIийла</p>
+              <h2 className="text-3xl font-black tracking-tight text-kherch-dark">Кхерч</h2>
+              <p className="text-sm text-kherch-dark/60 font-bold mt-1">Доступно {members.length} братьев/сестёр</p>
             </div>
             <button 
-              className="p-2 hover:bg-black/5 rounded-full transition-colors"
+              className="p-2 hover:bg-kherch-dark/5 rounded-full transition-colors self-start"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <X size={24} className="text-gray-400" />
+              <X size={24} className="text-kherch-dark/50" />
             </button>
           </div>
           
@@ -257,26 +267,26 @@ export default function Home() {
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
-              placeholder="Поиск специалиста, города..."
-              className="w-full bg-gray-100 border-none rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:ring-2 focus:ring-chechen-blue/20 outline-none transition-all"
+              placeholder="Поиск брата/сестры, тайпа..."
+              className="w-full bg-white border border-black/5 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:ring-2 focus:ring-gray-900/20 outline-none transition-all shadow-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          {/* Profession Filters (Horizontal Scroll) */}
+          {/* Mutual Aid Filters (Horizontal Scroll) */}
           <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2">
             <button 
               onClick={() => setSelectedProfession('')}
-              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedProfession ? 'bg-chechen-blue text-white shadow-md border-chechen-blue' : 'bg-white text-gray-500 border-gray-200 hover:border-chechen-blue/50 hover:bg-gray-50'}`}
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedProfession ? 'bg-kherch-dark text-vainakh-stone shadow-md border-kherch-dark' : 'bg-white/80 text-kherch-dark/60 border-black/5 hover:border-kherch-dark/20 hover:bg-white'}`}
             >
-              Все Специалисты
+              Вся община
             </button>
             {professions.map(prof => (
               <button 
                 key={prof as string}
                 onClick={() => setSelectedProfession(prof === selectedProfession ? '' : (prof as string))}
-                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedProfession === prof ? 'bg-chechen-blue text-white shadow-md border-chechen-blue' : 'bg-white text-gray-500 border-gray-200 hover:border-chechen-blue/50 hover:bg-gray-50'}`}
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedProfession === prof ? 'bg-kherch-dark text-vainakh-stone shadow-md border-kherch-dark' : 'bg-white/80 text-kherch-dark/60 border-black/5 hover:border-kherch-dark/20 hover:bg-white'}`}
               >
                 {prof as string}
               </button>
@@ -285,50 +295,63 @@ export default function Home() {
         </div>
 
         {/* Member List (Scrollable Area) */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-transparent">
           {filteredMembers.length > 0 ? (
             filteredMembers.map(member => (
               <div 
                 key={member.id} 
                 onClick={() => setSelectedMember(member)}
-                className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-chechen-blue/30 transition-all cursor-pointer group flex items-start gap-4"
+                className="bg-white/90 backdrop-blur-md p-4 rounded-[1.5rem] shadow-sm border border-kherch-dark/5 hover:shadow-md hover:border-kherch-dark/20 transition-all cursor-pointer group flex flex-col gap-3"
               >
-                <div className="w-12 h-12 bg-chechen-blue/10 rounded-full flex items-center justify-center text-lg font-black text-chechen-blue flex-shrink-0 group-hover:scale-110 transition-transform">
-                  {member.prenom?.[0]}{member.nom?.[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 truncate text-base">{member.prenom} {member.nom}</h3>
-                  <div className="flex items-center gap-1.5 mt-1 text-chechen-blue font-semibold text-xs">
-                    <Briefcase size={12} className="opacity-70" />
-                    <span className="truncate">{member.profession || 'Участник'}</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-vainakh-stone rounded-2xl flex items-center justify-center text-lg font-black text-kherch-dark flex-shrink-0 group-hover:scale-105 transition-transform border border-kherch-dark/5">
+                    {member.prenom?.[0]}{member.nom?.[0]}
                   </div>
-                  <div className="flex items-center gap-1.5 mt-1.5 text-gray-400 text-xs font-medium">
-                    <MapPin size={12} className="opacity-70" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-kherch-dark truncate text-base">{member.prenom} {member.nom}</h3>
+                    <p className="text-kherch-dark/50 text-xs font-bold uppercase tracking-widest truncate mt-0.5">{member.village || 'Неизвестно'} • {member.teip || 'Тайп'}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-kherch-dark/5 pt-3">
+                  <div className="flex items-center gap-1.5 text-kherch-dark font-bold text-xs bg-vainakh-stone px-2.5 py-1 rounded-lg border border-kherch-dark/5">
+                    <Briefcase size={12} className="opacity-50" />
+                    <span className="truncate">{member.profession || 'Готов помочь'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-kherch-dark/60 text-xs font-medium">
+                    <MapPin size={12} className="opacity-50" />
                     <span className="truncate">{member.ville || 'N/A'}, {member.pays}</span>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center py-10 flex flex-col items-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <Users size={24} className="text-gray-400" />
+            <div className="text-center py-12 flex flex-col items-center opacity-70">
+              <div className="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center mb-4 shadow-sm border border-kherch-dark/5">
+                <Heart size={24} className="text-hearth-amber" />
               </div>
-              <p className="text-gray-500 font-medium">Никто не найден.</p>
+              <p className="text-kherch-dark/60 font-bold">Ожидаем братьев и сестёр...</p>
             </div>
           )}
+
+          {/* Crowdsourcing Call to Action */}
+          <div className="mt-8 border-2 border-dashed border-kherch-dark/10 rounded-3xl p-5 text-center bg-vainakh-stone/50">
+             <Heart size={24} className="mx-auto text-hearth-amber mb-2 opacity-90" />
+             <h4 className="font-black text-kherch-dark text-sm mb-1">ГIо-Даккхар</h4>
+             <p className="text-xs text-kherch-dark/60 font-medium mb-4 leading-relaxed">Сила нашего народа — в единстве. Добавьте в Кхерч сестру или брата.</p>
+             <Link href="/join" className="inline-block bg-kherch-dark text-vainakh-stone text-xs font-bold px-5 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md">
+               Пригласить в Кхерч
+             </Link>
+          </div>
         </div>
 
         {/* ActionFooter */}
-        <div className="p-4 border-t border-gray-100 bg-white flex justify-between gap-3 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-10 flex-shrink-0">
-           <Link href="/heritage" className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
-             <BookOpen size={18} className="text-chechen-blue/80" /> Наследие
+        <div className="p-4 border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0">
+           <Link href="/heritage" className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
+             <BookOpen size={18} className="opacity-70" /> Наследие
            </Link>
-           <Link href="/join" className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
-             <UserPlus size={18} className="text-gray-500" /> Вступить
-           </Link>
-           <button className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
-             <Heart size={18} className="text-chechen-blue/80" /> СагIа
+           <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
+             <Heart size={18} className="opacity-70 text-hearth-amber" /> СагIа
            </button>
         </div>
       </div>

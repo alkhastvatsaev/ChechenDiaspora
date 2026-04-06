@@ -24,14 +24,20 @@ Le projet a été mis en place avec une stack technique moderne et robuste pour 
 *   **Filtres et Recherche** : Mise en place logique d'une interface pour localiser / filtrer les membres selon leur profession et expertise.
 *   **Section Héritage (`/heritage`)** : Intégration d'une page et d'une base de données (`chechen_lore.ts`) pour lier la diaspora à l'histoire et aux lieux sacrés/historiques du pays.
 
-## 4. Logique Cartographique Absolue (Derniers gros travaux)
+## 4. Révolution Conceptuelle : "Кхерч", "Орца" et "Бёлхи"
+Au de-là de la forme, le fond de l'application a pris une toute autre dimension pour avoir "une âme" qui correspond purement au code *Nokhchalla* :
+*   **Кхерч (Le Foyer/Hearth)** : L'interface principale et la modale ont été redesignées avec une palette chaleureuse (`hearth-amber`, `vainakh-stone`, `kherch-dark`). La sidebar n'est plus un vulgaire menu de navigation, mais symbolise le Foyer où chaque frère/sœur est accueilli ("Марша догIийла"). 
+*   **Орца (Bouton SOS)** : Un grand bouton pulsant, placé au cœur de l'application. Symbolise l'obligation vitale d'assistance immédiate si un membre de la communauté est en péril dans une ville spécifique.
+*   **Бёлхи (Travail/Mutual Aid)** : Les fiches techniques (Profil des membres) ne disent plus "Profession" ou "Proposer service" (connotation trop commerciale), mais "Бёлхи" et incitent à contacter le "frère/sœur".
+*   **Généalogie / Identité** : Les cartes membres mettent désormais l'accent sur le *Teip* et le *Village* d'origine.
+
+## 5. Logique Cartographique Absolue (Derniers gros travaux)
 Nous avons passé une étape cruciale concernant la précision de la carte interactive :
 *   **Adieu aux Cercles Génériques (Halos)** : Au début, les villes de la diaspora étaient représentées par des cercles d'un rayon de 12km dessinés automatiquement.
 *   **Données GeoJSON Massives (`diaspora_borders.json`)** : Nous avons injecté des données topographiques exactes (plus de 5 Mo de coordonnées directes) pour dessiner les contours réels des zones administratives (Los Angeles, Chicago, Toronto, villes d'Europe, etc.).
-*   **Rendu "Premium"** : Sur la carte actuelle, plutôt qu'un indicateur basique, chaque ville hébergeant une communauté possède **la ligne continue exacte** (Solid Line bleue) de sa municipalité. Cela renforce l'aspect ultra-qualitatif et précis ("Contact Book" sérieux) de la plateforme.
 
-## 5. Prochaines Étapes Logiques
-Maintenant que le squelette, le design system, et la cartographie précise sont en place :
-1.  **Peuplement dynamique** : Lier la carte et les filtres aux vrais contacts (synchronisation Firestore).
-2.  **Formulaire d'Ajout** : Intégrer la proposition de nouveaux experts par les membres (Crowdsourcing de contacts).
-3.  **Optimisation** : S'assurer que le fichier `diaspora_borders.json` est bien caché/compressé au niveau du CDN (Vercel) pour que l'application reste rapide au chargement initial.
+## 6. Prochaines Étapes Logiques
+Maintenant que le squelette, le design system "Kert", et la cartographie précise sont en place :
+1.  **Mécanisme d'Authentification (Bloquant)** : Implémenter Firebase et gérer un système de "Passphrase" afin que le Foyer soit sécurisé pour nos membres (+ de 1000 contacts à importer).
+2.  **Peuplement dynamique** : Lier la carte et les filtres aux vrais contacts (synchronisation Firestore).
+3.  **Logique Backend du bouton "Орца"** : Création des notifications PUSH urgentes géolocalisées.
