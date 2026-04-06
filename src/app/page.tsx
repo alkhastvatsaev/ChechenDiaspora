@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
@@ -26,6 +26,7 @@ export default function Home() {
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeip, setSelectedTeip] = useState('');
+  const [selectedProfession, setSelectedProfession] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
 
@@ -75,20 +76,31 @@ export default function Home() {
   const filteredMembers = useMemo(() => {
     return members.filter(m => {
       const fullName = `${m.prenom} ${m.nom}`.toLowerCase();
-      const matchesSearch = fullName.includes(searchQuery.toLowerCase()) || 
-                           m.village?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           m.teip?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           m.profession?.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchTerms = searchQuery.toLowerCase().split(' ').filter(val => val.length > 0);
+      
+      const matchesSearch = searchTerms.length === 0 || searchTerms.every(term => 
+        fullName.includes(term) || 
+        m.village?.toLowerCase().includes(term) ||
+        m.teip?.toLowerCase().includes(term) ||
+        m.ville?.toLowerCase().includes(term) ||
+        m.profession?.toLowerCase().includes(term)
+      );
       
       const matchesTeip = selectedTeip ? m.teip === selectedTeip : true;
+      const matchesProfession = selectedProfession ? m.profession === selectedProfession : true;
       
-      return matchesSearch && matchesTeip;
+      return matchesSearch && matchesTeip && matchesProfession;
     });
-  }, [members, searchQuery, selectedTeip]);
+  }, [members, searchQuery, selectedTeip, selectedProfession]);
 
   // Derived Filters
   const teips = useMemo(() => {
     const set = new Set(members.map(m => m.teip).filter(Boolean));
+    return Array.from(set).sort();
+  }, [members]);
+
+  const professions = useMemo(() => {
+    const set = new Set(members.map(m => m.profession).filter(Boolean));
     return Array.from(set).sort();
   }, [members]);
 
@@ -222,68 +234,102 @@ export default function Home() {
         onClose={() => setIsLanguageModalOpen(false)} 
       />
 
-      {/* Sidebar */}
+      {/* Directory Sidebar */}
       <div 
-        className={`absolute top-0 left-0 w-full md:w-80 h-full bg-white/95 backdrop-blur-xl shadow-2xl z-20 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`absolute top-0 left-0 w-full md:w-[28rem] h-full bg-white/95 backdrop-blur-xl shadow-2xl z-20 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="p-6 pt-safe-top h-full flex flex-col">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">Библиотека</h2>
+        <div className="p-6 pb-2 pt-safe-top flex-shrink-0 border-b border-gray-100">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-black tracking-tight text-gray-900">Каталог Диаспоры</h2>
+              <p className="text-sm text-gray-500 font-medium">Контактная база ({members.length})</p>
+            </div>
             <button 
-              className="p-2 hover:bg-black/5 rounded-full"
+              className="p-2 hover:bg-black/5 rounded-full transition-colors"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <X size={24} />
+              <X size={24} className="text-gray-400" />
             </button>
           </div>
           
-          <div className="flex-1 flex flex-col gap-2 overflow-y-auto pr-2">
-            <div className="bg-chechen-blue/5 p-4 rounded-2xl border border-chechen-blue/10 mb-4">
-              <p className="text-xs font-bold text-chechen-blue uppercase tracking-widest mb-1 opacity-60">Статистика</p>
-              <p className="text-2xl font-black text-chechen-blue">{members.length} <span className="text-sm font-bold opacity-60">участников</span></p>
-            </div>
-
-            <Link 
-              href="/heritage" 
-              className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <BookOpen size={20} className="text-chechen-blue/80" /> Нохчалла (Наследие)
-            </Link>
-            <Link 
-              href="/join" 
-              className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <UserPlus size={20} className="text-gray-400" /> Присоединиться
-            </Link>
-            <button className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-chechen-blue transition-colors">
-              <Heart size={20} className="text-chechen-blue/60" /> Пожертвования (СагIа)
-            </button>
-
-            <div className="mt-8">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-4">Топ локации</p>
-              <div className="space-y-1">
-                {/* Dynamically derived most common cities could go here */}
-                {Array.from(new Set(members.map(m => m.ville))).slice(0, 5).map(city => (
-                  <div key={city} className="flex items-center justify-between py-2 px-4 rounded-lg bg-gray-50/50 text-xs font-bold">
-                    <span className="text-gray-600 truncate">{city}</span>
-                    <span className="text-chechen-blue bg-white px-2 py-0.5 rounded-md shadow-sm">{members.filter(m => m.ville === city).length}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-auto pt-6 border-t border-gray-100">
-              <Link 
-                href="/admin" 
-                className="flex items-center gap-3 text-left py-3 px-4 rounded-xl hover:bg-black/5 font-medium text-gray-400 text-xs"
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <ShieldCheck size={18} /> Панель администратора
-              </Link>
-            </div>
+          {/* Search inside sidebar */}
+          <div className="relative mb-4">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Поиск специалиста, города..."
+              className="w-full bg-gray-100 border-none rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:ring-2 focus:ring-chechen-blue/20 outline-none transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
+
+          {/* Profession Filters (Horizontal Scroll) */}
+          <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2">
+            <button 
+              onClick={() => setSelectedProfession('')}
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedProfession ? 'bg-chechen-blue text-white shadow-md border-chechen-blue' : 'bg-white text-gray-500 border-gray-200 hover:border-chechen-blue/50 hover:bg-gray-50'}`}
+            >
+              Все Специалисты
+            </button>
+            {professions.map(prof => (
+              <button 
+                key={prof as string}
+                onClick={() => setSelectedProfession(prof === selectedProfession ? '' : (prof as string))}
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedProfession === prof ? 'bg-chechen-blue text-white shadow-md border-chechen-blue' : 'bg-white text-gray-500 border-gray-200 hover:border-chechen-blue/50 hover:bg-gray-50'}`}
+              >
+                {prof as string}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Member List (Scrollable Area) */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50">
+          {filteredMembers.length > 0 ? (
+            filteredMembers.map(member => (
+              <div 
+                key={member.id} 
+                onClick={() => setSelectedMember(member)}
+                className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-chechen-blue/30 transition-all cursor-pointer group flex items-start gap-4"
+              >
+                <div className="w-12 h-12 bg-chechen-blue/10 rounded-full flex items-center justify-center text-lg font-black text-chechen-blue flex-shrink-0 group-hover:scale-110 transition-transform">
+                  {member.prenom?.[0]}{member.nom?.[0]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 truncate text-base">{member.prenom} {member.nom}</h3>
+                  <div className="flex items-center gap-1.5 mt-1 text-chechen-blue font-semibold text-xs">
+                    <Briefcase size={12} className="opacity-70" />
+                    <span className="truncate">{member.profession || 'Участник'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-1.5 text-gray-400 text-xs font-medium">
+                    <MapPin size={12} className="opacity-70" />
+                    <span className="truncate">{member.ville || 'N/A'}, {member.pays}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <Users size={24} className="text-gray-400" />
+              </div>
+              <p className="text-gray-500 font-medium">Никто не найден.</p>
+            </div>
+          )}
+        </div>
+
+        {/* ActionFooter */}
+        <div className="p-4 border-t border-gray-100 bg-white flex justify-between gap-3 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-10 flex-shrink-0">
+           <Link href="/heritage" className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
+             <BookOpen size={18} className="text-chechen-blue/80" /> Наследие
+           </Link>
+           <Link href="/join" className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
+             <UserPlus size={18} className="text-gray-500" /> Вступить
+           </Link>
+           <button className="flex-1 flex justify-center py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-transparent hover:border-gray-200">
+             <Heart size={18} className="text-chechen-blue/80" /> СагIа
+           </button>
         </div>
       </div>
     </main>
