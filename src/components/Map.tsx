@@ -169,11 +169,10 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                     radius={12000} // 12km radius as requested
                     pathOptions={{
                       color: '#007AFF', // Chechen Blue
-                      weight: 1.5,
-                      opacity: 0.6,
+                      weight: 2, // Slightly thicker for better visibility
+                      opacity: 0.8,
                       fillColor: '#007AFF',
-                      fillOpacity: 0.05,
-                      dashArray: '3, 6' // Discreet dashed line for the boundary
+                      fillOpacity: 0.08,
                     }}
                     interactive={false}
                   />
