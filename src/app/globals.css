@@ -11,8 +11,21 @@
 }
 
 @layer base {
+  html, body {
+    @apply h-full w-full overflow-hidden select-none touch-none;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+
   body {
     @apply bg-apple-light text-apple-dark antialiased;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 

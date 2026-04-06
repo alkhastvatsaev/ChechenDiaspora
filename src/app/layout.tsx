@@ -34,7 +34,9 @@ export default function RootLayout({
     <html lang="ru" className="h-full">
       <body className="h-full font-sans antialiased">
         <Providers>
-          {children}
+          <div className="fixed inset-0 flex flex-col overflow-hidden bg-apple-light text-apple-dark">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>
