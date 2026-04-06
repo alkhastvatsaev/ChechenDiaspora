@@ -13,20 +13,47 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
 };
 
-// Check if we are in a browser or have a valid config to avoid build errors
-const isBrowser = typeof window !== "undefined";
-const hasValidConfig = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
+let app: any;
+let auth: any;
+let db: any;
+let firestore: any;
 
-// Initialize App (Singleton pattern)
-const app = !getApps().length 
-  ? initializeApp(hasValidConfig ? firebaseConfig : { ...firebaseConfig, apiKey: "placeholder", projectId: "placeholder" }) 
-  : getApp();
+const hasValidConfig = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
-// Initialize services only if we have a valid config to avoid crashing the build
-export const auth = hasValidConfig ? getAuth(app) : ({} as any);
-export const db = hasValidConfig ? getDatabase(app) : ({} as any);
+if (hasValidConfig) {
+  if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    app = getApp();
+  }
+  auth = getAuth(app);
+  db = getDatabase(app);
+  firestore = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+} else {
+  // During build or if config is missing, we initialize with placeholders to avoid crashes in SDK functions
+  // but we warn so the developer knows.
+  const placeholderConfig = {
+    apiKey: "placeholder",
+    authDomain: "placeholder",
+    projectId: "placeholder",
+    storageBucket: "placeholder",
+    messagingSenderId: "placeholder",
+    appId: "placeholder",
+    databaseURL: "https://placeholder.firebaseio.com"
+  };
+  
+  if (!getApps().length) {
+    app = initializeApp(placeholderConfig);
+  } else {
+    app = getApp();
+  }
+  auth = getAuth(app);
+  db = getDatabase(app);
+  firestore = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+}
 
-// Firestore fix for Vercel
-export const firestore = hasValidConfig 
-  ? initializeFirestore(app, { experimentalForceLongPolling: true }) 
-  : ({} as any);
+export { auth, db, firestore };
