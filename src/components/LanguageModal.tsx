@@ -61,7 +61,7 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
               </div>
               <div>
                 <p className="font-bold text-gray-800">English Friendly</p>
-                <p className="text-sm text-gray-500">Преподаватели вільно владеют английским языком.</p>
+                <p className="text-sm text-gray-500">Преподаватели свободно владеют английским языком.</p>
               </div>
             </li>
           </ul>
