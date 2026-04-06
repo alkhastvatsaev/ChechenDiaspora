@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ChevronLeft, Shield, Scale, Network, Star, Flag, Mountain } from 'lucide-react';
+import { ChevronLeft, Shield, Scale, Network, Star, Flag, Mountain, Book, ArrowRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 export default function HeritagePage() {
@@ -108,6 +108,33 @@ export default function HeritagePage() {
             <Scale className="w-24 h-24 text-gray-300 mb-6" strokeWidth={1} />
             <p className="font-bold text-gray-400 text-lg uppercase tracking-widest">Справедливость и Баланс.</p>
           </div>
+        </section>
+
+        {/* Dictionary Link */}
+        <section className="scroll-animate opacity-0 mt-32">
+          <Link href="/heritage/dictionary" className="block group">
+            <div className="bg-black text-white p-12 rounded-[3.5rem] relative overflow-hidden transition-all hover:scale-[1.01] active:scale-[0.99] shadow-2xl">
+              <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Book className="w-48 h-48" strokeWidth={1} />
+              </div>
+              <div className="relative z-10 space-y-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-xs font-black uppercase tracking-widest">
+                  Беркат — Новое
+                </div>
+                <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
+                  Дошлор.
+                  <br />
+                  <span className="text-gray-400">Словарь предков.</span>
+                </h2>
+                <p className="text-xl text-gray-400 max-w-xl font-medium leading-relaxed">
+                  Accède à l'archive complète de la langue tchétchène. Des milliers de mots conservés pour ne jamais oublier qui nous sommes.
+                </p>
+                <div className="pt-4 flex items-center gap-3 font-bold text-lg">
+                  Entrer dans l'archive <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </Link>
         </section>
 
         {/* History Outline */}
