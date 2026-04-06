@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
@@ -651,6 +651,53 @@ export default function Home() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* AMANAT - VOYAGES & TRANSPORTS (ADAT) */}
+        <div className="px-5 mb-6">
+           <div className="bg-vainakh-stone/40 border border-kherch-dark/5 rounded-[2rem] p-5 shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                 <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center text-vainakh-stone">
+                       <Plane size={18} className="rotate-45" />
+                    </div>
+                    <div>
+                       <h4 className="text-xs font-black text-kherch-dark tracking-tight uppercase">Аманат / Voyages</h4>
+                       <p className="text-[9px] font-bold text-gray-400">Entraide Logistique</p>
+                    </div>
+                 </div>
+                 <button 
+                  onClick={() => {/* Declare travel logic */}}
+                  className="bg-black text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
+                 >
+                   Я еду
+                 </button>
+              </div>
+
+              {/* Active Travels Scroller */}
+              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+                 {filteredMembers.filter(m => m.isTraveling).length > 0 ? (
+                    filteredMembers.filter(m => m.isTraveling).map(m => (
+                       <div key={m.id} className="flex-shrink-0 w-48 bg-white rounded-2xl p-3 border border-black/5 shadow-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                             <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center text-[10px] font-black">
+                                {m.prenom?.[0]}{m.nom?.[0]}
+                             </div>
+                             <span className="text-[10px] font-bold truncate">{m.prenom} {m.nom}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-[10px] font-black text-kherch-dark/60">
+                             <span className="truncate">{m.travelFrom || 'Europe'}</span>
+                             <ArrowRight size={10} className="text-black" />
+                             <span className="text-black">{m.travelTo || 'Grozny'}</span>
+                          </div>
+                          <p className="text-[9px] text-gray-400 mt-2 font-medium italic">« Передам ваши вещи в целости »</p>
+                       </div>
+                    ))
+                 ) : (
+                    <p className="text-[10px] font-bold text-gray-400 italic py-2">Нет активных поездок на этой неделе...</p>
+                 )}
+              </div>
+           </div>
         </div>
 
         {/* Member List (Scrollable Area) */}
