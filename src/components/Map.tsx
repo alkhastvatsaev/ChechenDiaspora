@@ -107,9 +107,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <GeoJSON 
                 data={countryGeoJson}
                 style={{
-                  color: '#007AFF',
+                  color: '#333333',
                   weight: 1,
-                  opacity: 0.3,
+                  opacity: 0.25,
                   fillColor: 'transparent',
                   fillOpacity: 0
                 }}
