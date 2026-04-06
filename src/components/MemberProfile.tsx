@@ -1,0 +1,99 @@
+"use client";
+
+import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink } from 'lucide-react';
+
+interface MemberProfileProps {
+  member: any;
+  onClose: () => void;
+}
+
+export default function MemberProfile({ member, onClose }: MemberProfileProps) {
+  if (!member) return null;
+
+  return (
+    <div className="absolute inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-300"
+        onClick={onClose}
+      />
+      
+      {/* Content Sheet */}
+      <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden animate-slide-up border border-white/20">
+        {/* Header Image/Pattern Area */}
+        <div className="h-32 bg-gray-900 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 flex items-center justify-center pointer-events-none">
+            <Shield size={120} className="text-white" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent"></div>
+          <button 
+            onClick={onClose}
+            className="absolute top-5 right-5 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all border border-white/10"
+          >
+            <X size={20} className="text-white" />
+          </button>
+        </div>
+
+        {/* Profile Details */}
+        <div className="px-8 pb-10 -mt-10 relative">
+          <div className="w-24 h-24 bg-white rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-chechen-green mb-5 border-4 border-white transform hover:rotate-3 transition-transform">
+            {member.prenom?.[0]}{member.nom?.[0]}
+          </div>
+
+          <div className="space-y-1.5 mb-8">
+            <h2 className="text-3xl font-black tracking-tight text-gray-900">
+              {member.prenom} {member.nom}
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-chechen-green/10 text-chechen-green text-xs font-black uppercase tracking-widest rounded-full border border-chechen-green/20">
+                {member.profession}
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-400 text-xs font-black uppercase tracking-widest rounded-full border border-black/5">
+                {member.teip}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-6 gap-y-6 mb-10">
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Calendar size={12} className="opacity-50" /> Возраст
+              </p>
+              <p className="font-bold text-gray-800 text-lg">{member.age} лет</p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Home size={12} className="opacity-50" /> Родное село
+              </p>
+              <p className="font-bold text-gray-800 text-lg">{member.village}</p>
+            </div>
+
+            <div className="space-y-1 col-span-2">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 border-t border-gray-50 pt-4">
+                <MapPin size={12} className="opacity-50" /> Локация проживания
+              </p>
+              <p className="font-bold text-gray-800 text-lg flex items-center gap-2">
+                {member.ville}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t border-gray-50">
+            <button className="w-full py-4.5 bg-gray-900 text-white rounded-2xl font-black shadow-xl active:scale-[0.98] transition-all hover:bg-black hover:shadow-2xl flex items-center justify-center gap-2">
+              Предложить помощь / услугу <ExternalLink size={16} className="opacity-50" />
+            </button>
+            <div className="grid grid-cols-2 gap-4">
+              <button className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366] text-white rounded-2xl font-black shadow-lg shadow-[#25D366]/20 active:scale-[0.95] transition-all hover:brightness-110">
+                <Phone size={18} /> WhatsApp
+              </button>
+              <button className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc] text-white rounded-2xl font-black shadow-lg shadow-[#0088cc]/20 active:scale-[0.95] transition-all hover:brightness-110">
+                <MessageCircle size={18} /> Telegram
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

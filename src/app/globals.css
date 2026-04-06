@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-chechen-green: #007A33;
+  --color-apple-light: #FBFBFD;
+  --color-apple-dark: #1C1C1E;
+}
+
+@layer base {
+  body {
+    @apply bg-apple-light text-apple-dark antialiased;
+  }
+}
+
+/* Custom map styling to make it apple-like */
+.leaflet-container {
+  background: transparent !important;
+  font-family: inherit !important;
+}
+
+/* Hide leaflet attribution for cleaner look */
+.leaflet-control-attribution {
+  display: none;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
