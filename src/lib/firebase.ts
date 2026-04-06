@@ -9,7 +9,7 @@ const firebaseConfig = {
   storageBucket: "chechen-diaspora-v12345.firebasestorage.app",
   messagingSenderId: "862785484485",
   appId: "1:862785484485:web:2759735808c36df34422ac",
-  databaseURL: "https://chechen-diaspora-v12345-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL: "https://chechen-diaspora-v12345-default-rtdb.firebaseio.com"
 };
 
 const app = initializeApp(firebaseConfig);
