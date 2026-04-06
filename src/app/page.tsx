@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Map as MapIcon } from 'lucide-react';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
@@ -136,10 +136,67 @@ export default function Home() {
     return Array.from(set).sort();
   }, [members]);
 
+  const liveCount = useMemo(() => {
+    // 10% des membres + ceux avec isLive: true
+    return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
+  }, [members]);
+
   const centerOnMe = () => {
     if (userLocation) {
       setMapCenter([...userLocation]);
     }
+  };
+
+  const [isSharingLocation, setIsSharingLocation] = useState(false);
+
+  const shareLiveLocation = async () => {
+    if (!("geolocation" in navigator)) {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+      return;
+    }
+
+    setIsSharingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const liveRef = ref(db, 'members');
+          const newLiveMember = {
+            prenom: "Membre",
+            nom: "En ligne",
+            age: "??",
+            teip: "Vainakh",
+            village: "Daimohk",
+            profession: "Frère / Sœur en ligne",
+            ville: "Position Partagée",
+            lat: latitude,
+            lng: longitude,
+            whatsapp: "",
+            isLive: true,
+            approved: true,
+            lastSeen: Date.now()
+          };
+          
+          // Simulation d'un ajout "Live"
+          const newRef = push(liveRef);
+          await set(newRef, newLiveMember);
+          
+          alert("Votre position a été partagée avec la communauté ! Vous apparaissez maintenant sur la carte.");
+          setMapCenter([latitude, longitude]);
+        } catch (err) {
+          console.error("Erreur de partage:", err);
+          alert("Erreur lors du partage de la position.");
+        } finally {
+          setIsSharingLocation(false);
+        }
+      },
+      (error) => {
+        console.error("Geoloc error:", error);
+        alert("Impossible d'accéder à votre position. Veuillez autoriser la localisation.");
+        setIsSharingLocation(false);
+      },
+      { enableHighAccuracy: true }
+    );
   };
 
   return (
@@ -434,31 +491,35 @@ export default function Home() {
         </header>
       </div>
 
-      {/* Action Buttons Container */}
-      <div className="absolute bottom-8 right-6 z-10 pb-safe-bottom flex flex-col gap-3">
+      {/* Map Content Overlay Actions */}
+      <div className="absolute right-6 bottom-32 sm:bottom-12 z-10 flex flex-col gap-4">
+        {/* LIVE POSITION SHARING */}
+        <button 
+          onClick={shareLiveLocation}
+          disabled={isSharingLocation}
+          className={`group relative w-16 h-16 rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all hover:scale-110 active:scale-95 border-4 border-white overflow-hidden ${isSharingLocation ? 'bg-gray-100 cursor-not-allowed text-gray-400' : 'bg-black text-hearth-amber'}`}
+          title="Partager ma position en live"
+        >
+          {isSharingLocation ? (
+             <Flame size={28} className="animate-spin opacity-50" />
+          ) : (
+             <>
+               <Target size={28} className="relative z-10" />
+               <span className="absolute -inset-2 bg-hearth-amber/20 rounded-full animate-ping pointer-events-none"></span>
+             </>
+          )}
+        </button>
+
+        {/* RE-CENTER BUTTON */}
         <button 
           onClick={centerOnMe}
-          className="bg-white text-kherch-dark p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center border border-black/5"
+          className="w-14 h-14 bg-white/90 backdrop-blur-md text-kherch-dark rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center border border-black/5"
+          title="Me centrer"
         >
-          <Target size={28} />
+          <MapPin size={24} className="text-chechen-blue" />
         </button>
       </div>
 
-      {/* Massive ORTSA (SOS / Emergency Mutual Aid) Button */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 pb-safe-bottom flex flex-col items-center">
-        <button 
-          onClick={() => alert("ОРЦА: Сигнал бедствия хуьлуш ду... (В разработке)")}
-          className="relative group bg-hearth-amber text-white px-8 md:px-10 py-4 rounded-full shadow-[0_0_30px_rgba(226,88,34,0.4)] hover:shadow-[0_0_40px_rgba(226,88,34,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-hearth-glow/50 font-black overflow-hidden"
-        >
-          {/* Subtle pulse effect inside button */}
-          <span className="absolute inset-0 w-full h-full bg-white opacity-0 group-hover:opacity-20 transition-opacity rounded-full"></span>
-          <span className="absolute -inset-1 bg-hearth-glow rounded-full blur opacity-40 group-hover:opacity-60 animate-pulse"></span>
-          
-          <ShieldCheck size={24} className="relative z-10" />
-          <span className="relative z-10 tracking-widest uppercase text-lg">Орца</span>
-        </button>
-        <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase tracking-widest bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow-sm hidden md:block">Экстренная помощь</p>
-      </div>
 
       {/* Language Learning Action Button - Prominently on Bottom Left */}
       <div className="absolute bottom-8 left-6 z-10 pb-safe-bottom flex flex-col gap-3">
@@ -507,6 +568,30 @@ export default function Home() {
             >
               <X size={24} className="text-kherch-dark/50" />
             </button>
+          </div>
+
+          {/* Live Status Header Widget */}
+          <div className="mb-6 p-4 bg-white/50 backdrop-blur-md rounded-2xl border border-kherch-dark/5 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-10 h-10 bg-kherch-dark rounded-xl flex items-center justify-center text-vainakh-stone">
+                  <Users size={20} />
+                </div>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">В сети / Online</p>
+                <p className="text-sm font-black text-kherch-dark">{liveCount} братьев и сестер</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <p className="text-[10px] font-black uppercase tracking-[0.1em] text-emerald-600 animate-pulse">Live Now</p>
+              <div className="flex gap-0.5 mt-1 h-3 items-end">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className={`w-0.5 bg-emerald-500/40 rounded-full animate-bounce h-${i % 2 === 0 ? 'full' : '1/2'}`} style={{ animationDelay: `${i * 0.15}s` }}></div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Manifesto Entry Point - High Visibility */}

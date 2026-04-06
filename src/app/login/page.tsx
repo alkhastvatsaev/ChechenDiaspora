@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Shield } from 'lucide-react';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 
 export default function LeSeuil() {
   const [passphrase, setPassphrase] = useState('');
   const [error, setError] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
+  const [showPassphrase, setShowPassphrase] = useState(false);
   const { loginWithPassphrase, user, loading } = useAuth();
   const router = useRouter();
 
@@ -76,12 +77,19 @@ export default function LeSeuil() {
             <form onSubmit={handleSubmit} className="w-full space-y-6">
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassphrase ? "text" : "password"}
                   value={passphrase}
                   onChange={(e) => setPassphrase(e.target.value)}
                   placeholder="ГIап (Passphrase)"
                   className={`w-full bg-black/40 border ${error ? 'border-red-500' : 'border-white/10'} text-vainakh-stone placeholder:text-vainakh-stone/30 px-6 py-4 rounded-2xl outline-none focus:border-hearth-amber/50 focus:ring-1 focus:ring-hearth-amber/50 transition-all font-mono text-center tracking-widest backdrop-blur-md`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassphrase(!showPassphrase)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-vainakh-stone/30 hover:text-hearth-amber transition-colors"
+                >
+                  {showPassphrase ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
                 {error && (
                   <motion.p 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
