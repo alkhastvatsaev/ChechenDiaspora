@@ -1,0 +1,32 @@
+{
+  "people": "Chechen (Nokhchi)",
+  "ethnonym": "Nokhchiy",
+  "history": {
+    "ancient": "The Chechens are indigenous to the North Caucasus. Genetic and linguistic evidence links them to the Hurrian and Urartian civilizations.",
+    "middle_ages": "The Kingdom of Alania and the resistance against Mongol invasions. Adoption of Islam from the 16th to 19th centuries.",
+    "caucasian_wars": "19th-century resistance led by Sheikh Mansur and later Imam Shamil against the Russian Empire. The struggle for independence survived centuries.",
+    "deportation_1944": "Operation Lentil (Aardakh) - The forced relocation of the entire Chechen and Ingush population to Central Asia by Stalin. Nearly half the population perished. Return was permitted in 1957.",
+    "modern_conflicts": "First Chechen War (1994–1996) and Second Chechen War (1999–2009). A period of immense suffering followed by the current reconstruction phase.",
+    "leaders": [
+      { "name": "Sheikh Mansur", "period": "18th century", "role": "First Imam of the Caucasus" },
+      { "name": "Imam Shamil", "period": "19th century", "role": "Leader of the Caucasian Imamate" },
+      { "name": "Johar Dudayev", "period": "1990s", "role": "First President of the Chechen Republic of Ichkeria" }
+    ]
+  },
+  "culture": {
+    "code_of_honor": "Konakhalla - The ethical code of a 'Konakh' (noble man), prioritizing courage, hospitality, and protection of the weak.",
+    "social_structure": "Teip (Clans) and Tukhum (Alliances). There are over 100 teips that form the backbone of Chechen social logic.",
+    "language": "Chechen (Nokhchiin Mott) - Part of the Northeast Caucasian language family.",
+    "dance": "Lezginka - A traditional dance symbolizing pride and energy.",
+    "hospitality": "Sacred tradition. A guest is considered 'sent by God' and must be protected at all costs."
+  },
+  "religion": {
+    "primary": "Sunni Islam",
+    "traditions": "Deeply influenced by Sufism (Qadiriya and Naqshbandiya tariqas), featuring the 'Zikr' ritual."
+  },
+  "geography": {
+    "capital": "Grozny (Sölzha-Ghala)",
+    "major_cities": ["Argun", "Shali", "Gudermes", "Urus-Martan"],
+    "landscape": "High mountains (Caucasus), fertile valleys, and rivers like Sunzha and Terek."
+  }
+}
