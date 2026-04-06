@@ -34,12 +34,14 @@ function HeatmapLayer({ points }: { points: [number, number, number][] }) {
 
     // Heatmap instance
     const heatLayer = (L as any).heatLayer(points, {
-      radius: 25,
-      blur: 15,
+      radius: 35,
+      blur: 20,
       maxZoom: 14,
+      minOpacity: 0.4,
       gradient: { 
-        0.4: '#1C6B42', // Light Chechen Green
-        0.65: '#10B981', // Emerald
+        0.2: '#10B981', // Emerald Medium
+        0.5: '#059669', // Dark Emerald
+        0.8: '#1C6B42', // Chechen Green
         1.0: '#064E3B'  // Deep Forest
       }
     }).addTo(map);
