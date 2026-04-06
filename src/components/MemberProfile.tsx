@@ -124,13 +124,21 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
             </button>
             <div className="grid grid-cols-2 gap-4">
               <button 
-                onClick={() => window.open(`https://wa.me/${member.whatsapp}`, '_blank')}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.open(`https://wa.me/${member.whatsapp}`, '_blank');
+                  }
+                }}
                 className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366]/10 text-[#25D366] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#25D366]/20 border border-[#25D366]/20"
               >
                 <Phone size={18} /> WhatsApp
               </button>
               <button 
-                onClick={() => window.open(`https://t.me/${member.telegram?.replace('@', '')}`, '_blank')}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.open(`https://t.me/${member.telegram?.replace('@', '')}`, '_blank');
+                  }
+                }}
                 className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#0088cc]/20 border border-[#0088cc]/20"
               >
                 <MessageCircle size={18} /> Telegram
