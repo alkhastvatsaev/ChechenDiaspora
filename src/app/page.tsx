@@ -375,45 +375,6 @@ export default function Home() {
       {/* Main Layout Container with Expert Sidebar */}
       <div className="flex h-[100dvh] relative overflow-hidden w-full">
         
-        {/* EXPERT QUICK ACCESS SIDEBAR (LEFT) */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-4">
-           {[
-             { id: 'isLegalDefender', icon: Gavel, label: 'Avocats', color: 'bg-red-500' },
-             { id: 'isTranslator', icon: Languages, label: 'Traducteurs', color: 'bg-blue-500' },
-             { id: 'isGuide', icon: MapIcon, label: 'Administratif', color: 'bg-emerald-500' },
-             { id: 'openToMentorship', icon: GraduationCap, label: 'Mentors', color: 'bg-amber-500' },
-           ].map((expert) => (
-             <button
-               key={expert.id}
-               onClick={() => handleExpertFilter(expert.id)}
-               className={`group relative flex items-center justify-center w-14 h-14 rounded-2xl transition-all shadow-xl backdrop-blur-xl border border-white/20 
-                 ${selectedExpertType === expert.id ? `${expert.color} text-white scale-110 shadow-inner` : 'bg-white/80 text-black hover:bg-white'}`}
-             >
-               <expert.icon size={24} />
-               <div className="absolute left-full ml-4 px-3 py-1.5 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 whitespace-nowrap pointer-events-none z-50 shadow-2xl">
-                 {expert.label}
-               </div>
-             </button>
-           ))}
-        </div>
-
-        {/* Mobile Expert Tab (Bottom Left) */}
-        <div className="absolute left-4 bottom-28 z-40 lg:hidden flex flex-col gap-2">
-           <button 
-             onClick={() => handleExpertFilter('isLegalDefender')}
-             className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg border border-white/20 backdrop-blur-md transition-all 
-               ${selectedExpertType === 'isLegalDefender' ? 'bg-red-500 text-white' : 'bg-white/80 text-red-500'}`}
-           >
-             <Gavel size={20} />
-           </button>
-           <button 
-             onClick={() => handleExpertFilter('isGuide')}
-             className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg border border-white/20 backdrop-blur-md transition-all 
-               ${selectedExpertType === 'isGuide' ? 'bg-emerald-500 text-white' : 'bg-white/80 text-emerald-500'}`}
-           >
-             <MapIcon size={20} />
-           </button>
-        </div>
       
         {/* Background Map layer */}
         <div className="flex-1 relative">
@@ -428,44 +389,43 @@ export default function Home() {
       {/* Top Glassmorphism Header & Search */}
       <div className="absolute top-0 w-full z-10 px-4 pt-safe-top">
         <header className="mt-4 mx-auto max-w-2xl space-y-3">
-          <div className="bg-white/70 backdrop-blur-md shadow-sm border border-black/5 rounded-2xl flex items-center justify-between px-4 py-3">
+          <div className="bg-white/90 backdrop-blur-xl shadow-2xl border border-black/5 rounded-[2rem] flex items-center justify-between px-4 py-2.5">
             <button 
-              className="p-2 hover:bg-black/5 rounded-full transition-colors"
+              className="w-11 h-11 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors shrink-0"
               onClick={() => setIsSidebarOpen(true)}
             >
-              <Menu size={24} className="text-gray-800" />
+              <Menu size={22} className="text-gray-800" />
             </button>
             
-            <div className="flex-1 px-4 flex items-center gap-2">
+            <div className="flex-1 px-3 flex items-center gap-2">
               <Search size={18} className="text-gray-400 shrink-0" />
               <input 
                 type="text" 
-                placeholder="Поиск по имени, селу или тайпу..."
-                className="w-full bg-transparent border-none outline-none text-sm font-medium placeholder:text-gray-400"
+                placeholder="Поиск..."
+                className="w-full bg-transparent border-none outline-none text-base font-medium placeholder:text-gray-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="p-1 hover:bg-black/5 rounded-full">
-                  <X size={16} className="text-gray-400" />
-                </button>
-              )}
             </div>
 
-            <button 
-              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showHeatmap ? 'bg-chechen-blue/10 text-chechen-blue' : 'text-gray-800'}`}
-              onClick={() => setShowHeatmap(!showHeatmap)}
-              title={showHeatmap ? "Показать участников" : "Показать плотность"}
-            >
-              <Globe size={24} />
-            </button>
+            <div className="flex items-center gap-1 shrink-0 border-l border-black/5 ml-2 pl-2">
+              <button 
+                onClick={shareLiveLocation}
+                disabled={isSharingLocation}
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${isSharingLocation ? 'animate-pulse text-hearth-amber' : 'hover:bg-black/5 text-gray-400 hover:text-hearth-amber'}`}
+                title="Partager ma position live"
+              >
+                <Target size={20} />
+              </button>
 
-            <button 
-              className={`p-2 hover:bg-black/5 rounded-full transition-colors ${showFilters ? 'bg-chechen-blue/10 text-chechen-blue' : 'text-gray-800'}`}
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <Filter size={24} />
-            </button>
+              <button 
+                onClick={centerOnMe}
+                className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-all text-gray-400 hover:text-chechen-blue"
+                title="Ma position"
+              >
+                <MapPin size={20} />
+              </button>
+            </div>
           </div>
 
           {/* Expanded Filters */}
@@ -491,51 +451,6 @@ export default function Home() {
         </header>
       </div>
 
-      {/* Map Content Overlay Actions */}
-      <div className="absolute right-6 bottom-32 sm:bottom-12 z-10 flex flex-col gap-4">
-        {/* LIVE POSITION SHARING */}
-        <button 
-          onClick={shareLiveLocation}
-          disabled={isSharingLocation}
-          className={`group relative w-16 h-16 rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all hover:scale-110 active:scale-95 border-4 border-white overflow-hidden ${isSharingLocation ? 'bg-gray-100 cursor-not-allowed text-gray-400' : 'bg-black text-hearth-amber'}`}
-          title="Partager ma position en live"
-        >
-          {isSharingLocation ? (
-             <Flame size={28} className="animate-spin opacity-50" />
-          ) : (
-             <>
-               <Target size={28} className="relative z-10" />
-               <span className="absolute -inset-2 bg-hearth-amber/20 rounded-full animate-ping pointer-events-none"></span>
-             </>
-          )}
-        </button>
-
-        {/* RE-CENTER BUTTON */}
-        <button 
-          onClick={centerOnMe}
-          className="w-14 h-14 bg-white/90 backdrop-blur-md text-kherch-dark rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center border border-black/5"
-          title="Me centrer"
-        >
-          <MapPin size={24} className="text-chechen-blue" />
-        </button>
-      </div>
-
-
-      {/* Language Learning Action Button - Prominently on Bottom Left */}
-      <div className="absolute bottom-8 left-6 z-10 pb-safe-bottom flex flex-col gap-3">
-        <button 
-          onClick={() => setIsLanguageModalOpen(true)}
-          className="bg-white/90 backdrop-blur-md text-apple-dark p-3 pr-5 rounded-[2rem] shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-black/5"
-        >
-          <div className="bg-chechen-blue/10 p-3 rounded-full">
-            <BookOpen size={20} className="text-chechen-blue" />
-          </div>
-          <div className="text-left hidden sm:block">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Изучение</p>
-            <p className="text-sm font-bold tracking-tight">Чеченский Язык</p>
-          </div>
-        </button>
-      </div>
 
       {/* Profile Modal */}
       {selectedMember && (

@@ -27,7 +27,8 @@ Le projet a été mis en place avec une stack technique moderne et robuste pour 
 ## 4. Révolution Conceptuelle : "Кхерч", "Орца" et "Бёлхи"
 Au de-là de la forme, le fond de l'application a pris une toute autre dimension pour avoir "une âme" qui correspond purement au code *Nokhchalla* :
 *   **Кхерч (Le Foyer/Hearth)** : L'interface principale et la modale ont été redesignées avec une palette chaleureuse (`hearth-amber`, `vainakh-stone`, `kherch-dark`). La sidebar n'est plus un vulgaire menu de navigation, mais symbolise le Foyer où chaque frère/sœur est accueilli ("Марша догIийла"). 
-*   **Орца (Bouton SOS)** : Un grand bouton pulsant, placé au cœur de l'application. Symbolise l'obligation vitale d'assistance immédiate si un membre de la communauté est en péril dans une ville spécifique.
+*   **Кхерч (Le Foyer/Hearth)** : L'interface principale et la modale ont été redesignées avec une palette chaleureuse (`hearth-amber`, `vainakh-stone`, `kherch-dark`). La sidebar n'est plus un vulgaire menu de navigation, mais symbolise le Foyer où chaque frère/sœur est accueilli ("Марша догIийла"). 
+*   **Recherche d'Experts (Remplace "Ortsa")** : Suite à une volonté de responsabilisation, le bouton SOS direct a été retiré. L'application mise désormais sur l'intelligence collective : c'est aux membres de chercher activement l'expertise dont ils ont besoin (Avocats, Ingénieurs, Marketing, Développeurs) via une barre de recherche ultra-rapide.
 *   **Бёлхи (Travail/Mutual Aid)** : Les fiches techniques (Profil des membres) ne disent plus "Profession" ou "Proposer service" (connotation trop commerciale), mais "Бёлхи" et incitent à contacter le "frère/sœur".
 *   **Généalogie / Identité** : Les cartes membres mettent désormais l'accent sur le *Teip* et le *Village* d'origine.
 
