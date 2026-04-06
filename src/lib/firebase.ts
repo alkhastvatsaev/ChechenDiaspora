@@ -13,18 +13,20 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
 };
 
-// Safety check for Project ID to avoid FATAL errors during build
-const hasValidConfig = !!firebaseConfig.projectId;
+// Check if we are in a browser or have a valid config to avoid build errors
+const isBrowser = typeof window !== "undefined";
+const hasValidConfig = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
 
-// Initialize App (Singleton pattern for Next.js Fast Refresh)
+// Initialize App (Singleton pattern)
 const app = !getApps().length 
-  ? initializeApp(hasValidConfig ? firebaseConfig : { ...firebaseConfig, projectId: "placeholder-id" }) 
+  ? initializeApp(hasValidConfig ? firebaseConfig : { ...firebaseConfig, apiKey: "placeholder", projectId: "placeholder" }) 
   : getApp();
 
-// Only initialize services if we have a valid config, or return them as potentially null-initialized
-export const firestore = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-});
+// Initialize services only if we have a valid config to avoid crashing the build
+export const auth = hasValidConfig ? getAuth(app) : ({} as any);
+export const db = hasValidConfig ? getDatabase(app) : ({} as any);
 
-export const db = getDatabase(app);
-export const auth = getAuth(app);
+// Firestore fix for Vercel
+export const firestore = hasValidConfig 
+  ? initializeFirestore(app, { experimentalForceLongPolling: true }) 
+  : ({} as any);
