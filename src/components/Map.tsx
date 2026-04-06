@@ -80,20 +80,37 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         .then(res => res.json())
         .then(data => {
           // List of countries with significant Chechen population based on DIASPORA_HUBS and history
-          const diasporaCountries = [
-            'France', 'Germany', 'Austria', 'Belgium', 'Norway', 'Turkey', 'Jordan', 
-            'Russia', 'United Kingdom', 'United States of America', 'Netherlands', 
-            'Syria', 'Kazakhstan', 'Iraq', 'Egypt', 'Switzerland', 'Denmark', 
-            'Sweden', 'Poland', 'Canada'
-          ];
+          const diasporaCountriesMap: { [key: string]: string[] } = {
+            'France': ['France'],
+            'Germany': ['Germany'],
+            'Austria': ['Austria'],
+            'Belgium': ['Belgium'],
+            'Norway': ['Norway'],
+            'Turkey': ['Turkey'],
+            'Jordan': ['Jordan'],
+            'Russia': ['Russia', 'Russian Federation'],
+            'UK': ['United Kingdom', 'Great Britain'],
+            'USA': ['United States of America', 'United States', 'USA'],
+            'Netherlands': ['Netherlands'],
+            'Syria': ['Syria', 'Syrian Arab Republic'],
+            'Kazakhstan': ['Kazakhstan'],
+            'Iraq': ['Iraq'],
+            'Egypt': ['Egypt'],
+            'Switzerland': ['Switzerland'],
+            'Denmark': ['Denmark'],
+            'Sweden': ['Sweden'],
+            'Poland': ['Poland'],
+            'Canada': ['Canada']
+          };
+          
+          const allTargetNames = Object.values(diasporaCountriesMap).flat();
           
           const filtered = {
             ...data,
-            features: data.features.filter((f: any) => 
-               diasporaCountries.includes(f.properties.ADMIN) || 
-               diasporaCountries.includes(f.properties.name) ||
-               (f.properties.ADMIN === 'Russia' && diasporaCountries.includes('Russia'))
-            )
+            features: data.features.filter((f: any) => {
+              const name = f.properties.ADMIN || f.properties.name || f.properties.NAME;
+              return allTargetNames.includes(name);
+            })
           };
           setCountryGeoJson(filtered);
         })
@@ -141,27 +158,31 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               }}
             />
             
-            {/* City Names & Automated Tracers (Contours) */}
+            {/* City Names over tracers & Automatic Contours */}
             {DIASPORA_HUBS.map(hub => {
               const uniqueKey = `${hub.name}-${hub.country}`;
               return (
                 <Fragment key={uniqueKey}>
+                  {/* Automatic Boundary Tracer (12km radius circle) */}
+                  <Circle 
+                    center={[hub.lat, hub.lng]}
+                    radius={12000} // 12km radius as requested
+                    pathOptions={{
+                      color: '#007AFF', // Chechen Blue
+                      weight: 1.5,
+                      opacity: 0.6,
+                      fillColor: '#007AFF',
+                      fillOpacity: 0.05,
+                      dashArray: '3, 6' // Discreet dashed line for the boundary
+                    }}
+                    interactive={false}
+                  />
+                  
+                  {/* City Label Marker */}
                   <Marker 
                     position={[hub.lat, hub.lng]}
                     icon={cityLabelIcon(hub.name)}
                     interactive={false}
-                  />
-                  {/* Automated circular contour (tracer) for every hub in the db */}
-                  <Circle
-                    center={[hub.lat, hub.lng]}
-                    radius={12000} // ~12km radius to represent the city area
-                    pathOptions={{
-                      color: '#007AFF',
-                      weight: 2,
-                      opacity: 0.6,
-                      fillColor: '#007AFF',
-                      fillOpacity: 0.05
-                    }}
                   />
                 </Fragment>
               );
