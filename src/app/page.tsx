@@ -3,10 +3,11 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
+import LanguageModal from '@/components/LanguageModal';
 
 // Use dynamic import for Leaflet Map as it needs 'window' (client-side only)
 const Map = dynamic(() => import('@/components/Map'), { 
@@ -20,6 +21,7 @@ export default function Home() {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [members, setMembers] = useState<any[]>([]);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -190,6 +192,22 @@ export default function Home() {
         </Link>
       </div>
 
+      {/* Language Learning Action Button - Prominently on Bottom Left */}
+      <div className="absolute bottom-8 left-6 z-10 pb-safe-bottom flex flex-col gap-3">
+        <button 
+          onClick={() => setIsLanguageModalOpen(true)}
+          className="bg-white/90 backdrop-blur-md text-apple-dark p-3 pr-5 rounded-[2rem] shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3 border border-black/5"
+        >
+          <div className="bg-chechen-green/10 p-3 rounded-full">
+            <BookOpen size={20} className="text-chechen-green" />
+          </div>
+          <div className="text-left hidden sm:block">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Изучение</p>
+            <p className="text-sm font-bold tracking-tight">Чеченский Язык</p>
+          </div>
+        </button>
+      </div>
+
       {/* Profile Modal */}
       {selectedMember && (
         <MemberProfile 
@@ -197,6 +215,12 @@ export default function Home() {
           onClose={() => setSelectedMember(null)} 
         />
       )}
+
+      {/* Language Modal */}
+      <LanguageModal 
+        isOpen={isLanguageModalOpen} 
+        onClose={() => setIsLanguageModalOpen(false)} 
+      />
 
       {/* Sidebar */}
       <div 
@@ -219,9 +243,13 @@ export default function Home() {
               <p className="text-2xl font-black text-chechen-green">{members.length} <span className="text-sm font-bold opacity-60">участников</span></p>
             </div>
 
-            <button className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors">
-              <Info size={20} className="text-gray-400" /> Про проект
-            </button>
+            <Link 
+              href="/heritage" 
+              className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <BookOpen size={20} className="text-chechen-green/80" /> Нохчалла (Наследие)
+            </Link>
             <Link 
               href="/join" 
               className="flex items-center gap-3 text-left py-3.5 px-4 rounded-xl hover:bg-black/5 font-bold text-gray-700 transition-colors"
