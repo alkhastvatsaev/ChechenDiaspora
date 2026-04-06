@@ -13,10 +13,15 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
 };
 
-// Initialize App (Singleton pattern for Next.js Fast Refresh)
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+// Safety check for Project ID to avoid FATAL errors during build
+const hasValidConfig = !!firebaseConfig.projectId;
 
-// Vercel Serverless / Firebase Long Polling Fix for Firestore
+// Initialize App (Singleton pattern for Next.js Fast Refresh)
+const app = !getApps().length 
+  ? initializeApp(hasValidConfig ? firebaseConfig : { ...firebaseConfig, projectId: "placeholder-id" }) 
+  : getApp();
+
+// Only initialize services if we have a valid config, or return them as potentially null-initialized
 export const firestore = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
