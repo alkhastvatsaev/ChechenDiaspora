@@ -85,9 +85,9 @@ export default function LeSeuil() {
                 {error && (
                   <motion.p 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="absolute -bottom-6 left-0 right-0 text-center text-red-500 text-xs"
+                    className="absolute -bottom-6 left-0 right-0 text-center text-red-500 text-xs font-bold"
                   >
-                    Бакъ дац. (Ce n'est pas correct)
+                    Харц ду (Mots de passe incorrect)
                   </motion.p>
                 )}
               </div>
