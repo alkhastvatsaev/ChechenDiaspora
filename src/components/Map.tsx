@@ -163,20 +163,6 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               const uniqueKey = `${hub.name}-${hub.country}`;
               return (
                 <Fragment key={uniqueKey}>
-                  {/* Automatic Boundary Tracer (12km radius circle) */}
-                  <Circle 
-                    center={[hub.lat, hub.lng]}
-                    radius={12000} // 12km radius as requested
-                    pathOptions={{
-                      color: '#007AFF', // Chechen Blue
-                      weight: 2, // Slightly thicker for better visibility
-                      opacity: 0.8,
-                      fillColor: '#007AFF',
-                      fillOpacity: 0.08,
-                    }}
-                    interactive={false}
-                  />
-                  
                   {/* City Label Marker */}
                   <Marker 
                     position={[hub.lat, hub.lng]}
