@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginWithPassphrase = async (passphrase: string) => {
     // Hardcoded community passphrase for initial entry
-    if (passphrase.trim().toUpperCase() === "NOKHCHO_2026") {
+    if (passphrase.trim() === "Вайнах") {
       try {
         await signInAnonymously(auth);
         return true;
