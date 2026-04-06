@@ -23,6 +23,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+import { Providers } from "@/contexts/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="ru" className="h-full">
       <body className="h-full font-sans antialiased">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
