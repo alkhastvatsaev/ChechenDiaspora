@@ -75,7 +75,7 @@ export default function Join() {
           </div>
           <h1 className="text-4xl font-bold tracking-tight mb-4" style={{ fontFamily: 'Arial, sans-serif' }}>Баркалла.</h1>
           <p className="text-lg text-[#86868b] font-medium leading-relaxed mb-10">
-            Votre profil a été soumis. L'accès vous sera accordé après la validation.
+            Ваш профиль отправлен. Доступ будет предоставлен после проверки.
           </p>
         </motion.div>
       </div>
@@ -95,7 +95,7 @@ export default function Join() {
           <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Arial, sans-serif' }}>
             Вайнах
           </h1>
-          <p className="text-xl text-[#86868b] font-medium">Rejoignez la diaspora.</p>
+          <p className="text-xl text-[#86868b] font-medium">Присоединяйтесь к диаспоре.</p>
         </motion.div>
 
         <motion.form 
@@ -109,12 +109,12 @@ export default function Join() {
             <div>
               <input required type="text" name="prenom" value={formData.prenom} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Prénom" />
+                     placeholder="Имя" />
             </div>
             <div>
               <input required type="text" name="nom" value={formData.nom} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Nom" />
+                     placeholder="Фамилия" />
             </div>
           </div>
 
@@ -122,34 +122,34 @@ export default function Join() {
             <div>
               <input required type="number" name="age" value={formData.age} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Âge" />
+                     placeholder="Возраст" />
             </div>
             <div>
               <input required type="text" name="profession" value={formData.profession} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Profession" />
+                     placeholder="Профессия" />
             </div>
           </div>
 
           <div className="space-y-6 pt-4">
-            <h3 className="text-lg font-bold text-[#1d1d1f] tracking-tight ml-1">Origines & Localisation</h3>
+            <h3 className="text-lg font-bold text-[#1d1d1f] tracking-tight ml-1">Происхождение и Местоположение</h3>
             
             <div>
               <input required type="text" name="teip" value={formData.teip} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Votre Teip (ex: Benoy)" />
+                     placeholder="Ваш тейп (напр: Беной)" />
             </div>
 
             <div>
               <input required type="text" name="village" value={formData.village} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Village d'origine en Tchétchénie (ex: Shali)" />
+                     placeholder="Родное село в Чечне (напр: Шали)" />
             </div>
 
             <div>
               <input required type="text" name="ville" value={formData.ville} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
-                     placeholder="Ville de résidence actuelle (ex: Strasbourg)" />
+                     placeholder="Город текущего проживания (напр: Страсбург)" />
             </div>
           </div>
 
@@ -162,13 +162,14 @@ export default function Join() {
               {isSubmitting ? (
                 <>
                   <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                  Envoi...
+                  Отправка...
                 </>
               ) : (
-                "Demander l'accès"
+                "Запросить доступ"
               )}
             </button>
           </div>
+
         </motion.form>
 
       </div>

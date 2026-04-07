@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run lint && npm test && tsc --noEmit"
   },
   "dependencies": {
     "@types/leaflet.markercluster": "^1.5.6",

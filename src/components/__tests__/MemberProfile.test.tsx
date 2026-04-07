@@ -56,7 +56,7 @@ describe('MemberProfile Component', () => {
     const windowSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
     render(<MemberProfile member={mockMember} onClose={mockOnClose} />)
     
-    const whatsappButton = screen.getByText(/WhatsApp/i).closest('button')
+    const whatsappButton = screen.getByText(/Ватсап/i).closest('button')
     if (whatsappButton) fireEvent.click(whatsappButton)
     
     expect(windowSpy).toHaveBeenCalledWith('https://wa.me/33700000000', '_blank')

@@ -1,13 +1,20 @@
 @import "tailwindcss";
 
 @theme {
+  /* Core Foundation */
   --color-chechen-blue: #007AFF;
   --color-apple-light: #FBFBFD;
   --color-apple-dark: #1C1C1E;
-  --color-hearth-amber: #E25822;
-  --color-hearth-glow: #F28C38;
-  --color-vainakh-stone: #EBE8E3;
-  --color-kherch-dark: #2A2723;
+  
+  /* Semantic Logic */
+  --color-status-online: #34C759;
+  --color-status-urgent: #FF3B30;
+  --color-status-warning: #FF9500;
+  
+  /* Surface & Accents */
+  --color-vainakh-stone: #F2F2F7;
+  --color-hearth-glow: #5AC8FA;
+  --color-kherch-dark: #2C2C2E;
 }
 
 @layer base {
@@ -101,4 +108,13 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }

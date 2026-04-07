@@ -21,8 +21,15 @@ vi.mock('firebase/database', () => ({
 
 // Mock de Firebase Auth
 vi.mock('firebase/auth', () => ({
-  getAuth: vi.fn(),
+  getAuth: vi.fn(() => ({})),
+  signInAnonymously: vi.fn(() => Promise.resolve({ user: { uid: 'anonymous' } })),
+  onAuthStateChanged: vi.fn((auth, callback) => {
+    // Immediate callback for loading state transition
+    callback(null)
+    return () => {}
+  }),
   signInWithEmailAndPassword: vi.fn(),
+  signOut: vi.fn(() => Promise.resolve()),
 }));
 
 // Mock de Leaflet (car il nécessite le DOM et des dimensions)

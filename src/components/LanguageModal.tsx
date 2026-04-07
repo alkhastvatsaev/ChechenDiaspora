@@ -38,7 +38,7 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
         <div className="p-8 space-y-6">
           <div className="bg-gradient-to-br from-chechen-blue/5 to-transparent p-5 rounded-2xl border border-chechen-blue/10">
             <h3 className="font-bold text-lg text-apple-dark mb-1 flex items-center gap-2">
-              <Globe2 size={18} className="text-chechen-blue" /> ISHKOLA
+              <Globe2 size={18} className="text-chechen-blue" /> ИШКОЛА
             </h3>
             <p className="text-sm text-gray-500">
               Проверенная онлайн-школа с 13-летним опытом. Высший стандарт качества.
@@ -60,7 +60,7 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
                 <span className="font-bold text-gray-400 text-xs">02</span>
               </div>
               <div>
-                <p className="font-bold text-gray-800">English Friendly</p>
+                <p className="font-bold text-gray-800">Для говорящих по-английски</p>
                 <p className="text-sm text-gray-500">Преподаватели свободно владеют английским языком.</p>
               </div>
             </li>
@@ -74,7 +74,7 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
               className="w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
             >
               <MessageCircle size={20} />
-              WhatsApp: +7 928 290 53 89
+              Ватсап: +7 928 290 53 89
             </a>
             
             <a 
@@ -84,7 +84,7 @@ export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
               className="w-full bg-apple-dark text-white hover:bg-black font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-black/10"
             >
               <ExternalLink size={20} className="opacity-70" />
-              Перейти на сайт ISHKOLA
+              Перейти на сайт ИШКОЛА
             </a>
           </div>
         </div>

@@ -16,6 +16,13 @@ The mission of this Progressive Web App (PWA) is to create a high-leverage, comm
 - **Database Growth**: The logic must facilitate constant expansion. New members can join and also propose existing contacts to be added.
 - **No Fillers**: Do not add "social" fluff. This is a functional tools for networking and community strength.
 
+## 🧪 Testing Architecture (MANDATORY)
+- **Always Run Checks**: Before finishing a task, you MUST run `npm run check` to ensure no regressions in linting, types, or tests.
+- **Test Proximity**: Place new unit tests in `__tests__` folders next to the code (e.g., `src/components/__tests__/`).
+- **Standard Stack**: Use Vitest for unit tests and Playwright for E2E tests.
+- **Mock Integrity**: Maintain `src/test/setup.tsx`. If you add new external dependencies (e.g., a new Firebase service), ensure it is mocked correctly there.
+- **Coverage**: Aim for high coverage on business logic (Contexts, Helpers).
+
 ## 🤝 Project Philosophy
 - **Leverage**: Using the collective power of 2000+ existing contacts to benefit every person in the diaspora.
 - **Persistence**: Never lose sight of the "Bridge" function of this app (Chechen-to-Chechen connection).

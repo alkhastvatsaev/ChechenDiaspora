@@ -127,10 +127,10 @@ export default function HeritagePage() {
                   <span className="text-gray-400">Словарь предков.</span>
                 </h2>
                 <p className="text-xl text-gray-400 max-w-xl font-medium leading-relaxed">
-                  Accède à l'archive complète de la langue tchétchène. Des milliers de mots conservés pour ne jamais oublier qui nous sommes.
+                  Уникальный архив чеченского языка. Тысячи слов, сохраненных для будущих поколений.
                 </p>
                 <div className="pt-4 flex items-center gap-3 font-bold text-lg">
-                  Entrer dans l'archive <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  Войти в архив <ArrowRight className="group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
             </div>

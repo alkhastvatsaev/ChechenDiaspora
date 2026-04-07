@@ -19,36 +19,36 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
       />
       
       {/* Content Sheet */}
-      <div className="relative w-full max-w-lg bg-vainakh-stone/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-slide-up border border-kherch-dark/5 max-h-[92dvh] flex flex-col">
+      <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,122,255,0.1)] overflow-hidden animate-slide-up border border-blue-500/10 max-h-[92dvh] flex flex-col">
         {/* Header Image/Pattern Area */}
-        <div className="h-32 bg-kherch-dark relative overflow-hidden">
+        <div className="h-32 bg-blue-600 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
-            <Shield size={120} className="text-hearth-amber" />
+            <Shield size={120} className="text-white" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-700/40 to-transparent"></div>
           <button 
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-full transition-all border border-white/5"
+            className="absolute top-5 right-5 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all border border-white/10"
           >
-            <X size={20} className="text-white/80" />
+            <X size={20} className="text-white" />
           </button>
         </div>
 
         {/* Profile Details */}
         <div className="px-8 pb-10 pb-safe -mt-10 relative overflow-y-auto flex-1">
-          <div className="w-24 h-24 bg-vainakh-stone rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-kherch-dark mb-4 border-4 border-kherch-dark/5 transform hover:rotate-3 transition-transform">
+          <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center text-4xl font-black text-blue-600 mb-4 border-4 border-white transform hover:rotate-3 transition-transform">
             {member.prenom?.[0]}{member.nom?.[0]}
           </div>
 
           <div className="space-y-1.5 mb-8">
-            <h2 className="text-3xl font-black tracking-tight text-kherch-dark">
+            <h2 className="text-3xl font-black tracking-tight text-slate-900">
               {member.prenom} {member.nom}
             </h2>
             <div className="flex items-center gap-2 mt-2">
-              <span className="px-3 py-1 bg-kherch-dark text-vainakh-stone text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
+              <span className="px-3 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
                 Бёлхи / {member.profession}
               </span>
-              <span className="px-3 py-1 bg-white/50 text-kherch-dark text-[10px] font-bold uppercase tracking-widest rounded-full border border-kherch-dark/10">
+              <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-100">
                 {member.teip}
               </span>
             </div>
@@ -76,7 +76,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
               {member.isGuide && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-600/20">
                   <MapIcon size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">ГIо-Деш / Guide</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">ГIо-Деш / Гид</span>
                 </div>
               )}
             </div>
@@ -107,9 +107,9 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
             </div>
           </div>
 
-          <div className="mt-8 mb-6 p-4 md:p-5 bg-hearth-amber/5 border border-hearth-amber/20 rounded-2xl">
-            <h4 className="flex items-center gap-2 text-kherch-dark font-black tracking-tight mb-2 uppercase text-xs tracking-widest">
-              <Heart size={14} className="text-hearth-amber" /> 
+          <div className="mt-8 mb-6 p-4 md:p-5 bg-blue-50/50 border border-blue-100 rounded-2xl">
+            <h4 className="flex items-center gap-2 text-blue-900 font-black tracking-tight mb-2 uppercase text-xs tracking-widest">
+              <Heart size={14} className="text-blue-600" /> 
               Основа — Нохчалла
             </h4>
             <p className="text-xs text-kherch-dark/80 font-medium leading-relaxed">
@@ -131,7 +131,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
                 }}
                 className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366]/10 text-[#25D366] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#25D366]/20 border border-[#25D366]/20"
               >
-                <Phone size={18} /> WhatsApp
+                <Phone size={18} /> Ватсап
               </button>
               <button 
                 onClick={() => {
@@ -141,7 +141,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
                 }}
                 className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#0088cc]/20 border border-[#0088cc]/20"
               >
-                <MessageCircle size={18} /> Telegram
+                <MessageCircle size={18} /> Телеграм
               </button>
             </div>
           </div>

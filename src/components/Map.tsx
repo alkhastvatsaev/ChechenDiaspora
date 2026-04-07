@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap, GeoJSON, Circle, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, GeoJSON, Circle, Polygon, Polyline } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -14,8 +14,12 @@ import { HOMELAND_POINTS, CHECHNYA_BORDER_POINTS } from '@/data/chechen_homeland
 function ChangeView({ center }: { center: [number, number] | null }) {
   const map = useMap();
   useEffect(() => {
-    if (center) {
-      map.setView(center, map.getZoom());
+    if (center && map) {
+      try {
+        map.setView(center, map.getZoom());
+      } catch (e) {
+        // Silent catch if map isn't ready
+      }
     }
   }, [center, map]);
   return null;
@@ -30,7 +34,23 @@ interface MapProps {
 
 export default function Map({ members = [], center, onMemberClick, showHeatmap = true }: MapProps) {
   const [countryGeoJson, setCountryGeoJson] = useState<any>(null);
+  const [zoom, setZoom] = useState(3);
   const [isMounted, setIsMounted] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+
+  function ZoomHandler() {
+    const map = useMap();
+    useEffect(() => {
+      const onZoom = () => setZoom(map.getZoom());
+      map.on('zoomend', onZoom);
+      map.on('click', () => setSelectedCity(null));
+      return () => { 
+        map.off('zoomend', onZoom); 
+        map.off('click');
+      };
+    }, [map]);
+    return null;
+  }
 
   useEffect(() => {
     setIsMounted(true);
@@ -40,63 +60,95 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
     if (typeof window === 'undefined') return null;
 
     return {
-      cityLabel: (name: string) => L.divIcon({
+      cityLabel: (name: string, isSelected: boolean) => L.divIcon({
         className: 'bg-transparent',
         html: `<div class="flex flex-col items-center">
-                 <div class="w-1.5 h-1.5 bg-blue-600 rounded-full border border-white shadow-xs"></div>
-                 <span class="text-[9px] font-semibold text-blue-800 whitespace-nowrap bg-white/70 px-0.5 rounded select-none opacity-80">${name}</span>
+                 ${isSelected ? `
+                 <div class="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/40 mb-2 animate-in fade-in zoom-in duration-300">
+                   <span class="text-[11px] font-black text-apple-dark tracking-tight uppercase select-none">${name}</span>
+                 </div>
+                 ` : ''}
+                 <div class="w-2.5 h-2.5 ${isSelected ? 'bg-chechen-blue scale-125' : 'bg-chechen-blue/40'} rounded-full border-2 border-white shadow-sm transition-all duration-300"></div>
                </div>`,
         iconSize: [0, 0],
         iconAnchor: [0, 0]
       }),
-      homelandLabel: (name: string, type: string) => L.divIcon({
-        className: 'bg-transparent',
-        html: `<div class="flex flex-col items-center">
-                 <div class="${type === 'city' ? 'w-3 h-3 bg-green-700 shadow-[0_0_10px_rgba(22,101,52,0.8)]' : 'w-2 h-2 bg-green-500'} rounded-full border-2 border-white mb-1"></div>
-                 <span class="text-[10px] ${type === 'city' ? 'font-black scale-110' : 'font-bold'} text-green-900 whitespace-nowrap bg-white/95 px-1 rounded shadow-md border border-green-200 select-none">${name}</span>
-               </div>`,
-        iconSize: [0, 0],
-        iconAnchor: [0, 0]
-      }),
+      homelandLabel: (point: any) => {
+        const isHistorical = point.type === 'historical';
+        const isCity = point.type === 'city';
+        
+        // Premium Tower SVG for historical points
+        const towerSvg = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 21h16"/>
+            <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>
+            <path d="M9 3v4"/>
+            <path d="M15 3v4"/>
+            <path d="M12 3v4"/>
+            <path d="M12 11v4"/>
+          </svg>
+        `;
+
+        return L.divIcon({
+          className: 'bg-transparent transition-all duration-500 hover:scale-110',
+          html: `<div class="flex flex-col items-center group">
+                   <div class="px-2 py-0.5 ${isHistorical ? 'bg-amber-600/90' : isCity ? 'bg-green-700/95' : 'bg-green-600/80'} backdrop-blur-md rounded-lg shadow-xl border border-white/30 mb-1 flex items-center gap-1.5 transform transition-all group-hover:-translate-y-1">
+                     ${isHistorical ? `<span class="text-white">${towerSvg}</span>` : ''}
+                     <div class="flex flex-col leading-tight">
+                       <span class="text-[9px] font-black text-white tracking-widest uppercase select-none">${point.nativeName || point.name}</span>
+                       ${point.nativeName && point.nativeName !== point.name ? `<span class="text-[7px] font-medium text-white/70 italic -mt-0.5">${point.name}</span>` : ''}
+                     </div>
+                   </div>
+                   <div class="relative">
+                     <div class="w-1.5 h-1.5 ${isHistorical ? 'bg-amber-400' : 'bg-green-400'} rounded-full border border-white shadow-md"></div>
+                     ${isCity ? '<div class="absolute inset-0 w-1.5 h-1.5 bg-green-400 rounded-full animate-ping"></div>' : ''}
+                   </div>
+                 </div>`,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0]
+        });
+      },
       memberAvatar: (member: any) => {
         const initials = `${member.prenom?.[0] || ''}${member.nom?.[0] || ''}`.toUpperCase();
-        const isExpert = member.isLegalDefender || member.isTranslator || member.isGuide || member.openToMentorship;
-        let ExpertColor = '';
-        if (member.isLegalDefender) ExpertColor = '#ef4444';
-        else if (member.isTranslator) ExpertColor = '#3b82f6';
-        else if (member.isGuide) ExpertColor = '#10b981';
-        else if (member.openToMentorship) ExpertColor = '#f59e0b';
-
-        const borderColor = member.isLive ? '#10b981' : 'white';
-        const shadowColor = member.isLive ? 'rgba(16, 185, 129, 0.6)' : 'rgba(0, 0, 0, 0.1)';
-
+        
         return L.divIcon({
           className: 'bg-transparent',
           html: `
             <div class="relative group">
-              ${member.isLive ? `<div class="absolute -inset-2 bg-emerald-500/20 rounded-full animate-ping opacity-75"></div>` : ''}
-              <div class="relative w-12 h-12 bg-white rounded-2xl shadow-2xl border-2 flex items-center justify-center overflow-hidden transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out" 
-                   style="border-color: ${borderColor}; box-shadow: 0 8px 24px ${shadowColor};">
-                ${member.imageUrl 
-                  ? `<img src="${member.imageUrl}" class="w-full h-full object-cover" />`
-                  : `<span class="text-xs font-black text-slate-800 tracking-tighter">${initials}</span>`
-                }
-                ${isExpert ? `
-                  <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full shadow-lg border-2 border-white" style="background-color: ${ExpertColor};">
-                  </div>
-                ` : ''}
+              <div class="w-10 h-10 bg-chechen-blue rounded-full shadow-lg border-2 border-white flex items-center justify-center transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
+                <span class="text-[11px] font-black text-white tracking-widest">${initials}</span>
               </div>
-              <div class="absolute -top-1 -right-1 w-3 h-3 ${member.isLive ? 'bg-emerald-500' : 'bg-gray-300'} border-2 border-white rounded-full shadow-sm"></div>
             </div>
           `,
-          iconSize: [48, 48],
-          iconAnchor: [24, 24]
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
         });
       },
+      transporter: (name: string) => L.divIcon({
+        className: 'bg-transparent',
+        html: `
+          <div class="relative group flex flex-col items-center">
+            <div class="px-2 py-0.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-emerald-500/30 mb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span class="text-[7px] font-bold text-emerald-800 tracking-wider uppercase select-none">${name}</span>
+            </div>
+            <div class="w-9 h-9 bg-[#ecfdf5] rounded-xl shadow-lg border-2 border-[#10b981]/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                <path d="M15 18H9"></path>
+                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
+                <circle cx="17" cy="18" r="2"></circle>
+                <circle cx="7" cy="18" r="2"></circle>
+              </svg>
+            </div>
+          </div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+      }),
       clusterCustom: (cluster: any) => {
         const count = cluster.getChildCount();
         return L.divIcon({
-          html: `<div style="width: 40px; height: 40px; background-color: rgba(28, 28, 30, 0.9); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: inherit; font-size: 14px; border: 2px solid #007AFF; backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); font-smoothing: antialiased;">${count}</div>`,
+          html: `<div class="w-10 h-10 bg-chechen-blue/90 text-white rounded-full flex items-center justify-center font-black text-xs border-2 border-white/50 backdrop-blur-md shadow-[0_8px_20px_rgba(0,122,255,0.3)] transform active:scale-90 transition-all">${count}</div>`,
           className: 'bg-transparent',
           iconSize: L.point(40, 40, true),
         });
@@ -159,10 +211,17 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         zoomControl={false}
         scrollWheelZoom={true}
       >
+        <ZoomHandler />
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution=""
+          className="map-tiles-premium grayscale-[20%] contrast-[110%]"
+        />
+
         {center && <ChangeView center={center} />}
         
         {showHeatmap && (
-          <>
+          <Fragment>
             {countryGeoJson && (
               <GeoJSON 
                 data={countryGeoJson}
@@ -187,15 +246,6 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               }}
             />
             
-            {DIASPORA_HUBS.map(hub => (
-              <Marker 
-                key={`${hub.name}-${hub.country}`}
-                position={[hub.lat, hub.lng]}
-                icon={icons.cityLabel(hub.name)}
-                interactive={false}
-              />
-            ))}
-
             <Polygon
               positions={CHECHNYA_BORDER_POINTS}
               pathOptions={{
@@ -207,46 +257,76 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               }}
             />
 
-            {HOMELAND_POINTS.map(point => (
-              <Marker 
-                key={`homeland-${point.name}`}
-                position={[point.lat, point.lng]}
-                icon={icons.homelandLabel(point.name, point.type)}
-                interactive={true}
-              >
-                <Circle 
-                  center={[point.lat, point.lng]}
-                  radius={point.type === 'city' ? 3000 : 1500}
+            {HOMELAND_POINTS.map(point => {
+              // Zoom logic: only show homeland points when closely zoomed in
+              const isCityVisible = point.type === 'city' && zoom >= 6;
+              const isAyulVisible = point.type === 'ayul' && zoom >= 8;
+              const isHistVisible = point.type === 'historical' && zoom >= 9;
+              
+              if (!isCityVisible && !isAyulVisible && !isHistVisible) return null;
+
+              return (
+                <Fragment key={`homeland-group-${point.name}`}>
+                  <Marker 
+                    position={[point.lat, point.lng]}
+                    icon={icons.homelandLabel(point)}
+                    interactive={true}
+                    eventHandlers={{
+                      click: (e) => {
+                        L.DomEvent.stopPropagation(e);
+                      }
+                    }}
+                  />
+                  <Circle 
+                    center={[point.lat, point.lng]}
+                    radius={point.type === 'city' ? 3500 : 1800}
+                    pathOptions={{
+                      color: point.type === 'historical' ? '#f59e0b' : '#16a34a',
+                      weight: 1,
+                      opacity: 0.2,
+                      fillColor: point.type === 'historical' ? '#f59e0b' : '#16a34a',
+                      fillOpacity: 0.05
+                    }}
+                  />
+                </Fragment>
+              );
+            })}
+            
+            {/* Trajectories for transporters */}
+            {members && members.filter(m => m.isTraveling && m.routePoints).map(m => (
+              <Fragment key={`trajectory-${m.id}`}>
+                <Polyline 
+                  positions={m.routePoints}
                   pathOptions={{
-                    color: '#16a34a',
-                    weight: 1,
-                    opacity: 0.4,
-                    fillColor: '#16a34a',
-                    fillOpacity: 0.1
+                    color: '#10b981',
+                    weight: 2,
+                    opacity: 0.6,
+                    dashArray: '5, 8',
+                    lineCap: 'round',
+                    lineJoin: 'round'
                   }}
                 />
-              </Marker>
+                <Marker 
+                  position={[m.lat, m.lng]}
+                  icon={icons.transporter(m.prenom || 'Transporter')}
+                  zIndexOffset={1000}
+                />
+              </Fragment>
             ))}
-          </>
+          </Fragment>
         )}
 
-        <ZoomControl position="bottomright" />
-        
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-          attribution=""
-          className="map-tiles-premium"
-        />
 
+        
         <MarkerClusterGroup
-          chunkedLoading
+          chunkedLoading={true}
           showCoverageOnHover={false}
           maxClusterRadius={50}
           iconCreateFunction={icons.clusterCustom}
         >
-          {members.filter(m => m.lat !== undefined && m.lng !== undefined).map(member => (
+          {members && members.filter(m => m.lat !== undefined && m.lng !== undefined && !m.isTraveling).map(member => (
             <Marker 
-              key={member.id} 
+              key={`member-${member.id}`} 
               position={[member.lat, member.lng]}
               icon={icons.memberAvatar(member)}
               eventHandlers={{

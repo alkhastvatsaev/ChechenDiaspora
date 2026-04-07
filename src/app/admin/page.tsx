@@ -40,7 +40,7 @@ export default function Admin() {
       setIsLoggedIn(true);
       setError('');
     } else {
-      setError('Mot de passe incorrect.');
+      setError('Неверный пароль.');
       setPassword('');
     }
   };
@@ -51,14 +51,13 @@ export default function Admin() {
         approved: true,
         approvedAt: new Date().toISOString()
       });
-      // Optionnel : Notifier l'admin
     } catch (e) {
       console.error("Error approving:", e);
     }
   };
 
   const handleReject = async (id: string) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette demande ?")) {
+    if (window.confirm("Вы уверены, что хотите удалить эту заявку?")) {
       try {
         await remove(ref(db, `members/${id}`));
       } catch (e) {
@@ -82,15 +81,15 @@ export default function Admin() {
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>Accès Sécurisé</h1>
-            <p className="text-sm text-[#86868b] uppercase tracking-widest font-bold">Khel • modération</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>Безопасный вход</h1>
+            <p className="text-sm text-[#86868b] uppercase tracking-widest font-bold">Кхел • Модерация</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <input 
                 type="password" 
-                placeholder="Mot de passe"
+                placeholder="Пароль"
                 className="w-full bg-white px-5 py-4 rounded-2xl text-center text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -102,7 +101,7 @@ export default function Admin() {
               type="submit"
               className="w-full bg-[#1d1d1f] hover:bg-black text-white py-4 rounded-2xl text-lg font-bold shadow-[0_5px_20px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all"
             >
-              Déverrouiller
+              Войти
             </button>
           </form>
           
@@ -111,7 +110,7 @@ export default function Admin() {
               onClick={() => router.push('/')}
               className="text-[#86868b] hover:text-[#1d1d1f] text-sm font-medium transition-colors"
             >
-              Retour à la carte
+              Вернуться на карту
             </button>
           </div>
         </motion.div>
@@ -133,18 +132,18 @@ export default function Admin() {
             <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>
               Кхел
             </h1>
-            <p className="text-lg text-[#86868b] font-medium">Panneau de modération & des admissions.</p>
+            <p className="text-lg text-[#86868b] font-medium">Панель модерации и приема.</p>
           </div>
           
           <div className="flex gap-4 items-center">
             <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/5 rounded-full text-sm font-bold text-[#86868b]">
-              <span className="w-2 h-2 rounded-full bg-[#34c759]"></span> Live
+              <span className="w-2 h-2 rounded-full bg-[#34c759]"></span> В сети
             </div>
             <button 
               onClick={() => setIsLoggedIn(false)}
               className="px-5 py-2.5 bg-black/5 hover:bg-[#ff3b30]/10 hover:text-[#ff3b30] rounded-full text-sm font-bold transition-colors"
             >
-              Verrouiller
+              Выйти
             </button>
           </div>
         </motion.div>
@@ -156,7 +155,7 @@ export default function Admin() {
           transition={{ delay: 0.1 }}
         >
           <div className="flex items-center justify-between mb-6 px-1">
-            <h2 className="text-xl font-bold tracking-tight">En attente</h2>
+            <h2 className="text-xl font-bold tracking-tight">В ожидании</h2>
             <span className="bg-[#1d1d1f] text-white px-3 py-1 rounded-full text-sm font-bold">{pendingMembers.length}</span>
           </div>
 
@@ -165,8 +164,8 @@ export default function Admin() {
                <svg className="w-16 h-16 text-[#86868b] mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                </svg>
-              <h3 className="text-xl font-bold mb-2">Tout est à jour</h3>
-              <p className="text-[#86868b] font-medium">Il n'y a aucune nouvelle demande d'admission.</p>
+              <h3 className="text-xl font-bold mb-2">Все обновлено</h3>
+              <p className="text-[#86868b] font-medium">Новых заявок на вступление нет.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4">
@@ -180,14 +179,14 @@ export default function Admin() {
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-1 tracking-tight">{member.prenom} {member.nom}</h3>
                       <div className="flex flex-wrap gap-x-3 gap-y-2 mt-1 text-sm font-medium text-[#86868b]">
-                        <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> {member.age} ans</span>
+                        <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> {member.age} лет</span>
                         <span>•</span>
                         <span>{member.profession}</span>
                         <span>•</span>
                         <span className="text-[#1d1d1f] font-bold">{member.ville}</span>
                       </div>
                       <div className="mt-2 text-xs font-bold text-[#86868b] uppercase tracking-wider">
-                        Teyp {member.teip} — Originaire de {member.village}
+                        Тейп {member.teip} — Родом из {member.village}
                       </div>
                     </div>
                   </div>
@@ -196,7 +195,7 @@ export default function Admin() {
                     <button 
                       onClick={() => handleReject(member.id)}
                       className="flex-1 md:flex-none w-12 h-12 flex items-center justify-center bg-[#fbfbfd] text-[#ff3b30] hover:bg-[#ff3b30] hover:text-white rounded-full transition-colors shrink-0"
-                      title="Rejeter"
+                      title="Отклонить"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
@@ -204,7 +203,7 @@ export default function Admin() {
                       onClick={() => handleApprove(member.id, member.prenom)}
                       className="flex-1 md:flex-none px-6 h-12 bg-[#1d1d1f] text-white hover:bg-black rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shrink-0"
                     >
-                      <span>Accepter</span>
+                      <span>Принять</span>
                     </button>
                   </div>
 
@@ -213,6 +212,7 @@ export default function Admin() {
             </div>
           )}
         </motion.div>
+
 
       </div>
     </div>

@@ -43,7 +43,7 @@ export default function ManifestoPage() {
         <div className="max-w-3xl mx-auto px-6 h-20 flex items-center pt-safe-top">
           <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-black transition-colors bg-[#fbfbfd]/80 backdrop-blur-md px-4 py-2 rounded-full border border-black/5 shadow-sm">
             <ChevronLeft size={18} strokeWidth={2.5} />
-            <span className="font-bold text-xs uppercase tracking-widest">Le Foyer</span>
+            <span className="font-bold text-xs uppercase tracking-widest">Кхерч / Хаб</span>
           </Link>
         </div>
       </header>
@@ -56,13 +56,13 @@ export default function ManifestoPage() {
             <Flame className="w-8 h-8 text-white" strokeWidth={1.5} />
           </div>
           <div className="space-y-4">
-            <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-xs">Manifeste de la Diaspora</h4>
+            <h4 className="text-gray-400 font-bold uppercase tracking-[0.3em] text-xs">Манифест Диаспоры</h4>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[1.1] text-black">
-              Le Fardeau <br/> et l'Excellence.
+              Бремя <br/> и Превосходство.
             </h1>
           </div>
           <p className="text-2xl font-medium text-gray-500 leading-relaxed border-l-4 border-black pl-6">
-            Une introspection absolue sur notre réalité en exil. Détruire le stigmate, non pas par la plainte, mais par l'irréfutable preuve de notre excellence.
+            Абсолютный самоанализ нашей реальности в изгнании. Уничтожить стигму не жалобами, а неопровержимым доказательством нашего превосходства.
           </p>
         </div>
 
@@ -71,29 +71,29 @@ export default function ManifestoPage() {
           
           <section className="space-y-8 fade-up-text">
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">01.</span> Les Racines de l'Exode
+              <span className="text-gray-300 font-normal">01.</span> Корни Исхода
             </h2>
             <p>
-              Comprendre la diaspora tchétchène moderne nécessite de regarder la vérité en face. Nous n'avons pas quitté les montagnes du Caucase par pur opportunisme économique. Nous avons été propulsés hors de nos terres <em>(Daimohk)</em> par la violence inouïe de deux guerres dévastatrices. Notre exil est avant tout un instinct de survie, un acte de protection pour nos familles, nos enfants et notre patrimoine génétique même.
+              Чтобы понять современную чеченскую диаспору, необходимо посмотреть правде в глаза. Мы не покидали горы Кавказа из-за жажды экономической выгоды. Мы были выброшены за пределы наших земель <em>(Даймохк)</em> неслыханной жестокостью двух разрушительных войн. Наше изгнание — это, прежде всего, инстинкт самосохранения, акт защиты наших семей, наших детей и даже нашего генофонда.
             </p>
             <p>
-              Arrivés en Europe – en France, en Allemagne, en Autriche, en Belgique – nos parents ont dû affronter un monde inconnu, une barrière linguistique de fer, et le traumatisme sourd de la perte. Pourtant, ils ont construit. Ils ont bâti des vies à partir des cendres. 
+              Прибыв в Европу — во Францию, Германию, Австрию, Бельгию — наши родители столкнулись с неведомым миром, железным языковым барьером и глухой травмой потери. И все же они строили. Они воздвигли жизни из пепла.
             </p>
           </section>
 
           <section className="space-y-8 fade-up-text">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent my-16" />
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">02.</span> Le Poids du Stigmate
+              <span className="text-gray-300 font-normal">02.</span> Тяжесть Стигмы
             </h2>
             <p>
-              Aujourd'hui, nous faisons face à un second front. Il n'est plus armé, il est sociétal, médiatique et administratif. En Europe et ailleurs, une étiquette lourde, injuste et stigmatisante a été collée sur le front de notre communauté. 
+              Сегодня мы стоим перед вторым фронтом. Он больше не вооружен, он социальный, медийный и административный. В Европе и не только, на нашу общину был повешен тяжелый, несправедливый и стигматизирующий ярлык.
             </p>
             <p>
-              <strong>Le récit médiatique est brutal.</strong> La communauté est trop souvent observée à travers le prisme de la sécurité, de la suspicion, et de la criminalisation collective. Dans certains pays hôtes, le simple fait de porter un nom à consonance nord-caucasienne peut déclencher des vérifications supplémentaires, des refus de logement, des obstacles à l'embauche, voire un harcèlement administratif ou le spectre terrifiant d'une déportation.
+              <strong>Освещение в СМИ брутально.</strong> Общество слишком часто рассматривается через призму безопасности, подозрений и коллективной криминализации. В некоторых принимающих странах один лишь факт ношения северокавказской фамилии может стать причиной дополнительных проверок, отказов в жилье, препятствий при найме на работу, вплоть до административных притеснений или пугающего призрака депортации.
             </p>
             <p>
-              Nous sommes pris en étau. D'un côté, la menace des abus des notices rouges d'Interpol lancées par des entités étatiques vengeresses. De l'autre, la méfiance des pays d'accueil qui simplifient une histoire millénaire complexe en un raccourci xénophobe. Ce fardeau est lourd pour la jeunesse qui grandit ici.
+              Мы зажаты в тисках. С одной стороны, угроза злоупотреблений красными циркулярами Интерпола, инициируемыми мстительными государственными структурами. С другой стороны, недоверие принимающих стран, которые упрощают сложную тысячелетнюю историю до ксенофобских ярлыков. Это бремя тяжело для молодежи, которая здесь растет.
             </p>
           </section>
 
@@ -101,24 +101,22 @@ export default function ManifestoPage() {
             <div className="bg-black text-white p-10 md:p-16 rounded-[3rem] shadow-2xl relative overflow-hidden">
               <Shield className="absolute -right-10 -bottom-10 w-64 h-64 text-white opacity-5" />
               <div className="relative z-10 space-y-6">
-                <h3 className="text-3xl font-black text-white">La Tragédie du 1% <br/><span className="text-gray-400">et le Silence des 99%</span></h3>
+                <h3 className="text-3xl font-black text-white">Трагедия 1% <br/><span className="text-gray-400">и Молчание 99%</span></h3>
                 <p className="text-gray-300 text-lg leading-relaxed font-medium">
-                  C'est la tragédie mathématique de l'attention publique. Les actions d'une infime minorité — le 1% qui s'égare, qui trahit l'éducation de nos pères, qui tombe dans la délinquance ou les idéologies mortifères — sont systématiquement instrumentalisées pour définir l'ensemble de notre peuple.
+                  Это математическая трагедия общественного внимания. Действия крошечного меньшинства — того 1%, который сбился с пути, который предал воспитание наших отцов, который скатился в преступность или смертоносные идеологии — систематически используются для определения всего нашего народа.
                 </p>
                 <p className="text-gray-300 text-lg leading-relaxed font-medium">
-                  Quand "l'un" commet une faute, l'origine ethnique occupe les gros titres. Mais qui parle des 99% ? Le monde ignore délibérément la majorité silencieuse de notre diaspora.
+                  Когда оступается один, его происхождение попадает в заголовки. Но кто говорит о 99%? Мир намеренно игнорирует молчаливое большинство нашей диаспоры.
                 </p>
               </div>
             </div>
             
             <div className="pl-6 border-l-2 border-black/10 space-y-6">
               <p>
-                Qui parle de ces milliers de médecins, d'infirmières, de chirurgiens d'origine tchétchène qui sauvent des vies chaque jour dans les hôpitaux européens ? 
-                Qui parle de nos brillants ingénieurs, de nos étudiants diplômés des plus grandes universités, de nos entrepreneurs qui créent de l'emploi et de la valeur dans la matrice même de la société française, allemande ou autrichienne ? 
-                Qui souligne que la majorité écrasante de notre peuple vit honnêtement, paie ses impôts, respecte les lois et élève ses enfants dans le respect et l'honneur strict ?
+                Кто говорит о тысячах врачей, медсестер, хирургов чеченского происхождения, которые ежедневно спасают жизни в больницах Европы? Кто говорит о наших блестящих инженерах, о наших студентах-выпускниках крупнейших университетов, о наших предпринимателях, создающих рабочие места в самом сердце общества Франции, Германии или Австрии? Кто подчеркивает, что подавляющее большинство нашего народа живет честно, платит налоги, соблюдает законы и воспитывает своих детей в строгом уважении и чести?
               </p>
               <p className="font-bold text-black text-xl">
-                Notre excellence est invisible, nos erreurs sont luminescentes. C'est le lot des exilés, et nous devons l'accepter pour mieux le combattre.
+                Наши успехи невидимы, наши ошибки ярко освещены. Это удел изгнанников, и мы должны признать это, чтобы лучше с этим бороться.
               </p>
             </div>
           </section>
@@ -126,38 +124,38 @@ export default function ManifestoPage() {
           <section className="space-y-8 fade-up-text">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent my-16" />
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">03.</span> Le Devoir de l'Invité (Le Haasha)
+              <span className="text-gray-300 font-normal">03.</span> Долг Гостя (Хьаша)
             </h2>
             <p>
-              Notre tradition, le <em>Nokhchalla</em>, n'est pas qu'un mot vide. C'est un code de conduite rigoureux, forgé dans la roche. Au sommet de ce code se trouve un concept sacré : l'hospitalité.
+              Наша традиция, <em>Нохчалла</em>, — это не пустые слова. Это строгий кодекс поведения, высеченный в скале. На вершине этого кодекса находится священное понятие: гостеприимство.
             </p>
             <p>
-              Mais l'hospitalité va dans les deux sens. Si l'hôte se doit de tout offrir à l'invité, <strong>l'invité (le Haasha) a le devoir absolu d'être irréprochable.</strong> En Europe, c'est nous les invités. Ces pays ont accordé l'asile à nos pères quand ils fuyaient les bombes. Ils ont nourri, soigné et scolarisé nos familles. Le Nokhchalla exige de nous une gratitude sans borne et un respect intransigeant des lois de nos sociétés d'accueil.
+              Но гостеприимство обоюдно. Если хозяин должен отдать все гостю, <strong>гость (Хьаша) имеет абсолютный долг быть безупречным.</strong> В Европе мы — гости. Эти страны предоставили убежище нашим отцам, когда они бежали от бомб. Они накормили, вылечили и дали образование нашим семьям. Нохчалла требует от нас безграничной благодарности и бескомпромиссного соблюдения законов принимающих нас стран.
             </p>
             <p className="p-6 bg-gray-50 rounded-2xl italic text-gray-600 font-medium">
-              "Celui qui ne respecte pas le toit qui l'abrite n'est ni un héros, ni un homme d'honneur. Il est la honte de son Teip."
+              "Тот, кто не уважает крышу, которая его укрывает, не является ни героем, ни человеком чести. Он — позор своего тайпа."
             </p>
           </section>
 
           <section className="space-y-8 fade-up-text">
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">04.</span> Détruire les Préjugés par l'Excellence
+              <span className="text-gray-300 font-normal">04.</span> Уничтожать Предрассудки Превосходством
             </h2>
             <p>
-              Comment détruire ces stéréotypes qui pèsent sur l'avenir de nos enfants ? Ce ne sera ni par la victimisation constante, ni par la plainte incessante. Le monde ne respecte que la force intellectuelle, la contribution manifeste et le succès.
+              Как уничтожить те стереотипы, что нависают над будущим наших детей? Не путем постоянных упреков или нескончаемых жалоб. Мир уважает только интеллектуальную силу, очевидный вклад и успех.
             </p>
             <p>
-              <strong>Nous devons écraser le préjugé sous le poids de notre excellence.</strong> 
+              <strong>Мы должны раздавить предрассудки тяжестью нашего превосходства.</strong> 
             </p>
             <p>
-              Aujourd'hui, l'acte de résistance le plus puissant, le patriotisme le plus élevé pour un jeune Vainakh, ce n'est pas l'agitation stérile. C'est d'obtenir un master, de créer une entreprise florissante, de devenir un avocat redoutable, un chercheur reconnu, un artiste brillant. Lorsque les institutions locales interagiront avec nous, elles ne verront pas des problèmes, elles verront la solution, la compétence, le savoir-être (<em>O'zdangalla</em>). 
+              Сегодня самый мощный акт сопротивления, самый высокий патриотизм для молодого вайнаха — это не бессмысленная агитация. Это получение диплома, создание процветающего бизнеса, становление выдающимся адвокатом, признанным исследователем или блестящим художником. Когда местные институты будут взаимодействовать с нами, они увидят не проблемы, они увидят решения, компетентность и благородство манер (<em>Оьздангалла</em>).
             </p>
           </section>
 
           <section className="space-y-12 fade-up-text">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent my-16" />
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">05.</span> L'Arme de l'Éducation (Кхетам)
+              <span className="text-gray-300 font-normal">05.</span> Оружие Образования (Кхетам)
             </h2>
             
             <div className="flex gap-6 items-start">
@@ -165,52 +163,52 @@ export default function ManifestoPage() {
                 <GraduationCap className="w-8 h-8 text-chechen-blue" />
               </div>
               <p>
-                L'éducation, pure et simple, est notre porte de salut. Les parents de notre communauté ont sacrifié leur santé dans des usines et sur des chantiers en Europe, non pas pour que leurs enfants reproduisent la précarité ou s'égarent dans l'illusion de la facilité de la rue, mais pour qu'ils s'assoient sur les bancs des grandes écoles. Ne trahisons pas leur sacrifice.
+                Образование — наш единственный путь к спасению. Родители из нашей общины пожертвовали здоровьем на фабриках и стройках Европы не для того, чтобы их дети повторили их участь или сбились с пути под иллюзией легкой уличной жизни, а для того, чтобы они сели за парты величайших школ. Мы не должны предать их жертву.
               </p>
             </div>
             
             <p>
-              C'est pourquoi, au sein de cet outil, de cette plateforme, **le Mentorat est central**. Ceux de la première vague qui ont réussi à percer le plafond de verre (ingénieurs, juristes, cadres) ont le devoir moral absolu, imposé par la fraternité, de tendre la main et de guider la jeunesse qui doute. 
+              Именно поэтому на нашей платформе **Менторство занимает центральное место**. Те представители первой волны, кто смог пробить стеклянный потолок (инженеры, юристы, управленцы), имеют абсолютный моральный долг — продиктованный братством — протянуть руку помощи и направить сомневающуюся молодежь.
             </p>
           </section>
 
           <section className="space-y-8 fade-up-text">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent my-16" />
             <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight flex items-center gap-4">
-              <span className="text-gray-300 font-normal">06.</span> La Fonction du Foyer "Вайнах"
+              <span className="text-gray-300 font-normal">06.</span> Назначение Дома "Вайнах"
             </h2>
             <p>
-              C'est la raison d'être de cette application. Elle n'est pas un réseau social conçu pour tuer le temps ou flatter des egos. C'est une **infrastructure numérique stricte, fonctionnelle, dédiée à la protection et à l'ascension** de notre communauté. 
+              В этом заключается суть нашего приложения. Это не социальная сеть, созданная для того, чтобы убивать время или льстить чьему-то эго. Это **строгая, функциональная цифровая инфраструктура, посвященная защите и возвышению** нашего сообщества.
             </p>
             <ul className="space-y-6 mt-8 p-0 list-none">
               <li className="flex gap-4">
                 <span className="w-2 h-2 rounded-full bg-black mt-2.5 shrink-0" />
-                <p className="m-0"><strong className="text-black">Un Bouclier Juridique :</strong> Identifier instantanément nos avocats et traducteurs assermentés pour protéger ceux d'entre nous menacés d'abus administratifs et sécuriser notre présence légale permanente.</p>
+                <p className="m-0"><strong className="text-black">Юридический Щит:</strong> Мгновенно находить наших юристов и присяжных переводчиков для защиты тех из нас, кому грозит административный произвол, а также для обеспечения нашего законного постоянного проживания.</p>
               </li>
               <li className="flex gap-4">
                 <span className="w-2 h-2 rounded-full bg-black mt-2.5 shrink-0" />
-                <p className="m-0"><strong className="text-black">Un Relais de Mentorat :</strong> Mettre en relation l'excellence technique, médicale ou intellectuelle d'un membre avec l'ambition légitime d'un autre.</p>
+                <p className="m-0"><strong className="text-black">Сеть Наставничества:</strong> Соединять техническое, медицинское или интеллектуальное превосходство одного члена с обоснованными амбициями другого.</p>
               </li>
               <li className="flex gap-4">
                 <span className="w-2 h-2 rounded-full bg-black mt-2.5 shrink-0" />
-                <p className="m-0"><strong className="text-black">Un Réseau Économique :</strong> Favoriser les affaires, l'embauche, et garantir le logement par la caution de nos frères et sœurs solides économiquement.</p>
+                <p className="m-0"><strong className="text-black">Экономическая Сеть:</strong> Способствовать бизнесу, найму на работу и гарантировать жилье через поручительство наших экономически крепких братьев и сестер.</p>
               </li>
               <li className="flex gap-4">
                 <span className="w-2 h-2 rounded-full bg-black mt-2.5 shrink-0" />
-                <p className="m-0"><strong className="text-black">Un Devoir Sacré :</strong> Faciliter la logistique et les fonds pour gérer les épreuves ultimes, notamment le respect digne et le rapatriement funéraire de nos anciens.</p>
+                <p className="m-0"><strong className="text-black">Священный Долг:</strong> Облегчать логистику и сбор средств для решения самых сложных испытаний, в частности, для достойного уважения и репатриации умерших.</p>
               </li>
             </ul>
           </section>
 
           <section className="space-y-8 fade-up-text pb-20">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent my-16" />
-            <h2 className="text-4xl font-black text-black tracking-tighter">Épilogue</h2>
+            <h2 className="text-4xl font-black text-black tracking-tighter">Эпилог</h2>
             <p className="text-2xl font-medium leading-relaxed">
-              Personne ne viendra nous sauver, si ce n'est nous-mêmes, par la grâce de Dieu.
+              Никто не придет нас спасать, кроме нас самих, по милости Всевышнего.
             </p>
             <p className="text-xl text-gray-500 font-medium">
-              Soyons les meilleurs citoyens, soyons les plus éduqués, soyons d'une droiture inébranlable et d'une utilité incontestable pour le monde qui nous entoure.<br/><br/>
-              Puisons dans notre identité millénaire la fierté non pas pour être arrogants, mais pour trouver la force d'être irréprochables. N'ayons aucune patience, aucune complaisance envers ceux d'entre nous qui dévient et salissent l'histoire de leurs ancêtres. Elevons les autres.
+              Будем лучшими гражданами, будем самыми образованными, будем обладать непоколебимой честностью и быть безусловной пользой для мира, который нас окружает.<br/><br/>
+              Почерпнем из нашей тысячелетней идентичности гордость — не для высокомерия, а для того, чтобы найти в ней силы быть безупречными. У нас не должно быть ни терпения, ни снисхождения к тем из нас, кто оступается и порочит историю своих предков. Будем возвышать других.
             </p>
             <p className="text-2xl font-black pt-8">
               Далла аьтто бойла вай.

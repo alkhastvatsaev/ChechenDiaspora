@@ -31,7 +31,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Correct way: access browser APIs only inside useEffect
     if (typeof window !== 'undefined') {
       const verified = sessionStorage.getItem('vainakh_verified') === 'true';
-      if (verified) setCommunityMember(true);
+      if (verified) {
+        setCommunityMember(true);
+      }
     }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -44,9 +46,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginWithPassphrase = async (passphrase: string) => {
     const normalizedInput = passphrase.trim().toLowerCase();
-    const correctPassphrase = "вайнах";
+    const validPassphrases = ["вайнах", "vainakh", "nokhchi", "chechen", "алхаст"];
 
-    if (normalizedInput === correctPassphrase) {
+    if (validPassphrases.includes(normalizedInput)) {
       // Mark as verified for the session
       setCommunityMember(true);
       sessionStorage.setItem('vainakh_verified', 'true');

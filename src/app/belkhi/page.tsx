@@ -61,7 +61,7 @@ export default function BelkhiPage() {
     description: '',
     category: 'aid' as AdCategory,
     ville: '',
-    pays: 'France',
+    pays: 'Франция',
     phone: ''
   });
 
@@ -113,7 +113,7 @@ export default function BelkhiPage() {
       description: '',
       category: 'aid',
       ville: '',
-      pays: 'France',
+      pays: 'Франция',
       phone: ''
     });
   };
@@ -127,7 +127,7 @@ export default function BelkhiPage() {
             <ChevronLeft size={24} />
           </Link>
           <div className="text-center">
-            <h1 className="text-xl font-black tracking-tight">Белхи / Belkhi</h1>
+            <h1 className="text-xl font-black tracking-tight">Белхи</h1>
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Взаимопомощь</p>
           </div>
           <button 
@@ -301,7 +301,7 @@ export default function BelkhiPage() {
                   <input 
                     type="text" 
                     required
-                    placeholder="Например: Paris"
+                    placeholder="Например: Париж"
                     className="w-full bg-gray-50 border border-transparent focus:border-black/10 focus:bg-white p-4 rounded-xl text-sm font-medium outline-none transition-all"
                     value={newAd.ville}
                     onChange={(e) => setNewAd({ ...newAd, ville: e.target.value })}

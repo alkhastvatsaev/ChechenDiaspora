@@ -72,7 +72,7 @@ export default function DictionaryPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Дош лаха (Chercher un mot...)"
+              placeholder="Поиск слова..."
               className="w-full bg-black/5 border-none rounded-2xl pl-12 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-black/5 transition-all"
             />
           </div>
@@ -107,7 +107,7 @@ export default function DictionaryPage() {
             Архив: Дошлор
           </div>
           <h1 className="text-4xl font-black tracking-tight mb-3">Словарь Наследия</h1>
-          <p className="text-gray-500 font-medium">Conserver et transmettre la langue de nos ancêtres.</p>
+          <p className="text-gray-500 font-medium">Сохранение и передача языка наших предков.</p>
         </header>
 
         {/* Word Grid */}
@@ -134,16 +134,11 @@ export default function DictionaryPage() {
                       </button>
                     </div>
                     <h3 className="text-2xl font-black mb-2 flex items-center gap-3">
-                      {word.ce}
-                      <span className="w-1.5 h-1.5 rounded-full bg-chechen-blue/30" />
+                       {word.ce}
+                       <span className="w-1.5 h-1.5 rounded-full bg-chechen-blue/30" />
                     </h3>
                     <div className="space-y-1">
                       <p className="text-gray-600 font-medium leading-tight">
-                        <span className="text-[10px] font-black text-gray-300 mr-2 uppercase">FR</span>
-                        {word.fr}
-                      </p>
-                      <p className="text-gray-400 text-sm font-medium leading-tight">
-                        <span className="text-[10px] font-black text-gray-200 mr-2 uppercase">RU</span>
                         {word.ru}
                       </p>
                     </div>
@@ -155,7 +150,7 @@ export default function DictionaryPage() {
                       <div className="w-1 h-1 rounded-full bg-gray-200" />
                     </div>
                     <button className="text-xs font-bold text-gray-300 hover:text-chechen-blue transition-colors flex items-center gap-1 group">
-                      Détails <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                      Подробнее <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
                 </motion.div>
@@ -165,12 +160,12 @@ export default function DictionaryPage() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto text-gray-300">
                   <Search size={32} />
                 </div>
-                <p className="font-bold text-gray-400">Дош ца карийна (Mot non trouvé)</p>
+                <p className="font-bold text-gray-400">Дош ца карийна (Слово не найдено)</p>
                 <button 
                   onClick={() => {setSearch(""); setActiveCategory("Все");}}
                   className="text-chechen-blue font-bold text-sm underline underline-offset-4"
                 >
-                  Voir tous les mots
+                  Показать все слова
                 </button>
               </div>
             )}
@@ -183,20 +178,21 @@ export default function DictionaryPage() {
             <Globe size={180} />
           </div>
           <div className="relative z-10 max-w-lg">
-            <h2 className="text-3xl font-black mb-4">Complétez l'Archive.</h2>
+            <h2 className="text-3xl font-black mb-4">Пополнить архив.</h2>
             <p className="text-gray-400 font-medium mb-8 leading-relaxed">
-              Le dictionnaire est en pleine expansion. Tu as un fichier PDF, Excel ou JSON contenant des mots ? Ou tu veux ajouter un mot manuellement ?
+              Словарь постоянно расширяется. У вас есть PDF, Excel или JSON файл со словами? Или вы хотите добавить слово вручную?
             </p>
             <div className="flex flex-wrap gap-4">
               <button className="bg-white text-black px-6 py-3 rounded-2xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
-                Proposer un mot
+                Предложить слово
               </button>
               <button className="bg-white/10 text-white border border-white/20 px-6 py-3 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center gap-2">
-                Importer (JSON)
+                Импорт (JSON)
               </button>
             </div>
           </div>
         </section>
+
       </main>
     </div>
   );

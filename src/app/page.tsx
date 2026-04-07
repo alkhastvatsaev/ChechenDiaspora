@@ -3,12 +3,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, ArrowUp, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
+import StoryOverlay from '@/components/StoryOverlay';
 
 // Use dynamic import for Leaflet Map as it needs 'window' (client-side only)
 const Map = dynamic(() => import('@/components/Map'), { 
@@ -17,32 +18,34 @@ const Map = dynamic(() => import('@/components/Map'), {
 });
 
 const sampleExperts = [
-  { id: 'S1', prenom: "Aslan", nom: "Bazarov", profession: "Avocat / Droit d'Asile", isLegalDefender: true, ville: "Strasbourg", pays: "France", village: "Shali", teip: "Shaloy", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Prêt à aider juridiquement mes frères." },
-  { id: 'S2', prenom: "Zelim", nom: "Umarov", profession: "Ingénieur Software", ville: "Berlin", pays: "Allemagne", village: "Gekhi", teip: "Gekhoy", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Je peux coacher les jeunes vers l'IT." },
-  { id: 'S3', prenom: "Amina", nom: "Isaeva", profession: "Traductrice assermentée", isTranslator: true, ville: "Vienne", pays: "Autriche", village: "Vedeno", teip: "Beltoy", lat: 48.2082, lng: 16.3738, isLive: true, approved: true, message: "Traduction Arabe/Allemand/Français." },
-  { id: 'S4', prenom: "Beslan", nom: "Tsaro", profession: "Notaire", ville: "Nice", pays: "France", village: "Gudermes", teip: "Gordaloy", lat: 43.7102, lng: 7.2620, isLive: false, approved: true },
-  { id: 'S5', prenom: "Mansour", nom: "Gakaev", profession: "Coach Sportif / MMA", ville: "Varsovie", pays: "Pologne", village: "Argun", teip: "Elistanzhoy", lat: 52.2297, lng: 21.0122, isLive: true, approved: true },
-  { id: 'S6', prenom: "Raisa", nom: "Kadyrova", profession: "Médecin Généraliste", ville: "Lyon", pays: "France", village: "Grozny", teip: "Shaloy", lat: 45.7640, lng: 4.8357, isLive: false, approved: true },
-  { id: 'S7', prenom: "Khamzat", nom: "Djabrailov", profession: "Politologue", ville: "Bruxelles", pays: "Belgique", village: "Urus-Martan", teip: "Chonkoy", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
-  { id: 'S8', prenom: "Ismail", nom: "Naurbiev", profession: "Architecte", ville: "Munich", pays: "Allemagne", village: "Sernovodsk", teip: "Orstkhoy", lat: 48.1351, lng: 11.5820, isLive: false, approved: true },
-  { id: 'S9', prenom: "Liana", nom: "Tutaeva", profession: "Designer Marketing", ville: "Paris", pays: "France", village: "Achkhoy-Martan", teip: "Tsetshoy", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
-  { id: 'S10', prenom: "Adam", nom: "Khadjiev", profession: "Expert Cyber-Sécurité", ville: "Zurich", pays: "Suisse", village: "Bamut", teip: "Akkiy", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
+  { id: 'S1', prenom: "Аслан", nom: "Базаров", profession: "Юрист / Право убежища", isLegalDefender: true, ville: "Страсбург", pays: "Франция", village: "Шали", teip: "Шолой", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Готов помочь братьям юридически.", hasStory: true, storyContent: { type: 'berkat', title: 'Срочная помощь', text: 'Нужен переводчик для семьи в Страсбурге на завтра. Кто свободен?', date: '2ч назад' } },
+  { id: 'S2', prenom: "Зелим", nom: "Умаров", profession: "Инженер ПО", ville: "Берлин", pays: "Германия", village: "Гехи", teip: "Гехой", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Могу стать наставником в IT." },
+  { id: 'S3', prenom: "Амина", nom: "Исаева", profession: "Присяжный переводчик", isTranslator: true, ville: "Вена", pays: "Австрия", village: "Ведено", teip: "Белтой", lat: 48.2082, lng: 16.3738, isLive: true, approved: true, message: "Перевод: Арабский/Немецкий/Французский.", hasStory: true, storyContent: { type: 'heritage', title: 'Урок языка', text: 'Сегодня разбираем тему Адатов в нашем культурном центре.', date: '30м назад' } },
+  { id: 'S4', prenom: "Беслан", nom: "Цароев", profession: "Нотариус", ville: "Ницца", pays: "Франция", village: "Гудермес", teip: "Гордалой", lat: 43.7102, lng: 7.2620, isLive: false, approved: true },
+  { id: 'S5', prenom: "Мансур", nom: "Гакаев", profession: "Тренер / ММА", ville: "Варшава", pays: "Польша", village: "Аргун", teip: "Элистанжхой", lat: 52.2297, lng: 21.0122, isLive: true, approved: true },
+  { id: 'S6', prenom: "Раиса", nom: "Кадырова", profession: "Терапевт", ville: "Лион", pays: "Франция", village: "Грозный", teip: "Шолой", lat: 45.7640, lng: 4.8357, isLive: false, approved: true },
+  { id: 'S7', prenom: "Хамзат", nom: "Джабраилов", profession: "Политолог", ville: "Брюссель", pays: "Бельгия", village: "Урус-Мартан", teip: "Чонкой", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
+  { id: 'S8', prenom: "Исмаил", nom: "Наурбиев", profession: "Архитектор", ville: "Мюнхен", pays: "Германия", village: "Серноводск", teip: "Орстхой", lat: 48.1351, lng: 11.5820, isLive: false, approved: true },
+  { id: 'S9', prenom: "Лиана", nom: "Тутаева", profession: "Дизайнер Маркетинга", ville: "Париж", pays: "Франция", village: "Ачхой-Мартан", teip: "Цечой", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
+  { id: 'S10', prenom: "Адам", nom: "Хаджиев", profession: "Эксперт Кибербезопасности", ville: "Цюрих", pays: "Швейцария", village: "Бамут", teip: "Аккий", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
 ];
 
 export default function Home() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Core State
+  const [activeTab, setActiveTab] = useState<'map' | 'hub' | 'council'>('map');
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
+  const [selectedStoryMember, setSelectedStoryMember] = useState<any | null>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<'amanat' | 'union-son' | 'union-daughter' | null>(null);
+  const [activeModal, setActiveModal] = useState<'amanat' | 'perevozchik' | 'administrative' | 'union-son' | 'union-daughter' | 'berkat-form' | null>(null);
+  const [showBerkat, setShowBerkat] = useState(false);
   
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeip, setSelectedTeip] = useState('');
   const [selectedProfession, setSelectedProfession] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
@@ -65,23 +68,50 @@ export default function Home() {
     }
   };
 
-  const handleExpertFilter = (type: string) => {
-    const nextType = selectedExpertType === type ? null : type;
-    setSelectedExpertType(nextType);
-    if (nextType) {
-      setSearchQuery('');
-      setIsSidebarOpen(true);
-    }
-  };
-
   // Listen to members in Realtime Database
   useEffect(() => {
     const membersRef = ref(db, 'members');
     const unsubscribe = onValue(membersRef, (snapshot) => {
       const data = snapshot.val();
       const travelers = [
-        { id: 'T1', prenom: "Mansour", nom: "Dadaev", isTraveling: true, travelFrom: "Bruxelles", travelTo: "Grozny", approved: true },
-        { id: 'T2', prenom: "Liana", nom: "Isaeva", isTraveling: true, travelFrom: "Vienne", travelTo: "Grozny", approved: true }
+        { 
+          id: 'V1', 
+          prenom: "Вадик", 
+          isTraveling: true, 
+          routePoints: [
+            [48.5734, 7.7521],   // Strasbourg
+            [48.1351, 11.5820],  // Munich
+            [48.2082, 16.3738],  // Vienna
+            [47.4979, 19.0402],  // Budapest
+            [44.4268, 26.1025],  // Bucharest
+            [41.0082, 28.9784],  // Istanbul
+            [41.2867, 36.33],    // Samsun
+            [41.6168, 41.6367],  // Batumi
+            [41.7151, 44.7877],  // Tbilisi
+            [43.0246, 44.6656],  // Vladikavkaz
+            [43.318, 45.694]     // Grozny
+          ],
+          lat: 48.5734, lng: 7.7521, 
+          approved: true 
+        },
+        { 
+          id: 'T1', 
+          prenom: "Мансур", 
+          nom: "Дадаев", 
+          isTraveling: true, 
+          routePoints: [
+            [50.8503, 4.3517],   // Brussels
+            [50.1109, 8.6821],   // Frankfurt
+            [50.0755, 14.4378],  // Prague
+            [52.2297, 21.0122],  // Warsaw
+            [53.9006, 27.5590],  // Minsk
+            [55.7558, 37.6173],  // Moscow
+            [47.2357, 39.7015],  // Rostov
+            [43.318, 45.694]     // Grozny
+          ],
+          lat: 50.8503, lng: 4.3517, 
+          approved: true 
+        }
       ];
 
       if (data) {
@@ -148,17 +178,6 @@ export default function Home() {
     });
   }, [members, searchQuery, selectedTeip, selectedProfession, selectedExpertType]);
 
-  // Derived Filters
-  const teips = useMemo(() => {
-    const set = new Set(members.map(m => m.teip).filter(Boolean));
-    return Array.from(set).sort();
-  }, [members]);
-
-  const professions = useMemo(() => {
-    const set = new Set(members.map(m => m.profession).filter(Boolean));
-    return Array.from(set).sort();
-  }, [members]);
-
   const liveCount = useMemo(() => {
     return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
   }, [members]);
@@ -172,459 +191,396 @@ export default function Home() {
       setSelectedExpertType('');
     }
     setIsSearchFocused(false);
+    setActiveTab('hub');
   };
 
   return (
-    <main className="flex h-full flex-col bg-apple-light overflow-hidden">
-      <div className="relative flex-1 flex overflow-hidden">
-        {/* Map Layer */}
-        <div className="absolute inset-0 z-0">
-          <Map 
-            members={filteredMembers} 
-            center={mapCenter} 
-            showHeatmap={showHeatmap}
-            onMemberClick={setSelectedMember}
-          />
-        </div>
+    <main className="flex h-full w-full flex-col bg-apple-light overflow-hidden fixed inset-0">
+      {/* Background Interactive Map - Always Presence */}
+      <div className="absolute inset-0 z-0">
+        <Map 
+          members={filteredMembers} 
+          center={mapCenter} 
+          showHeatmap={showHeatmap}
+          onMemberClick={(m: any) => {
+            if (m.hasStory) {
+              setSelectedStoryMember(m);
+            } else {
+              setSelectedMember(m);
+              setActiveTab('map');
+            }
+          }}
+        />
+      </div>
 
-        {/* Omnibar & Search UI - Adjusted for Notch/Dynamic Island */}
-        <div className="absolute top-0 left-0 right-0 z-40 p-4 sm:p-8 pt-safe pointer-events-none">
-           <div className="max-w-2xl mx-auto space-y-3">
-              <div className="relative pointer-events-auto">
-                 <div className={`flex items-center bg-white/90 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl border transition-all duration-500 ${isSearchFocused ? 'border-black/20 ring-4 ring-black/5 scale-[1.02]' : 'border-black/5 hover:border-black/10'}`}>
-                    <button 
-                      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                      className="w-12 h-12 flex items-center justify-center text-kherch-dark hover:bg-black/5 rounded-2xl transition-colors"
-                    >
-                       <Menu size={20} />
-                    </button>
-                    
-                    <div className="flex-1 flex items-center px-2">
-                       <Search size={18} className="text-kherch-dark/30 mr-3" />
-                       <input 
-                         type="text" 
-                         placeholder="Avocat, Strasbourg, Billtoy..."
-                         className="w-full bg-transparent border-none outline-none text-sm font-bold text-kherch-dark placeholder:text-kherch-dark/20 h-10"
-                         value={searchQuery}
-                         onChange={(e) => setSearchQuery(e.target.value)}
-                         onFocus={() => setIsSearchFocused(true)}
-                       />
-                    </div>
 
-                    <div className="flex items-center gap-1 pr-1">
-                       <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-vainakh-stone rounded-xl border border-black/5">
-                          <span className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></span>
-                          <span className="text-[10px] font-black text-kherch-dark tracking-widest">{liveCount} LIVE</span>
-                       </div>
-                    </div>
-                 </div>
-
-                 {/* Intelligent Suggestions Panel */}
-                 <AnimatePresence>
-                    {isSearchFocused && (
-                       <motion.div 
-                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                         className="absolute top-20 left-0 right-0 bg-white/95 backdrop-blur-3xl rounded-[2rem] border border-black/5 shadow-2xl p-6 overflow-hidden max-h-[70vh] overflow-y-auto"
-                       >
-                          <div className="flex justify-between items-center mb-6">
-                             <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Suggestions intelligentes</h4>
-                             <button onClick={() => setIsSearchFocused(false)} className="text-gray-400 hover:text-black transition-colors">
-                                <X size={16} />
-                             </button>
-                          </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                             <section>
-                                <div className="flex items-center gap-2 mb-4 text-kherch-dark/40">
-                                   <Target size={14} />
-                                   <span className="text-[10px] font-bold uppercase tracking-widest">Expertises prioritaires</span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                   {[
-                                      { label: 'Avocat', icon: <Gavel size={12}/>, type: 'isLegalDefender' },
-                                      { label: 'Notaire', icon: <Briefcase size={12}/> },
-                                      { label: 'Médecin', icon: <Heart size={12} className="text-rose-500"/> },
-                                      { label: 'Traducteur', icon: <Languages size={12}/>, type: 'isTranslator' },
-                                      { label: 'Mentor', icon: <GraduationCap size={12}/>, type: 'openToMentorship' }
-                                   ].map((item) => (
-                                      <button 
-                                        key={item.label}
-                                        onClick={() => handleSuggestionSelect(item.type || item.label, item.type ? 'expert' : undefined)}
-                                        className="flex items-center gap-2 px-4 py-2.5 bg-vainakh-stone/50 hover:bg-vainakh-stone rounded-xl text-xs font-bold transition-all border border-black/5 hover:scale-105"
-                                      >
-                                         {item.icon} {item.label}
-                                      </button>
-                                   ))}
-                                </div>
-                             </section>
-
-                             <section>
-                                <div className="flex items-center gap-2 mb-4 text-kherch-dark/40">
-                                   <Globe size={14} />
-                                   <span className="text-[10px] font-bold uppercase tracking-widest">Villes actives</span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                   {['Strasbourg', 'Paris', 'Vienne', 'Berlin', 'Grozny', 'Nice'].map(city => (
-                                      <button 
-                                        key={city}
-                                        onClick={() => handleSuggestionSelect(city)}
-                                        className="px-4 py-2.5 bg-white/50 hover:bg-white rounded-xl text-xs font-bold transition-all border border-black/5 hover:shadow-sm"
-                                      >
-                                         {city}
-                                      </button>
-                                   ))}
-                                </div>
-                             </section>
-                          </div>
-                          
-                          <div className="mt-8 pt-6 border-t border-black/5 flex items-center justify-between">
-                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg text-[10px] font-black uppercase tracking-widest">
-                                   <Search size={10} /> {searchQuery || '...'}
-                                </div>
-                             </div>
-                             <p className="text-[10px] text-gray-400 font-medium">Recherche parmi {members.length} membres</p>
-                          </div>
-                       </motion.div>
-                    )}
-                 </AnimatePresence>
+      {/* Primary Interaction Layer (Home/Hub Content) */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'hub' && (
+          <motion.div 
+            key="hub-panel"
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+60px)] z-[80] bg-vainakh-stone/95 backdrop-blur-3xl rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] flex flex-col border-t border-white/20 overflow-hidden"
+          >
+            {/* Header */}
+            <div className="px-6 pt-4 pb-2 flex items-center justify-between flex-shrink-0">
+              <div>
+                <h1 className="text-4xl font-black text-kherch-dark tracking-tighter mb-1">Кхерч / Хаб</h1>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Глобальный мост чеченской диаспоры</p>
               </div>
+              <button 
+                onClick={() => setActiveTab('map')}
+                className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border border-black/5 text-kherch-dark active:scale-90 transition-all"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto px-6 pb-40 space-y-8 scrollbar-hide">
 
-              {/* Quick Filters (Pills) */}
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pointer-events-auto">
-                 <button 
-                   onClick={() => handleExpertFilter('isLegalDefender')}
-                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'isLegalDefender' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
-                 >
-                    <Gavel size={14} /> Юристы
-                 </button>
-                 <button 
-                   onClick={() => handleExpertFilter('isTranslator')}
-                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'isTranslator' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
-                 >
-                    <Languages size={14} /> Переводчики
-                 </button>
-                 <button 
-                   onClick={() => handleExpertFilter('openToMentorship')}
-                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedExpertType === 'openToMentorship' ? 'bg-kherch-dark text-white shadow-xl scale-105' : 'bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm'}`}
-                 >
-                    <GraduationCap size={14} /> Наставники
-                 </button>
-                 <button className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/80 text-kherch-dark/70 backdrop-blur-xl border border-black/5 shadow-sm text-[10px] font-black uppercase tracking-widest">
-                    <Truck size={14} /> Логистика
-                 </button>
-              </div>
-           </div>
-        </div>
-
-        {/* Sidebar Container - Full Dynamic Height */}
-        <div className={`absolute top-0 left-0 bottom-0 z-50 w-full sm:w-[420px] bg-vainakh-stone/95 backdrop-blur-3xl shadow-2xl transform transition-all duration-700 ease-in-out border-r border-kherch-dark/5 flex flex-col pt-safe ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          {/* Sidebar Header */}
-          <div className="p-8 pb-6 bg-vainakh-stone/50 border-b border-kherch-dark/5 flex-shrink-0">
-             <div className="flex justify-between items-start mb-8">
-                <div>
-                  <h2 className="text-2xl font-black text-kherch-dark tracking-tighter mb-1">Кхерч / Diaspora</h2>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Sovereign Network v1.0</p>
-                </div>
+              {/* High-Impact Actions */}
+              <div className="grid grid-cols-2 gap-4">
+                <Link href="/join" className="col-span-2 bg-blue-600 p-6 rounded-[2.5rem] flex flex-col justify-between h-36 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform text-white">
+                    <UserPlus size={80} />
+                  </div>
+                  <UserPlus className="text-white" size={28} />
+                  <div className="relative z-10">
+                    <h3 className="text-white font-black text-lg leading-tight mb-1">Вступить в Сеть</h3>
+                    <p className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Ст ть ч стью сообществ </p>
+                  </div>
+                </Link>
+                
                 <button 
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="w-12 h-12 bg-black/5 hover:bg-black/10 text-kherch-dark rounded-2xl flex items-center justify-center transition-all active:scale-90"
+                  onClick={() => setActiveModal('amanat')}
+                  className="bg-white p-6 rounded-[3rem] flex flex-col justify-between h-40 shadow-xl border border-blue-500/10 group active:scale-95 transition-all text-left"
                 >
-                  <ChevronLeft size={20} />
+                  <Package className="text-blue-600" size={28} />
+                  <div>
+                    <h3 className="text-blue-900 font-black text-lg leading-tight mb-1">Аманат</h3>
+                    <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest leading-tight text-balance">Личные посылки</p>
+                  </div>
                 </button>
-             </div>
 
-          <Link href="/join" className="group w-full bg-kherch-dark text-vainakh-stone rounded-[2rem] p-6 flex items-center justify-between shadow-xl hover:scale-[1.02] active:scale-95 transition-all mb-8 relative overflow-hidden">
-             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-12 transition-transform">
-                <ShieldCheck size={80} />
-             </div>
-             <div className="relative z-10">
-                <h3 className="text-lg font-black tracking-tight mb-0.5">Вступить в общину</h3>
-                <p className="text-[10px] font-bold text-vainakh-stone/60 uppercase tracking-widest">Rejoindre le Hub</p>
-             </div>
-             <ChevronLeft size={18} className="rotate-180 opacity-40 group-hover:opacity-100 transition-opacity" />
-          </Link>
-          
-          {/* Search inside sidebar */}
-          <div className="relative mb-4">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <button 
+                  onClick={() => setActiveModal('administrative')}
+                  className="bg-white p-6 rounded-[3rem] flex flex-col justify-between h-40 shadow-xl border border-indigo-500/10 group active:scale-95 transition-all text-left"
+                >
+                  <Gavel className="text-indigo-600" size={28} />
+                  <div>
+                    <h3 className="text-indigo-900 font-black text-lg leading-tight mb-1">Помощь</h3>
+                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest leading-tight text-balance">Админ. Франция</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setActiveModal('perevozchik')}
+                  className="col-span-2 bg-white p-6 rounded-[3rem] flex items-center justify-between h-28 shadow-xl border border-emerald-500/10 group active:scale-95 transition-all"
+                >
+                  <div className="text-left">
+                    <h3 className="text-emerald-900 font-black text-xl leading-tight mb-1">Перевозки</h3>
+                    <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest leading-tight text-balance">Коммерческие грузы и почта</p>
+                  </div>
+                  <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                    <Truck size={28} />
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setIsLanguageModalOpen(true)}
+                  className="col-span-2 bg-[#FDFBF7] p-6 rounded-[3rem] flex items-center justify-between h-32 shadow-xl border border-orange-200/30 group active:scale-95 transition-all relative overflow-hidden"
+                >
+                  <div className="relative z-10 flex flex-col justify-center text-left">
+                    <h3 className="text-[#8B7355] font-black text-xl leading-tight mb-1 uppercase tracking-tighter">Дешар / Изучение</h3>
+                    <p className="text-[11px] text-[#A69076] font-bold uppercase tracking-[0.2em] leading-tight">Чеченский язык и Адат</p>
+                  </div>
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-inner border border-orange-100 flex-shrink-0 relative z-10">
+                     <BookOpen className="text-[#8B7355]" size={32} />
+                  </div>
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 translate-x-4">
+                     <BookOpen size={120} />
+                  </div>
+                </button>
+              </div>
+
+              {/* Berkat (Work & Opportunities) Tile */}
+              <button 
+                onClick={() => setShowBerkat(true)}
+                className="w-full bg-emerald-50 p-6 rounded-[2.5rem] border border-emerald-100/50 shadow-sm flex items-center justify-between group active:scale-[0.98] transition-all"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-emerald-500">
+                    <Briefcase size={24} />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-kherch-dark font-black text-lg leading-tight uppercase tracking-tighter">Беркат</h3>
+                    <p className="text-[10px] text-emerald-600/60 font-bold uppercase tracking-widest">Работа и Местные Советы</p>
+                  </div>
+                </div>
+                <ArrowRight size={20} className="text-emerald-300 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* Search & Intelligence */}
+              <div className="relative">
+                <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-5 shadow-inner border border-black/5 flex items-center gap-4">
+                  <Search size={20} className="text-kherch-dark/30" />
+                  <input 
+                    type="text" 
+                    placeholder="Найти земляка, юриста, наставника..."
+                    className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-kherch-dark placeholder:text-gray-300"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="text-gray-400">
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Expert Grid */}
+              <div className="space-y-4">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Сеть Вз имопомощи</h2>
+                <div className="grid grid-cols-1 gap-3">
+                  {filteredMembers.map(member => (
+                    <motion.div 
+                      layout
+                      key={member.id} 
+                      onClick={() => setSelectedMember(member)}
+                      className="bg-white/60 p-4 rounded-3xl border border-black/[0.03] shadow-sm flex items-center gap-4 active:scale-[0.98] transition-all"
+                    >
+                      <div className="w-14 h-14 bg-vainakh-stone rounded-2xl flex items-center justify-center text-xl font-black text-kherch-dark shadow-inner">
+                        {member.prenom?.[0]}{member.nom?.[0]}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-black text-kherch-dark text-base truncate">{member.prenom} {member.nom}</h4>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-hearth-amber px-2 py-0.5 bg-hearth-amber/5 rounded-full">{member.profession}</span>
+                          <span className="text-[9px] font-bold text-gray-300 uppercase truncate">{member.village} • {member.teip}</span>
+                        </div>
+                      </div>
+                      <ChevronLeft size={16} className="rotate-180 text-gray-300" />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+
+        {/* Berkat Sub-Panel */}
+        {activeTab === 'hub' && showBerkat && (
+          <motion.div 
+            key="berkat-panel"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+60px)] z-[95] bg-white flex flex-col rounded-t-[3rem] overflow-hidden"
+          >
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <button onClick={() => setShowBerkat(false)} className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-kherch-dark">
+                <X size={20} />
+              </button>
+              <h2 className="font-black text-xl tracking-tighter">Берк т / Возможности</h2>
+              <button onClick={() => setActiveModal('berkat-form')} className="text-emerald-500 font-bold text-xs uppercase tracking-widest">Опубл.</button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 pb-20">
+              <div className="bg-emerald-50/50 p-5 rounded-3xl border border-emerald-100">
+                <p className="text-[11px] font-bold text-emerald-800 leading-relaxed uppercase tracking-tight">
+                  Здесь старшие из диаспоры советуют прибывшим компании, которые реально нанимают.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { city: "Ницца, Франция", company: "Логистика и доставка", tip: "Обращайтесь прямо на склад утром в 7:00. Ищут 3 водителей.", author: "Ильяс" },
+                  { city: "Страсбург, Франция", company: "Строительство / Отделка", tip: "Стройки в квартале W нанимают. Свяжитесь с компанией Z.", author: "Мансур" },
+                  { city: "Берлин, Германия", company: "Безопасность / Мероприятия", tip: "Серьезная компания ищет агентов на следующий месяц. Нужен CV.", author: "Зелим" }
+                ].map((job, i) => (
+                  <div key={i} className="p-5 rounded-[2rem] border border-gray-100 shadow-sm bg-white hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                       <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-100/50 px-2 py-0.5 rounded-full">{job.city}</span>
+                       <span className="text-[9px] font-bold text-gray-300">от {job.author}</span>
+                    </div>
+                    <h4 className="font-black text-kherch-dark mb-1">{job.company}</h4>
+                    <p className="text-xs text-gray-500 leading-normal">{job.tip}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'council' && (
+          <motion.div 
+            key="council-panel"
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+60px)] z-[80] bg-kherch-dark text-white rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col border-t border-white/10 overflow-hidden"
+          >
+            <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto my-4 flex-shrink-0" onClick={() => setActiveTab('map')}></div>
+            <div className="flex-1 overflow-y-auto px-10 py-20 text-center space-y-8 scrollbar-hide">
+              <div className="relative inline-block">
+                <div className="absolute -inset-4 bg-hearth-amber/20 blur-2xl rounded-full"></div>
+                <Flame size={64} className="relative text-hearth-amber mx-auto mb-6" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-black tracking-tighter mb-4 uppercase">Наследие</h1>
+                <h2 className="text-xl font-bold text-hearth-amber/80 mb-8">Совет Старейшин</h2>
+                <div className="w-16 h-1 bg-hearth-amber/30 mx-auto rounded-full mb-8"></div>
+                <p className="text-lg font-medium text-vainakh-stone/60 leading-relaxed max-w-sm mx-auto">
+                  Этот раздел посвящен сохранению нашего Адата и языка.
+                </p>
+                <div className="mt-12 p-8 bg-white/5 rounded-[2.5rem] border border-white/5 backdrop-blur-md">
+                   <p className="text-xs font-black uppercase tracking-[0.3em] text-vainakh-stone/40">Статус: В разработке</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Community Hub & Live Chat (Bottom) */}
+      <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pointer-events-none">
+        <div className="max-w-2xl mx-auto flex items-center gap-3 pointer-events-auto">
+          {/* Hub Access Button */}
+          <button 
+            onClick={() => setActiveTab('hub')}
+            className={`h-16 px-6 bg-white/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/40 flex flex-col items-center justify-center gap-1 transition-all group active:scale-95 ${activeTab === 'hub' ? 'text-blue-600 border-blue-200' : 'text-slate-400'}`}
+          >
+            <Users size={22} strokeWidth={activeTab === 'hub' ? 3 : 2} className="group-hover:scale-110 transition-transform" />
+            <span className="text-[8px] font-black uppercase tracking-widest">ХАБ</span>
+          </button>
+
+          {/* Live Chat / Help Request Input Bar */}
+          <div className="flex-1 h-16 bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/40 flex items-center px-5 gap-3 group focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+            <div className="flex items-center gap-2 pr-3 border-r border-slate-100">
+               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+               <span className="text-[10px] font-black text-slate-800">{liveCount}</span>
+            </div>
             <input 
               type="text" 
-              placeholder="Поиск брата/сестры, тайпа..."
-              className="w-full bg-white border border-black/5 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:ring-2 focus:ring-gray-900/20 outline-none transition-all shadow-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Нужна помощь? Напишите здесь..."
+              className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
             />
-          </div>
-
-          {/* Mutual Aid Filters (Horizontal Scroll) */}
-          <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2">
-            <button 
-              onClick={() => setSelectedProfession('')}
-              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!selectedProfession ? 'bg-kherch-dark text-vainakh-stone shadow-md border-kherch-dark' : 'bg-white/80 text-kherch-dark/60 border-black/5 hover:border-kherch-dark/20 hover:bg-white'}`}
-            >
-              Вся община
+            <button className="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center active:scale-90 transition-all shadow-lg shadow-blue-500/30">
+              <ArrowUp size={20} />
             </button>
-            {professions.map(prof => (
-              <button 
-                key={prof as string}
-                onClick={() => setSelectedProfession(prof === selectedProfession ? '' : (prof as string))}
-                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedProfession === prof ? 'bg-kherch-dark text-vainakh-stone shadow-md border-kherch-dark' : 'bg-white/80 text-kherch-dark/60 border-black/5 hover:border-kherch-dark/20 hover:bg-white'}`}
-              >
-                {prof as string}
-              </button>
-            ))}
           </div>
-        </div>
-
-        {/* AMANAT - VOYAGES & TRANSPORTS (ADAT) */}
-        <div className="px-5 mb-6">
-           <div className="bg-vainakh-stone/40 border border-kherch-dark/5 rounded-[2rem] p-5 shadow-sm">
-              <div className="flex justify-between items-center mb-4">
-                 <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center text-vainakh-stone">
-                       <Plane size={18} className="rotate-45" />
-                    </div>
-                    <div>
-                       <h4 className="text-xs font-black text-kherch-dark tracking-tight uppercase">Аманат / Voyages</h4>
-                       <p className="text-[9px] font-bold text-gray-400">Entraide Logistique</p>
-                    </div>
-                 </div>
-                 <button 
-                  onClick={() => setActiveModal('amanat')}
-                  className="bg-black text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
-                 >
-                   Я еду
-                 </button>
-              </div>
-
-              {/* Active Travels Scroller */}
-              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-                 {members.filter(m => m.isTraveling).length > 0 ? (
-                    members.filter(m => m.isTraveling).map(m => (
-                       <div key={m.id} className="flex-shrink-0 w-48 bg-white rounded-2xl p-3 border border-black/5 shadow-sm">
-                          <div className="flex items-center gap-2 mb-2">
-                             <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center text-[10px] font-black">
-                                {m.prenom?.[0]}{m.nom?.[0]}
-                             </div>
-                             <span className="text-[10px] font-bold truncate">{m.prenom} {m.nom}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[10px] font-black text-kherch-dark/60">
-                             <span className="truncate">{m.travelFrom || 'Europe'}</span>
-                             <ArrowRight size={10} className="text-black" />
-                             <span className="text-black">{m.travelTo || 'Grozny'}</span>
-                          </div>
-                          <p className="text-[9px] text-gray-400 mt-2 font-medium italic">« Передам ваши вещи в целости »</p>
-                       </div>
-                    ))
-                 ) : (
-                    <p className="text-[10px] font-bold text-gray-400 italic py-2">Нет активных поездок на этой неделе...</p>
-                 )}
-              </div>
-           </div>
-        </div>
-
-        {/* Member List (Scrollable Area) */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-transparent">
-          {filteredMembers.length > 0 ? (
-            filteredMembers.map(member => (
-              <div 
-                key={member.id} 
-                onClick={() => setSelectedMember(member)}
-                className="bg-white/90 backdrop-blur-md p-4 rounded-[1.5rem] shadow-sm border border-kherch-dark/5 hover:shadow-md hover:border-kherch-dark/20 transition-all cursor-pointer group flex flex-col gap-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-vainakh-stone rounded-2xl flex items-center justify-center text-lg font-black text-kherch-dark flex-shrink-0 group-hover:scale-105 transition-transform border border-kherch-dark/5">
-                    {member.prenom?.[0]}{member.nom?.[0]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-kherch-dark truncate text-base">{member.prenom} {member.nom}</h3>
-                    <p className="text-kherch-dark/50 text-xs font-bold uppercase tracking-widest truncate mt-0.5">{member.village || 'Неизвестно'} • {member.teip || 'Тайп'}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between border-t border-kherch-dark/5 pt-3">
-                  <div className="flex items-center gap-1.5 text-kherch-dark font-bold text-xs bg-vainakh-stone px-2.5 py-1 rounded-lg border border-kherch-dark/5">
-                    <Briefcase size={12} className="opacity-50" />
-                    <span className="truncate">{member.profession || 'Готов помочь'}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-kherch-dark/60 text-xs font-medium">
-                    <MapPin size={12} className="opacity-50" />
-                    <span>{member.ville}</span>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-             <div className="text-center py-20 opacity-30">
-                <Search size={40} className="mx-auto mb-4" />
-                <p className="text-xs font-bold uppercase tracking-widest">Никого не найдено</p>
-             </div>
-          )}
-
-          {/* MARSHA MODULE - TRADITIONAL MARRIAGE (ADAT) */}
-          <div className="mt-6 bg-vainakh-stone border border-kherch-dark/5 rounded-[2rem] p-6 shadow-sm">
-             <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
-                   <Heart size={20} />
-                </div>
-                <div>
-                   <h4 className="text-sm font-black text-kherch-dark tracking-tight">Марша / Union Familiale</h4>
-                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Adat & Tradition</p>
-                </div>
-             </div>
-             
-             <p className="text-xs text-kherch-dark/70 font-medium leading-relaxed mb-6">
-                Le futur de notre peuple repose sur la force de nos familles. Conformément à nos traditions, cette section permet aux parents de initier des unions dans la dignité et le respect du <strong>Nokhchalla</strong>.
-             </p>
-
-             <div className="space-y-3">
-                <button 
-                  onClick={() => setActiveModal('union-son')}
-                  className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-blue-500/20 hover:bg-blue-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
-                >
-                   <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
-                         <Users size={14} />
-                      </div>
-                      <span className="text-xs font-bold text-kherch-dark">Je cherche pour mon fils</span>
-                   </div>
-                   <ChevronLeft size={16} className="rotate-180 opacity-20 group-hover:opacity-100 transition-opacity" />
-                </button>
-
-                <button 
-                  onClick={() => setActiveModal('union-daughter')}
-                  className="w-full py-4 bg-white border border-kherch-dark/5 hover:border-rose-500/20 hover:bg-rose-50/10 rounded-2xl flex items-center justify-between px-4 group transition-all"
-                >
-                   <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500">
-                         <Sparkles size={14} />
-                      </div>
-                      <span className="text-xs font-bold text-kherch-dark text-left">Je cherche pour ma fille</span>
-                   </div>
-                   <ChevronLeft size={16} className="rotate-180 opacity-20 group-hover:opacity-100 transition-opacity" />
-                </button>
-             </div>
-
-             <div className="mt-6 flex items-center gap-2 px-2 opacity-40">
-                <ShieldCheck size={12} />
-                <span className="text-[9px] font-black uppercase tracking-widest leading-none">Processus respectant l&apos;Adat et la pudeur</span>
-             </div>
-          </div>
-
-          <div className="mt-8 border-2 border-dashed border-kherch-dark/10 rounded-3xl p-5 text-center bg-vainakh-stone/50">
-             <Heart size={24} className="mx-auto text-hearth-amber mb-2 opacity-90" />
-             <h4 className="font-black text-kherch-dark text-sm mb-1">ГIо-Даккхар</h4>
-             <p className="text-xs text-kherch-dark/60 font-medium mb-4 leading-relaxed">Сила нашего народа — в единстве. Пригласите сестру или брата.</p>
-             <Link href="/join" className="inline-block bg-kherch-dark text-vainakh-stone text-xs font-bold px-5 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md">
-                Пригласить
-             </Link>
-          </div>
-        </div>
-
-        {/* ActionFooter - Adjusted for Home Indicator */}
-        <div className="p-4 pb-safe border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0 lg:hidden mb-2">
-           <Link href="/heritage" className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm active:scale-95">
-             <BookOpen size={18} className="opacity-70" /> Наследие
-           </Link>
-           <Link href="/belkhi" className="flex-[1.2] flex justify-center py-3.5 bg-kherch-dark hover:bg-black text-vainakh-stone rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-lg active:scale-95">
-             <Flame size={18} className="text-hearth-amber animate-pulse" /> Белхи
-           </Link>
-           <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm active:scale-95">
-             <Heart size={18} className="opacity-70 text-hearth-amber" /> СагIа
-           </button>
-        </div>
         </div>
       </div>
 
-      {/* MODALS - AMANAT & UNION */}
+      {/* Modals & Profiles */}
       <AnimatePresence>
         {activeModal && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[100] flex items-end justify-center">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActiveModal(null)} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveModal(null)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+30px)] shadow-2xl"
             >
-              <button 
-                onClick={() => setActiveModal(null)}
-                className="absolute right-6 top-6 w-10 h-10 bg-black/5 hover:bg-black/10 rounded-full flex items-center justify-center transition-colors"
-              >
-                <X size={20} />
-              </button>
-
-              {activeModal === 'amanat' ? (
-                <>
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center text-white">
-                        <Plane size={24} className="rotate-45" />
-                     </div>
-                     <div>
-                        <h2 className="text-xl font-black text-kherch-dark tracking-tight">Déclarer un Amanat</h2>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Entraide au voyage</p>
-                     </div>
+              <div className="w-12 h-1.5 bg-kherch-dark/5 rounded-full mx-auto mb-6" />
+              {activeModal === "amanat" ? (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Package size={32} className="text-kherch-dark" />
+                    <div>
+                      <h2 className="text-2xl font-black text-kherch-dark">Объявить Аманат</h2>
+                      <p className="text-xs font-bold text-gray-400">Личные посылки и документы</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Отправление</label>
+                      <input type="text" placeholder="Напр: Брюссель" className="w-full bg-white p-4 rounded-2xl text-sm font-bold border border-black/5" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Прибытие</label>
+                      <input type="text" placeholder="Напр: Грозный" className="w-full bg-white p-4 rounded-2xl text-sm font-bold border border-black/5" />
+                    </div>
+                  </div>
+                  <button className="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-all">Опубликовать Аманат</button>
+                </div>
+              ) : activeModal === "administrative" ? (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                      <Gavel size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-kherch-dark">Админ. Помощь</h2>
+                      <p className="text-xs font-bold text-gray-400">Сопровождение во Франции</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {[
+                      { title: "Запрос Азиля", desc: "SPADA, CNDA, переводы, сроки", icon: <Globe size={18} /> },
+                      { title: "Карта жителя", desc: "Prefecture, renouvellement, 10 ans", icon: <Briefcase size={18} /> },
+                      { title: "Social / Santé", desc: "Carte Vitale, CAF, AME/PUMA", icon: <Heart size={18} /> },
+                      { title: "Составление CV", desc: "Поиск работы и интеграция", icon: <Sparkles size={18} /> }
+                    ].map((item, idx) => (
+                      <button key={idx} className="flex items-center gap-4 p-4 bg-white rounded-3xl border border-black/5 text-left active:scale-98 transition-all hover:border-indigo-200 group">
+                        <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+                          {item.icon}
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-black text-indigo-900">{item.title}</h4>
+                          <p className="text-[10px] text-gray-400 font-medium">{item.desc}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">Бесплатная помощь от братьев</p>
+                </div>
+              ) : activeModal === "perevozchik" ? (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                      <Truck size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-kherch-dark">Услуги перевозки</h2>
+                      <p className="text-xs font-bold text-gray-400">Коммерческие грузы и почта</p>
+                    </div>
                   </div>
                   <div className="space-y-4">
-                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Départ</label>
-                           <input type="text" placeholder="Ex: Bruxelles" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-black/5 outline-none" />
-                        </div>
-                        <div className="space-y-1.5">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Arrivée</label>
-                           <input type="text" placeholder="Ex: Grozny" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-black/5 outline-none" />
-                        </div>
-                     </div>
-                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Date de départ</label>
-                        <input type="date" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
-                     </div>
-                     <button className="w-full py-5 bg-black text-vainakh-stone rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all mt-4">
-                        Publier mon voyage
-                     </button>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Маршрут</label>
+                        <input type="text" placeholder="Франция -> ЧР" className="w-full bg-white p-4 rounded-2xl text-sm font-bold border border-black/5" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Дата выезда</label>
+                        <input type="text" placeholder="Напр: Каждую среду" className="w-full bg-white p-4 rounded-2xl text-sm font-bold border border-black/5" />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Тип ТС / Описание</label>
+                      <textarea placeholder="Напр: Микроавтобус, беру посылки до 50кг..." className="w-full bg-white p-4 rounded-2xl text-sm font-bold border border-black/5 resize-none h-24" />
+                    </div>
                   </div>
-                </>
+                  <button className="w-full py-5 bg-emerald-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">Опубликовать</button>
+                </div>
               ) : (
-                <>
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className={`w-14 h-14 ${activeModal === 'union-son' ? 'bg-blue-500' : 'bg-rose-500'} rounded-2xl flex items-center justify-center text-white`}>
-                        {activeModal === 'union-son' ? <Users size={24} /> : <Sparkles size={24} />}
-                     </div>
-                     <div>
-                        <h2 className="text-xl font-black text-kherch-dark tracking-tight">
-                           {activeModal === 'union-son' ? 'Pour mon fils' : 'Pour ma fille'}
-                        </h2>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Union Familiale (Adat)</p>
-                     </div>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Heart size={32} className="text-rose-500" />
+                    <h2 className="text-2xl font-black text-kherch-dark">Создание Семьи</h2>
                   </div>
-                  <div className="space-y-4">
-                     <p className="text-xs text-kherch-dark/60 font-medium leading-relaxed px-2 bg-white/50 p-4 rounded-2xl border border-black/5 mb-6">
-                        Conformément au <strong>Nokhchalla</strong>, cette demande est traitée avec la plus grande discrétion. Seuls les parents vérifiés pourront voir cette intention d&apos;union.
-                     </p>
-                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Prénom de l&apos;enfant</label>
-                        <input type="text" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
-                     </div>
-                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-kherch-dark/40 ml-4">Âge</label>
-                        <input type="number" className="w-full bg-white border border-black/5 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
-                     </div>
-                     <button className={`w-full py-5 ${activeModal === 'union-son' ? 'bg-blue-600' : 'bg-rose-600'} text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all mt-4`}>
-                        Déposer l&apos;intention
-                     </button>
-                  </div>
-                </>
+                  <p className="text-xs text-kherch-dark/60 font-medium leading-relaxed bg-white/50 p-4 rounded-2xl">
+                    В соответствии с <strong>Нохчалла</strong>, этот запрос конфиденциален.
+                  </p>
+                  <button className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-xl">Оставить намерение</button>
+                </div>
               )}
             </motion.div>
           </div>
@@ -634,6 +590,19 @@ export default function Home() {
       <AnimatePresence>
         {selectedMember && (
           <MemberProfile member={selectedMember} onClose={() => setSelectedMember(null)} />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedStoryMember && (
+          <StoryOverlay 
+            member={selectedStoryMember} 
+            onClose={() => setSelectedStoryMember(null)} 
+            onOpenProfile={() => {
+              setSelectedMember(selectedStoryMember);
+              setSelectedStoryMember(null);
+            }}
+          />
         )}
       </AnimatePresence>
 
