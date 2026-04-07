@@ -244,7 +244,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           maxClusterRadius={50}
           iconCreateFunction={icons.clusterCustom}
         >
-          {members.map(member => (
+          {members.filter(m => m.lat !== undefined && m.lng !== undefined).map(member => (
             <Marker 
               key={member.id} 
               position={[member.lat, member.lng]}
