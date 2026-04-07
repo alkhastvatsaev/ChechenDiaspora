@@ -28,9 +28,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [communityMember, setCommunityMember] = useState(false);
 
   useEffect(() => {
-    // Check session storage for existing verification
-    const verified = sessionStorage.getItem('vainakh_verified') === 'true';
-    if (verified) setCommunityMember(true);
+    // Correct way: access browser APIs only inside useEffect
+    if (typeof window !== 'undefined') {
+      const verified = sessionStorage.getItem('vainakh_verified') === 'true';
+      if (verified) setCommunityMember(true);
+    }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);

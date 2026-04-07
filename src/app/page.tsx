@@ -50,15 +50,19 @@ export default function Home() {
 
   // Check if first visit in this session
   useEffect(() => {
-    const hasSeenWelcome = sessionStorage.getItem('vainakh_seen_welcome');
-    if (!hasSeenWelcome) {
-      setShowWelcome(true);
+    if (typeof window !== 'undefined') {
+      const hasSeenWelcome = sessionStorage.getItem('vainakh_seen_welcome');
+      if (!hasSeenWelcome) {
+        setShowWelcome(true);
+      }
     }
   }, []);
 
   const dismissWelcome = () => {
     setShowWelcome(false);
-    sessionStorage.setItem('vainakh_seen_welcome', 'true');
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('vainakh_seen_welcome', 'true');
+    }
   };
 
   const handleExpertFilter = (type: string) => {

@@ -10,14 +10,14 @@ vi.mock('@/components/Map', () => ({
 describe('Home Page', () => {
   it('renders the main title', () => {
     render(<Home />)
-    // Nous vérifions que le titre "Вайнахская Диаспора" est bien rendu
-    const title = screen.getByText(/Библиотека/i)
+    // Nous vérifions que le titre "Кхерч / Diaspora" est bien rendu
+    const title = screen.getByText(/Кхерч \/ Diaspora/i)
     expect(title).toBeInTheDocument()
   })
 
   it('renders the "Join" button', () => {
     render(<Home />)
-    const joinButton = screen.getByText(/Присоединиться/i)
+    const joinButton = screen.getByText(/Вступить в общину/i)
     expect(joinButton).toBeInTheDocument()
   })
 })
