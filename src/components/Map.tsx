@@ -128,8 +128,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         className: 'bg-transparent',
         html: `
           <div class="relative group flex flex-col items-center">
-            <div class="px-2 py-0.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-emerald-500/30 mb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span class="text-[7px] font-bold text-emerald-800 tracking-wider uppercase select-none">${name}</span>
+            <div class="px-1.5 py-0.5 bg-white/80 backdrop-blur-sm rounded-md shadow-sm border border-emerald-500/10 mb-1">
+              <span class="text-[6px] font-bold text-emerald-800/40 tracking-wider uppercase select-none">${name}</span>
             </div>
             <div class="w-9 h-9 bg-[#ecfdf5] rounded-xl shadow-lg border-2 border-[#10b981]/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
