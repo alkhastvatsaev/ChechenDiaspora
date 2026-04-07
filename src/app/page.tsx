@@ -449,32 +449,36 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Floating Community Hub & Live Chat (Bottom) */}
-      <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pointer-events-none">
-        <div className="max-w-2xl mx-auto flex items-center gap-3 pointer-events-auto">
+      <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+18px)] pointer-events-none">
+        <div className="max-w-2xl mx-auto flex items-center bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-white/40 h-20 px-3 pr-4 gap-3 pointer-events-auto">
           {/* Hub Access Button */}
           <button 
             onClick={() => setActiveTab('hub')}
-            className={`h-16 px-6 bg-white/90 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/40 flex flex-col items-center justify-center gap-1 transition-all group active:scale-95 ${activeTab === 'hub' ? 'text-blue-600 border-blue-200' : 'text-slate-400'}`}
+            className={`h-14 w-14 rounded-full flex flex-col items-center justify-center transition-all group active:scale-90 ${activeTab === 'hub' ? 'bg-emerald-50 text-emerald-600 shadow-inner' : 'text-slate-400 hover:bg-slate-50'}`}
           >
-            <Users size={22} strokeWidth={activeTab === 'hub' ? 3 : 2} className="group-hover:scale-110 transition-transform" />
-            <span className="text-[8px] font-black uppercase tracking-widest">ХАБ</span>
+            <Users size={22} strokeWidth={activeTab === 'hub' ? 3 : 2.5} className="group-hover:scale-110 transition-transform" />
+            <span className="text-[8px] font-black uppercase tracking-widest mt-0.5">ХАБ</span>
           </button>
 
-          {/* Live Chat / Help Request Input Bar */}
-          <div className="flex-1 h-16 bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/40 flex items-center px-5 gap-3 group focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-            <div className="flex items-center gap-2 pr-3 border-r border-slate-100">
-               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-               <span className="text-[10px] font-black text-slate-800">{liveCount}</span>
-            </div>
-            <input 
-              type="text" 
-              placeholder="Нужна помощь? Напишите здесь..."
-              className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
-            />
-            <button className="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center active:scale-90 transition-all shadow-lg shadow-blue-500/30">
-              <ArrowUp size={20} />
-            </button>
+          {/* Vertical Separator */}
+          <div className="w-px h-10 bg-slate-100 shrink-0" />
+
+          {/* Online Indicator */}
+          <div className="flex items-center gap-2 px-1 shrink-0">
+             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
+             <span className="text-xs font-black text-slate-800 tracking-tighter">{liveCount}</span>
           </div>
+
+          {/* Live Chat / Help Request Input */}
+          <input 
+            type="text" 
+            placeholder="Нужна помощь? Напишите..."
+            className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
+          />
+          
+          <button className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center active:scale-90 transition-all shadow-lg shadow-blue-500/20 translate-x-1">
+            <ArrowUp size={22} strokeWidth={3} />
+          </button>
         </div>
       </div>
 
