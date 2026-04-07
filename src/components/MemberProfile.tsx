@@ -19,7 +19,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
       />
       
       {/* Content Sheet */}
-      <div className="relative w-full max-w-lg bg-vainakh-stone/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-slide-up border border-kherch-dark/5">
+      <div className="relative w-full max-w-lg bg-vainakh-stone/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-slide-up border border-kherch-dark/5 max-h-[92dvh] flex flex-col">
         {/* Header Image/Pattern Area */}
         <div className="h-32 bg-kherch-dark relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
@@ -35,7 +35,7 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
         </div>
 
         {/* Profile Details */}
-        <div className="px-8 pb-10 -mt-10 relative">
+        <div className="px-8 pb-10 pb-safe -mt-10 relative overflow-y-auto flex-1">
           <div className="w-24 h-24 bg-vainakh-stone rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-kherch-dark mb-4 border-4 border-kherch-dark/5 transform hover:rotate-3 transition-transform">
             {member.prenom?.[0]}{member.nom?.[0]}
           </div>

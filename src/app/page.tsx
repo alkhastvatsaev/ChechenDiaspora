@@ -187,8 +187,8 @@ export default function Home() {
           />
         </div>
 
-        {/* Omnibar & Search UI */}
-        <div className="absolute top-0 left-0 right-0 z-40 p-4 sm:p-8 pointer-events-none">
+        {/* Omnibar & Search UI - Adjusted for Notch/Dynamic Island */}
+        <div className="absolute top-0 left-0 right-0 z-40 p-4 sm:p-8 pt-safe pointer-events-none">
            <div className="max-w-2xl mx-auto space-y-3">
               <div className="relative pointer-events-auto">
                  <div className={`flex items-center bg-white/90 backdrop-blur-2xl rounded-3xl p-2.5 shadow-2xl border transition-all duration-500 ${isSearchFocused ? 'border-black/20 ring-4 ring-black/5 scale-[1.02]' : 'border-black/5 hover:border-black/10'}`}>
@@ -319,8 +319,8 @@ export default function Home() {
            </div>
         </div>
 
-        {/* Sidebar Container */}
-        <div className={`absolute top-0 left-0 bottom-0 z-50 w-full sm:w-[420px] bg-vainakh-stone/95 backdrop-blur-3xl shadow-2xl transform transition-all duration-700 ease-in-out border-r border-kherch-dark/5 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        {/* Sidebar Container - Full Dynamic Height */}
+        <div className={`absolute top-0 left-0 bottom-0 z-50 w-full sm:w-[420px] bg-vainakh-stone/95 backdrop-blur-3xl shadow-2xl transform transition-all duration-700 ease-in-out border-r border-kherch-dark/5 flex flex-col pt-safe ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           {/* Sidebar Header */}
           <div className="p-8 pb-6 bg-vainakh-stone/50 border-b border-kherch-dark/5 flex-shrink-0">
              <div className="flex justify-between items-start mb-8">
@@ -524,15 +524,15 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ActionFooter */}
-        <div className="p-4 border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0 lg:hidden">
-           <Link href="/heritage" className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
+        {/* ActionFooter - Adjusted for Home Indicator */}
+        <div className="p-4 pb-safe border-t border-kherch-dark/5 bg-vainakh-stone/95 backdrop-blur-xl flex justify-between gap-3 z-10 flex-shrink-0 lg:hidden mb-2">
+           <Link href="/heritage" className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm active:scale-95">
              <BookOpen size={18} className="opacity-70" /> Наследие
            </Link>
-           <Link href="/belkhi" className="flex-[1.2] flex justify-center py-3.5 bg-kherch-dark hover:bg-black text-vainakh-stone rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-lg">
+           <Link href="/belkhi" className="flex-[1.2] flex justify-center py-3.5 bg-kherch-dark hover:bg-black text-vainakh-stone rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-lg active:scale-95">
              <Flame size={18} className="text-hearth-amber animate-pulse" /> Белхи
            </Link>
-           <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm">
+           <button className="flex-1 flex justify-center py-3.5 bg-white/80 hover:bg-white text-kherch-dark rounded-2xl transition-colors font-bold text-xs flex-col items-center gap-1 border border-kherch-dark/5 shadow-sm active:scale-95">
              <Heart size={18} className="opacity-70 text-hearth-amber" /> СагIа
            </button>
         </div>
