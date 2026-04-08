@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
@@ -43,6 +43,13 @@ type TicketItem = {
   status: 'new' | 'published' | 'closed';
 };
 
+declare global {
+  interface Window {
+    webkitSpeechRecognition?: unknown;
+    SpeechRecognition?: unknown;
+  }
+}
+
 export default function Home() {
   // Core State
   const [activeTab, setActiveTab] = useState<'map' | 'hub' | 'council'>('map');
@@ -77,6 +84,10 @@ export default function Home() {
     lng: '',
   });
   const [selectedTicket, setSelectedTicket] = useState<TicketItem | null>(null);
+  const [ticketInputMode, setTicketInputMode] = useState<'voice' | 'text'>('voice');
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const recognitionRef = useRef<any | null>(null);
 
   // Check if first visit in this session
   useEffect(() => {
@@ -117,6 +128,60 @@ export default function Home() {
     });
 
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const SpeechRecognitionCtor = (window.SpeechRecognition ?? window.webkitSpeechRecognition) as any;
+    if (!SpeechRecognitionCtor) {
+      setSpeechSupported(false);
+      return;
+    }
+
+    setSpeechSupported(true);
+
+    const recognition = new SpeechRecognitionCtor();
+    recognition.lang = 'ru-RU';
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    recognition.onresult = (event: any) => {
+      let interim = '';
+      let finalText = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const res = event.results[i];
+        const text = String(res?.[0]?.transcript ?? '');
+        if (res.isFinal) finalText += text;
+        else interim += text;
+      }
+
+      const next = `${finalText}${interim}`.trim();
+      if (!next) return;
+      setTicketDraft((d) => ({
+        ...d,
+        description: d.description ? `${d.description.trim()} ${next}`.trim() : next,
+      }));
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      try {
+        recognition.stop();
+      } catch {
+        // ignore
+      }
+      recognitionRef.current = null;
+    };
   }, []);
 
   const dismissWelcome = () => {
@@ -160,6 +225,32 @@ export default function Home() {
       lat: '',
       lng: '',
     });
+    setTicketInputMode('voice');
+    setIsListening(false);
+  };
+
+  const startListening = () => {
+    if (!speechSupported) {
+      setTicketInputMode('text');
+      return;
+    }
+    if (isListening) return;
+    try {
+      recognitionRef.current?.start?.();
+      setIsListening(true);
+    } catch {
+      setIsListening(false);
+    }
+  };
+
+  const stopListening = () => {
+    if (!isListening) return;
+    try {
+      recognitionRef.current?.stop?.();
+    } catch {
+      // ignore
+    }
+    setIsListening(false);
   };
 
   // Listen to members in Realtime Database
@@ -661,7 +752,10 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsTicketModalOpen(false)}
+              onClick={() => {
+                stopListening();
+                setIsTicketModalOpen(false);
+              }}
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             />
             <motion.div
@@ -677,7 +771,10 @@ export default function Home() {
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">бесплатно · в духе Нохчалла</div>
                 </div>
                 <button
-                  onClick={() => setIsTicketModalOpen(false)}
+                  onClick={() => {
+                    stopListening();
+                    setIsTicketModalOpen(false);
+                  }}
                   className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
                   aria-label="Закрыть"
                 >
@@ -693,13 +790,70 @@ export default function Home() {
                   className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10"
                 />
 
-                <textarea
-                  value={ticketDraft.description}
-                  onChange={(e) => setTicketDraft((d) => ({ ...d, description: e.target.value }))}
-                  placeholder="Опиши ситуацию (что случилось, что нужно, сроки)"
-                  rows={4}
-                  className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10 resize-none"
-                />
+                <div className="bg-gray-50 border border-black/5 rounded-3xl p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Сообщение</div>
+                      <div className="text-sm font-bold text-gray-800 mt-1">
+                        {ticketInputMode === 'voice' ? 'Голос → текст' : 'Текст'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTicketInputMode('text');
+                          stopListening();
+                        }}
+                        className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all active:scale-95 ${
+                          ticketInputMode === 'text' ? 'bg-white border-black/10 shadow-sm' : 'bg-transparent border-black/5'
+                        }`}
+                        aria-label="Писать текст"
+                        title="Писать текст"
+                      >
+                        <PenLine size={18} strokeWidth={2.5} className="text-gray-700" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTicketInputMode('voice');
+                          if (isListening) stopListening();
+                          else startListening();
+                        }}
+                        className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all active:scale-95 ${
+                          isListening ? 'bg-red-50 border-red-200' : 'bg-white border-black/10 shadow-sm'
+                        }`}
+                        aria-label={isListening ? 'Остановить запись' : 'Начать запись'}
+                        title={isListening ? 'Остановить запись' : 'Начать запись'}
+                      >
+                        {isListening ? (
+                          <Square size={18} strokeWidth={2.5} className="text-red-600" />
+                        ) : (
+                          <Mic size={18} strokeWidth={2.5} className="text-gray-900" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {!speechSupported && ticketInputMode === 'voice' && (
+                    <div className="mt-3 text-xs font-bold text-amber-700">
+                      Голосовой ввод не поддерживается в этом браузере. Переключись на текст (или используй системную диктовку клавиатуры).
+                    </div>
+                  )}
+
+                  <div className="mt-3">
+                    <textarea
+                      value={ticketDraft.description}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, description: e.target.value }))}
+                      placeholder={ticketInputMode === 'voice' ? 'Нажми на микрофон и говори — текст появится здесь…' : 'Опиши ситуацию (что случилось, что нужно, сроки)'}
+                      rows={4}
+                      className={`w-full bg-white border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10 resize-none ${
+                        ticketInputMode === 'voice' ? 'opacity-90' : ''
+                      }`}
+                    />
+                  </div>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <select
@@ -749,7 +903,10 @@ export default function Home() {
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
-                    onClick={() => setIsTicketModalOpen(false)}
+                    onClick={() => {
+                      stopListening();
+                      setIsTicketModalOpen(false);
+                    }}
                     className="flex-1 px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
                   >
                     Отмена
