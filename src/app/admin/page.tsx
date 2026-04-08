@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 export default function Admin() {
   const router = useRouter();
   const [pendingMembers, setPendingMembers] = useState<any[]>([]);
+  const [tickets, setTickets] = useState<any[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,6 +29,25 @@ export default function Admin() {
         setPendingMembers(list);
       } else {
         setPendingMembers([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const ticketsRef = ref(db, 'tickets');
+    const unsubscribe = onValue(ticketsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data)
+          .map(key => ({ id: key, ...data[key] }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        setTickets(list);
+      } else {
+        setTickets([]);
       }
     });
 
@@ -62,6 +82,38 @@ export default function Admin() {
         await remove(ref(db, `members/${id}`));
       } catch (e) {
         console.error("Error rejecting:", e);
+      }
+    }
+  };
+
+  const handlePublishTicket = async (id: string) => {
+    try {
+      await update(ref(db, `tickets/${id}`), {
+        status: 'published',
+        publishedAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error("Error publishing ticket:", e);
+    }
+  };
+
+  const handleCloseTicket = async (id: string) => {
+    try {
+      await update(ref(db, `tickets/${id}`), {
+        status: 'closed',
+        closedAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error("Error closing ticket:", e);
+    }
+  };
+
+  const handleDeleteTicket = async (id: string) => {
+    if (window.confirm("Вы уверены, что хотите удалить этот запрос?")) {
+      try {
+        await remove(ref(db, `tickets/${id}`));
+      } catch (e) {
+        console.error("Error deleting ticket:", e);
       }
     }
   };
@@ -207,6 +259,76 @@ export default function Admin() {
                     </button>
                   </div>
 
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="mt-16"
+        >
+          <div className="flex items-center justify-between mb-6 px-1">
+            <h2 className="text-xl font-bold tracking-tight">Запросы</h2>
+            <span className="bg-[#1d1d1f] text-white px-3 py-1 rounded-full text-sm font-bold">{tickets.filter(t => t.status !== 'closed').length}</span>
+          </div>
+
+          {tickets.length === 0 ? (
+            <div className="bg-white rounded-3xl p-16 text-center shadow-sm border border-black/5 flex flex-col items-center justify-center">
+              <h3 className="text-xl font-bold mb-2">Пусто</h3>
+              <p className="text-[#86868b] font-medium">Запросов пока нет.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {tickets.map((t) => (
+                <div key={t.id} className="bg-white rounded-3xl p-6 shadow-sm border border-black/5 flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-6">
+                    <div className="flex-1">
+                      <div className="text-xs font-bold text-[#86868b] uppercase tracking-widest">
+                        {t.status === 'published' ? 'Опубликовано' : t.status === 'closed' ? 'Закрыто' : 'Новый запрос'}
+                      </div>
+                      <div className="text-2xl font-bold tracking-tight mt-2">{t.title || 'Без названия'}</div>
+                      <div className="text-sm text-[#86868b] font-medium mt-2">
+                        {t.ville || '—'}, {t.pays || '—'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleDeleteTicket(t.id)}
+                        className="w-12 h-12 flex items-center justify-center bg-[#fbfbfd] text-[#ff3b30] hover:bg-[#ff3b30] hover:text-white rounded-full transition-colors shrink-0"
+                        title="Удалить"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                      {t.status !== 'published' && t.status !== 'closed' && (
+                        <button
+                          onClick={() => handlePublishTicket(t.id)}
+                          className="px-6 h-12 bg-[#1d1d1f] text-white hover:bg-black rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shrink-0"
+                          title="Опубликовать"
+                        >
+                          Опубликовать
+                        </button>
+                      )}
+                      {t.status === 'published' && (
+                        <button
+                          onClick={() => handleCloseTicket(t.id)}
+                          className="px-6 h-12 bg-black/5 hover:bg-black/10 text-[#1d1d1f] rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shrink-0"
+                          title="Закрыть"
+                        >
+                          Закрыть
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {t.description && (
+                    <div className="text-sm text-[#1d1d1f] leading-relaxed whitespace-pre-wrap">
+                      {t.description}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

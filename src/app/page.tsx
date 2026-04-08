@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, ArrowUp, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ref, onValue, push, set, query as fbQuery, limitToLast } from 'firebase/database';
+import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
@@ -30,11 +30,17 @@ const sampleExperts = [
   { id: 'S10', prenom: "Адам", nom: "Хаджиев", profession: "Эксперт Кибербезопасности", ville: "Цюрих", pays: "Швейцария", village: "Бамут", teip: "Аккий", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
 ];
 
-type LiveChatMessage = {
+type TicketItem = {
   id: string;
-  text: string;
+  title: string;
+  description: string;
+  category: string;
+  ville: string;
+  pays: string;
+  lat?: number;
+  lng?: number;
   createdAt: number;
-  userId: string;
+  status: 'new' | 'published' | 'closed';
 };
 
 export default function Home() {
@@ -58,12 +64,19 @@ export default function Home() {
   const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  // Live Chat (Public Stream)
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatText, setChatText] = useState('');
-  const [chatUserId, setChatUserId] = useState('');
-  const [chatMessages, setChatMessages] = useState<LiveChatMessage[]>([]);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  // Admin Tickets (publicly published)
+  const [publishedTickets, setPublishedTickets] = useState<TicketItem[]>([]);
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+  const [ticketDraft, setTicketDraft] = useState({
+    title: '',
+    description: '',
+    category: 'administrative',
+    ville: '',
+    pays: 'Франция',
+    lat: '',
+    lng: '',
+  });
+  const [selectedTicket, setSelectedTicket] = useState<TicketItem | null>(null);
 
   // Check if first visit in this session
   useEffect(() => {
@@ -76,46 +89,35 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const existing = sessionStorage.getItem('vainakh_chat_user');
-    if (existing) {
-      setChatUserId(existing);
-      return;
-    }
-    const id = `u_${Math.random().toString(16).slice(2)}_${Date.now()}`;
-    sessionStorage.setItem('vainakh_chat_user', id);
-    setChatUserId(id);
-  }, []);
-
-  useEffect(() => {
-    const messagesRef = fbQuery(ref(db, 'live_chat/messages'), limitToLast(50));
-    const unsubscribe = onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val() as Record<string, { text?: unknown; createdAt?: unknown; userId?: unknown }> | null;
+    const ticketsRef = ref(db, 'tickets');
+    const unsubscribe = onValue(ticketsRef, (snapshot) => {
+      const data = snapshot.val() as Record<string, any> | null;
       if (!data) {
-        setChatMessages([]);
+        setPublishedTickets([]);
         return;
       }
 
-      const list: LiveChatMessage[] = Object.entries(data)
+      const list: TicketItem[] = Object.entries(data)
         .map(([id, v]) => ({
           id,
-          text: typeof v.text === 'string' ? v.text : '',
+          title: typeof v.title === 'string' ? v.title : '',
+          description: typeof v.description === 'string' ? v.description : '',
+          category: typeof v.category === 'string' ? v.category : 'administrative',
+          ville: typeof v.ville === 'string' ? v.ville : '',
+          pays: typeof v.pays === 'string' ? v.pays : '',
+          lat: typeof v.lat === 'number' ? v.lat : undefined,
+          lng: typeof v.lng === 'number' ? v.lng : undefined,
           createdAt: typeof v.createdAt === 'number' ? v.createdAt : 0,
-          userId: typeof v.userId === 'string' ? v.userId : 'unknown',
+          status: v.status === 'published' || v.status === 'closed' ? v.status : 'new',
         }))
-        .filter((m) => m.text.trim().length > 0)
-        .sort((a, b) => a.createdAt - b.createdAt);
+        .filter((t) => t.status === 'published')
+        .sort((a, b) => b.createdAt - a.createdAt);
 
-      setChatMessages(list);
+      setPublishedTickets(list);
     });
 
     return () => unsubscribe();
   }, []);
-
-  useEffect(() => {
-    if (!isChatOpen) return;
-    chatEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
-  }, [chatMessages, isChatOpen]);
 
   const dismissWelcome = () => {
     setShowWelcome(false);
@@ -124,20 +126,40 @@ export default function Home() {
     }
   };
 
-  const sendLiveChat = async () => {
-    const text = chatText.trim();
-    if (!text) return;
+  const submitTicket = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const title = ticketDraft.title.trim();
+    const description = ticketDraft.description.trim();
+    const ville = ticketDraft.ville.trim();
+    const pays = ticketDraft.pays.trim();
+    if (!title || !description || !ville || !pays) return;
 
-    setIsChatOpen(true);
+    const lat = Number(ticketDraft.lat);
+    const lng = Number(ticketDraft.lng);
+    const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
 
-    const newRef = push(ref(db, 'live_chat/messages'));
+    const newRef = push(ref(db, 'tickets'));
     await set(newRef, {
-      text,
+      title,
+      description,
+      category: ticketDraft.category,
+      ville,
+      pays,
+      ...(hasCoords ? { lat, lng } : {}),
+      status: 'new',
       createdAt: Date.now(),
-      userId: chatUserId || 'unknown',
     });
 
-    setChatText('');
+    setIsTicketModalOpen(false);
+    setTicketDraft({
+      title: '',
+      description: '',
+      category: 'administrative',
+      ville: '',
+      pays: 'Франция',
+      lat: '',
+      lng: '',
+    });
   };
 
   // Listen to members in Realtime Database
@@ -254,6 +276,29 @@ export default function Home() {
     return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
   }, [members]);
 
+  const mapEntities = useMemo(() => {
+    const ticketMarkers = publishedTickets
+      .filter((t) => typeof t.lat === 'number' && typeof t.lng === 'number')
+      .map((t) => ({
+        id: t.id,
+        lat: t.lat,
+        lng: t.lng,
+        ville: t.ville,
+        pays: t.pays,
+        approved: true,
+        isTicket: true,
+        ticketTitle: t.title,
+        ticketDescription: t.description,
+        ticketCategory: t.category,
+        createdAt: t.createdAt,
+        prenom: t.title,
+        nom: '',
+        profession: 'Запрос',
+      }));
+
+    return [...filteredMembers, ...ticketMarkers];
+  }, [filteredMembers, publishedTickets]);
+
   const handleSuggestionSelect = (term: string, type?: string) => {
     if (type === 'expert') {
       setSelectedExpertType(term);
@@ -271,10 +316,26 @@ export default function Home() {
       {/* Background Interactive Map - Always Presence */}
       <div className="absolute inset-0 z-0">
         <Map 
-          members={filteredMembers} 
+          members={mapEntities} 
           center={mapCenter} 
           showHeatmap={showHeatmap}
           onMemberClick={(m: any) => {
+            if (m?.isTicket) {
+              setSelectedTicket({
+                id: String(m.id),
+                title: String(m.ticketTitle ?? ''),
+                description: String(m.ticketDescription ?? ''),
+                category: String(m.ticketCategory ?? ''),
+                ville: String(m.ville ?? ''),
+                pays: String(m.pays ?? ''),
+                lat: typeof m.lat === 'number' ? m.lat : undefined,
+                lng: typeof m.lng === 'number' ? m.lng : undefined,
+                createdAt: typeof m.createdAt === 'number' ? m.createdAt : 0,
+                status: 'published',
+              });
+              setActiveTab('map');
+              return;
+            }
             if (m.hasStory) {
               setSelectedStoryMember(m);
             } else {
@@ -558,7 +619,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Floating Community Hub & Live Chat (Bottom) */}
+      {/* Floating Community Hub & Admin Ticket CTA (Bottom) */}
       <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+20px)] pointer-events-none">
         <div className="max-w-screen-sm mx-auto flex items-center bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] border border-white/40 h-20 px-3 gap-3 pointer-events-auto overflow-hidden">
           {/* Hub Access Button */}
@@ -581,83 +642,173 @@ export default function Home() {
              <span className="text-xs font-black text-slate-800 tracking-tighter">{liveCount}</span>
           </div>
 
-          {/* Live Chat Input Area */}
-          <div className="flex-1 min-w-0 h-full flex items-center">
-            <input 
-              type="text" 
-              placeholder="Спросить..."
-              className="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
-              value={chatText}
-              onChange={(e) => setChatText(e.target.value)}
-              onFocus={() => setIsChatOpen(true)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  void sendLiveChat();
-                }
-              }}
-            />
-          </div>
-          
-          {/* Compact Send Button */}
           <button
-            onClick={() => void sendLiveChat()}
-            className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center active:scale-95 transition-all shadow-lg shadow-blue-500/20 shrink-0"
-            aria-label="Отправить"
-            title="Отправить"
+            onClick={() => setIsTicketModalOpen(true)}
+            className="flex-1 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center gap-2 px-5 active:scale-95 transition-all shadow-lg shadow-blue-500/20 min-w-0"
+            aria-label="Создать запрос администратору"
+            title="Создать запрос администратору"
           >
-            <ArrowUp size={22} strokeWidth={3} />
+            <Plus size={18} strokeWidth={3} className="shrink-0" />
+            <span className="text-xs font-black uppercase tracking-widest truncate">Создать запрос администратору</span>
           </button>
         </div>
       </div>
 
       <AnimatePresence>
-        {isChatOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+110px)] left-4 right-4 z-[75] pointer-events-auto"
-          >
-            <div className="max-w-screen-sm mx-auto bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.25)] border border-white/40 overflow-hidden">
-              <div className="px-5 py-4 flex items-center justify-between border-b border-black/5">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-700">Live чат</div>
+        {isTicketModalOpen && (
+          <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsTicketModalOpen(false)}
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-black/10 overflow-hidden"
+            >
+              <div className="p-6 border-b border-black/5 flex items-start justify-between gap-6">
+                <div>
+                  <div className="text-2xl font-black tracking-tight">Запрос администратору</div>
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">бесплатно · в духе Нохчалла</div>
                 </div>
                 <button
-                  onClick={() => setIsChatOpen(false)}
-                  className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all text-slate-700 font-black"
+                  onClick={() => setIsTicketModalOpen(false)}
+                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
                   aria-label="Закрыть"
-                  title="Закрыть"
                 >
                   X
                 </button>
               </div>
 
-              <div className="max-h-[45vh] overflow-y-auto px-5 py-4 space-y-3">
-                {chatMessages.length === 0 ? (
-                  <div className="text-sm font-medium text-slate-400 py-6 text-center">Пока нет сообщений</div>
-                ) : (
-                  chatMessages.map((m) => (
-                    <div key={m.id} className={`flex ${m.userId === chatUserId ? 'justify-end' : 'justify-start'}`}>
-                      <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm font-medium leading-relaxed shadow-sm border ${
-                          m.userId === chatUserId
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-slate-800 border-black/5'
-                        }`}
-                      >
-                        {m.text}
-                      </div>
-                    </div>
-                  ))
-                )}
-                <div ref={chatEndRef} />
+              <form onSubmit={submitTicket} className="p-6 space-y-4">
+                <input
+                  value={ticketDraft.title}
+                  onChange={(e) => setTicketDraft((d) => ({ ...d, title: e.target.value }))}
+                  placeholder="Коротко: какая проблема?"
+                  className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10"
+                />
+
+                <textarea
+                  value={ticketDraft.description}
+                  onChange={(e) => setTicketDraft((d) => ({ ...d, description: e.target.value }))}
+                  placeholder="Опиши ситуацию (что случилось, что нужно, сроки)"
+                  rows={4}
+                  className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10 resize-none"
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <select
+                    value={ticketDraft.category}
+                    onChange={(e) => setTicketDraft((d) => ({ ...d, category: e.target.value }))}
+                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-bold outline-none"
+                  >
+                    <option value="administrative">Административное</option>
+                    <option value="legal">Юридическое</option>
+                    <option value="translation">Перевод</option>
+                    <option value="housing">Жилье</option>
+                    <option value="job">Работа</option>
+                    <option value="other">Другое</option>
+                  </select>
+
+                  <input
+                    value={ticketDraft.ville}
+                    onChange={(e) => setTicketDraft((d) => ({ ...d, ville: e.target.value }))}
+                    placeholder="Город"
+                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input
+                    value={ticketDraft.pays}
+                    onChange={(e) => setTicketDraft((d) => ({ ...d, pays: e.target.value }))}
+                    placeholder="Страна"
+                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      value={ticketDraft.lat}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, lat: e.target.value }))}
+                      placeholder="lat"
+                      className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
+                    />
+                    <input
+                      value={ticketDraft.lng}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, lng: e.target.value }))}
+                      placeholder="lng"
+                      className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsTicketModalOpen(false)}
+                    className="flex-1 px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                  >
+                    Отмена
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-4 py-3 rounded-2xl bg-black text-white text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                  >
+                    Отправить
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedTicket && (
+          <div className="fixed inset-0 z-[125] flex items-end sm:items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTicket(null)}
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-black/10 overflow-hidden"
+            >
+              <div className="p-6 border-b border-black/5 flex items-start justify-between gap-6">
+                <div>
+                  <div className="text-xs font-black uppercase tracking-widest text-gray-400">Опубликованный запрос</div>
+                  <div className="text-2xl font-black tracking-tight mt-1">{selectedTicket.title}</div>
+                  <div className="text-sm font-bold text-gray-500 mt-2">
+                    {selectedTicket.ville}, {selectedTicket.pays}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedTicket(null)}
+                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                  aria-label="Закрыть"
+                >
+                  X
+                </button>
               </div>
-            </div>
-          </motion.div>
+
+              <div className="p-6 space-y-4">
+                <div className="text-sm text-gray-700 font-medium leading-relaxed">{selectedTicket.description}</div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  Это обращение опубликовано администратором для помощи общины.
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
