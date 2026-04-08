@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, ArrowUp, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ref, onValue, push, set } from 'firebase/database';
+import { ref, onValue, push, set, query as fbQuery, limitToLast } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
@@ -30,6 +30,13 @@ const sampleExperts = [
   { id: 'S10', prenom: "Адам", nom: "Хаджиев", profession: "Эксперт Кибербезопасности", ville: "Цюрих", pays: "Швейцария", village: "Бамут", teip: "Аккий", lat: 47.3769, lng: 8.5417, isLive: true, approved: true }
 ];
 
+type LiveChatMessage = {
+  id: string;
+  text: string;
+  createdAt: number;
+  userId: string;
+};
+
 export default function Home() {
   // Core State
   const [activeTab, setActiveTab] = useState<'map' | 'hub' | 'council'>('map');
@@ -51,6 +58,13 @@ export default function Home() {
   const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
+  // Live Chat (Public Stream)
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatText, setChatText] = useState('');
+  const [chatUserId, setChatUserId] = useState('');
+  const [chatMessages, setChatMessages] = useState<LiveChatMessage[]>([]);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
   // Check if first visit in this session
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -61,11 +75,69 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const existing = sessionStorage.getItem('vainakh_chat_user');
+    if (existing) {
+      setChatUserId(existing);
+      return;
+    }
+    const id = `u_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+    sessionStorage.setItem('vainakh_chat_user', id);
+    setChatUserId(id);
+  }, []);
+
+  useEffect(() => {
+    const messagesRef = fbQuery(ref(db, 'live_chat/messages'), limitToLast(50));
+    const unsubscribe = onValue(messagesRef, (snapshot) => {
+      const data = snapshot.val() as Record<string, { text?: unknown; createdAt?: unknown; userId?: unknown }> | null;
+      if (!data) {
+        setChatMessages([]);
+        return;
+      }
+
+      const list: LiveChatMessage[] = Object.entries(data)
+        .map(([id, v]) => ({
+          id,
+          text: typeof v.text === 'string' ? v.text : '',
+          createdAt: typeof v.createdAt === 'number' ? v.createdAt : 0,
+          userId: typeof v.userId === 'string' ? v.userId : 'unknown',
+        }))
+        .filter((m) => m.text.trim().length > 0)
+        .sort((a, b) => a.createdAt - b.createdAt);
+
+      setChatMessages(list);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!isChatOpen) return;
+    chatEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }, [chatMessages, isChatOpen]);
+
   const dismissWelcome = () => {
     setShowWelcome(false);
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('vainakh_seen_welcome', 'true');
     }
+  };
+
+  const sendLiveChat = async () => {
+    const text = chatText.trim();
+    if (!text) return;
+
+    setIsChatOpen(true);
+
+    const newRef = push(ref(db, 'live_chat/messages'));
+    await set(newRef, {
+      text,
+      createdAt: Date.now(),
+      userId: chatUserId || 'unknown',
+    });
+
+    setChatText('');
   };
 
   // Listen to members in Realtime Database
@@ -515,15 +587,79 @@ export default function Home() {
               type="text" 
               placeholder="Спросить..."
               className="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
+              value={chatText}
+              onChange={(e) => setChatText(e.target.value)}
+              onFocus={() => setIsChatOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  void sendLiveChat();
+                }
+              }}
             />
           </div>
           
           {/* Compact Send Button */}
-          <button className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center active:scale-95 transition-all shadow-lg shadow-blue-500/20 shrink-0">
+          <button
+            onClick={() => void sendLiveChat()}
+            className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center active:scale-95 transition-all shadow-lg shadow-blue-500/20 shrink-0"
+            aria-label="Отправить"
+            title="Отправить"
+          >
             <ArrowUp size={22} strokeWidth={3} />
           </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+110px)] left-4 right-4 z-[75] pointer-events-auto"
+          >
+            <div className="max-w-screen-sm mx-auto bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.25)] border border-white/40 overflow-hidden">
+              <div className="px-5 py-4 flex items-center justify-between border-b border-black/5">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-700">Live чат</div>
+                </div>
+                <button
+                  onClick={() => setIsChatOpen(false)}
+                  className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all text-slate-700 font-black"
+                  aria-label="Закрыть"
+                  title="Закрыть"
+                >
+                  X
+                </button>
+              </div>
+
+              <div className="max-h-[45vh] overflow-y-auto px-5 py-4 space-y-3">
+                {chatMessages.length === 0 ? (
+                  <div className="text-sm font-medium text-slate-400 py-6 text-center">Пока нет сообщений</div>
+                ) : (
+                  chatMessages.map((m) => (
+                    <div key={m.id} className={`flex ${m.userId === chatUserId ? 'justify-end' : 'justify-start'}`}>
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm font-medium leading-relaxed shadow-sm border ${
+                          m.userId === chatUserId
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-white text-slate-800 border-black/5'
+                        }`}
+                      >
+                        {m.text}
+                      </div>
+                    </div>
+                  ))
+                )}
+                <div ref={chatEndRef} />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Modals & Profiles */}
       <AnimatePresence>
