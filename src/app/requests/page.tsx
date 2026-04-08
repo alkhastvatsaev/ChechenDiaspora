@@ -115,6 +115,7 @@ export default function RequestsPage() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<RequestCategory | "all">("all");
   const [isCreating, setIsCreating] = useState(false);
+  const [contactExpert, setContactExpert] = useState<Expert | null>(null);
 
   const [items, setItems] = useState<RequestItem[]>(() => [
     {
@@ -301,7 +302,12 @@ export default function RequestsPage() {
                     <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-700 bg-gray-50">
                       {e.available === "now" ? "Сейчас" : e.available === "today" ? "Сегодня" : "Выходные"}
                     </span>
-                    <button className="px-4 py-2 rounded-2xl bg-black text-white text-xs font-black tracking-widest uppercase active:scale-95 transition-all">
+                    <button
+                      onClick={() => setContactExpert(e)}
+                      className="w-11 h-11 rounded-full bg-black text-white text-xs font-black tracking-widest uppercase active:scale-95 transition-all flex items-center justify-center"
+                      aria-label="Связаться"
+                      title="Связаться"
+                    >
                       Связаться
                     </button>
                   </div>
@@ -478,6 +484,67 @@ export default function RequestsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {contactExpert && (
+        <div className="fixed inset-0 z-[110] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+          <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-black/10 overflow-hidden">
+            <div className="p-6 border-b border-black/5 flex items-start justify-between gap-6">
+              <div>
+                <div className="text-2xl font-black tracking-tight">Связаться</div>
+                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                  {contactExpert.name} · превью
+                </div>
+              </div>
+              <button
+                onClick={() => setContactExpert(null)}
+                className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                aria-label="Закрыть"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="bg-gray-50 border border-black/5 rounded-[2rem] p-5">
+                <div className="text-sm font-black tracking-tight">Быстрое сообщение</div>
+                <div className="text-sm text-gray-600 font-medium leading-relaxed mt-2">
+                  Привет, брат/сестра. Нужна помощь по теме: {selectedCategory === "all" ? "(выбери категорию)" : CATEGORY_META[selectedCategory].label}.
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={async () => {
+                    const text = `Привет, брат/сестра. Нужна помощь по теме: ${
+                      selectedCategory === "all" ? "(категория)" : CATEGORY_META[selectedCategory].label
+                    }. Город: ...`;
+                    try {
+                      await navigator.clipboard.writeText(text);
+                    } catch {
+                      // ignore
+                    }
+                    setContactExpert(null);
+                  }}
+                  className="px-4 py-3 rounded-2xl bg-black text-white text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                >
+                  Копировать
+                </button>
+
+                <button
+                  onClick={() => setContactExpert(null)}
+                  className="px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                >
+                  Закрыть
+                </button>
+              </div>
+
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Контакты (телефон/внутренние сообщения) будут подключены на следующем шаге.
+              </div>
+            </div>
           </div>
         </div>
       )}
