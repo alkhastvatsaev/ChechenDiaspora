@@ -329,6 +329,13 @@ export default function Admin() {
                       {t.description}
                     </div>
                   )}
+
+                  {t.audioUrl && (
+                    <div className="bg-[#fbfbfd] rounded-2xl p-4 border border-black/5">
+                      <div className="text-[10px] font-bold text-[#86868b] uppercase tracking-widest mb-2">Голосовое сообщение</div>
+                      <audio controls src={t.audioUrl} className="w-full" />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { initializeFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,6 +18,7 @@ let app: any;
 let auth: any;
 let db: any;
 let firestore: any;
+let storage: any;
 
 const hasValidConfig = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
@@ -31,6 +33,7 @@ if (hasValidConfig) {
   firestore = initializeFirestore(app, {
     experimentalForceLongPolling: true,
   });
+  storage = getStorage(app);
 } else {
   // During build or if config is missing, we initialize with placeholders to avoid crashes in SDK functions
   // but we warn so the developer knows.
@@ -54,6 +57,7 @@ if (hasValidConfig) {
   firestore = initializeFirestore(app, {
     experimentalForceLongPolling: true,
   });
+  storage = getStorage(app);
 }
 
-export { auth, db, firestore };
+export { auth, db, firestore, storage };

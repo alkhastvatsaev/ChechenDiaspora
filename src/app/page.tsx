@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
 import StoryOverlay from '@/components/StoryOverlay';
@@ -39,6 +40,8 @@ type TicketItem = {
   pays: string;
   lat?: number;
   lng?: number;
+  audioUrl?: string;
+  audioPath?: string;
   createdAt: number;
   status: 'new' | 'published' | 'closed';
 };
@@ -88,6 +91,14 @@ export default function Home() {
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const recognitionRef = useRef<any | null>(null);
+  const [finalTranscript, setFinalTranscript] = useState('');
+  const [interimTranscript, setInterimTranscript] = useState('');
+
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioUrlLocal, setAudioUrlLocal] = useState<string>('');
+  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<BlobPart[]>([]);
 
   // Check if first visit in this session
   useEffect(() => {
@@ -147,21 +158,19 @@ export default function Home() {
 
     recognition.onresult = (event: any) => {
       let interim = '';
-      let finalText = '';
+      let finalAdd = '';
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const res = event.results[i];
         const text = String(res?.[0]?.transcript ?? '');
-        if (res.isFinal) finalText += text;
+        if (res.isFinal) finalAdd += text;
         else interim += text;
       }
 
-      const next = `${finalText}${interim}`.trim();
-      if (!next) return;
-      setTicketDraft((d) => ({
-        ...d,
-        description: d.description ? `${d.description.trim()} ${next}`.trim() : next,
-      }));
+      if (finalAdd) {
+        setFinalTranscript((prev) => (prev ? `${prev} ${finalAdd}`.trim() : finalAdd.trim()));
+      }
+      setInterimTranscript(interim.trim());
     };
 
     recognition.onerror = () => {
@@ -184,6 +193,13 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const combined = `${finalTranscript} ${interimTranscript}`.trim();
+    if (!combined) return;
+    if (ticketInputMode !== 'voice') return;
+    setTicketDraft((d) => ({ ...d, description: combined }));
+  }, [finalTranscript, interimTranscript, ticketInputMode]);
+
   const dismissWelcome = () => {
     setShowWelcome(false);
     if (typeof window !== 'undefined') {
@@ -203,6 +219,20 @@ export default function Home() {
     const lng = Number(ticketDraft.lng);
     const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
 
+    stopListening();
+
+    let uploadedAudioUrl: string | undefined;
+    let uploadedAudioPath: string | undefined;
+
+    if (audioBlob) {
+      const ext = audioBlob.type.includes('webm') ? 'webm' : audioBlob.type.includes('ogg') ? 'ogg' : 'bin';
+      const path = `tickets_audio/${Date.now()}_${Math.random().toString(16).slice(2)}.${ext}`;
+      const sRef = storageRef(storage, path);
+      await uploadBytes(sRef, audioBlob, { contentType: audioBlob.type || 'application/octet-stream' });
+      uploadedAudioUrl = await getDownloadURL(sRef);
+      uploadedAudioPath = path;
+    }
+
     const newRef = push(ref(db, 'tickets'));
     await set(newRef, {
       title,
@@ -211,6 +241,8 @@ export default function Home() {
       ville,
       pays,
       ...(hasCoords ? { lat, lng } : {}),
+      ...(uploadedAudioUrl ? { audioUrl: uploadedAudioUrl } : {}),
+      ...(uploadedAudioPath ? { audioPath: uploadedAudioPath } : {}),
       status: 'new',
       createdAt: Date.now(),
     });
@@ -227,6 +259,12 @@ export default function Home() {
     });
     setTicketInputMode('voice');
     setIsListening(false);
+    setFinalTranscript('');
+    setInterimTranscript('');
+    if (audioUrlLocal) URL.revokeObjectURL(audioUrlLocal);
+    setAudioBlob(null);
+    setAudioUrlLocal('');
+    setIsRecordingAudio(false);
   };
 
   const startListening = () => {
@@ -251,6 +289,43 @@ export default function Home() {
       // ignore
     }
     setIsListening(false);
+  };
+
+  const startAudioRecording = async () => {
+    if (typeof window === 'undefined') return;
+    if (!navigator.mediaDevices?.getUserMedia) return;
+    if (isRecordingAudio) return;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        setAudioBlob(blob);
+        if (audioUrlLocal) URL.revokeObjectURL(audioUrlLocal);
+        setAudioUrlLocal(URL.createObjectURL(blob));
+        setIsRecordingAudio(false);
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecordingAudio(true);
+    } catch {
+      setIsRecordingAudio(false);
+    }
+  };
+
+  const stopAudioRecording = () => {
+    if (!isRecordingAudio) return;
+    try {
+      mediaRecorderRef.current?.stop();
+    } catch {
+      setIsRecordingAudio(false);
+    }
   };
 
   // Listen to members in Realtime Database
@@ -754,6 +829,7 @@ export default function Home() {
               exit={{ opacity: 0 }}
               onClick={() => {
                 stopListening();
+                stopAudioRecording();
                 setIsTicketModalOpen(false);
               }}
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -773,6 +849,7 @@ export default function Home() {
                 <button
                   onClick={() => {
                     stopListening();
+                    stopAudioRecording();
                     setIsTicketModalOpen(false);
                   }}
                   className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
@@ -855,6 +932,46 @@ export default function Home() {
                   </div>
                 </div>
 
+                <div className="bg-gray-50 border border-black/5 rounded-3xl p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Голос</div>
+                      <div className="text-sm font-bold text-gray-800 mt-1">Аудио-запись</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isRecordingAudio) stopAudioRecording();
+                        else void startAudioRecording();
+                      }}
+                      className={`px-4 h-11 rounded-full font-black text-[11px] uppercase tracking-widest border transition-all active:scale-95 ${
+                        isRecordingAudio
+                          ? 'bg-red-50 border-red-200 text-red-700'
+                          : 'bg-white border-black/10 text-gray-900 shadow-sm'
+                      }`}
+                      aria-label={isRecordingAudio ? 'Остановить аудио-запись' : 'Начать аудио-запись'}
+                      title={isRecordingAudio ? 'Остановить' : 'Записать'}
+                    >
+                      {isRecordingAudio ? 'Стоп' : 'Записать'}
+                    </button>
+                  </div>
+
+                  {audioUrlLocal && (
+                    <div className="mt-3">
+                      <audio controls src={audioUrlLocal} className="w-full" />
+                      <div className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Аудио прикрепится к запросу и будет доступно админу.
+                      </div>
+                    </div>
+                  )}
+
+                  {!audioUrlLocal && !isRecordingAudio && (
+                    <div className="mt-3 text-xs font-bold text-gray-500">
+                      Запиши голосовое сообщение — как в WhatsApp.
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <select
                     value={ticketDraft.category}
@@ -905,6 +1022,7 @@ export default function Home() {
                     type="button"
                     onClick={() => {
                       stopListening();
+                      stopAudioRecording();
                       setIsTicketModalOpen(false);
                     }}
                     className="flex-1 px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
