@@ -323,6 +323,44 @@ export default function Home() {
                 <ArrowRight size={20} className="text-emerald-300 group-hover:translate-x-1 transition-transform" />
               </button>
 
+              {/* Anti-WhatsApp Core */}
+              <div className="grid grid-cols-2 gap-4">
+                <Link
+                  href="/requests"
+                  className="bg-white p-6 rounded-[3rem] flex flex-col justify-between h-40 shadow-xl border border-black/5 group active:scale-95 transition-all text-left"
+                >
+                  <ShieldCheck className="text-kherch-dark" size={28} />
+                  <div>
+                    <h3 className="text-kherch-dark font-black text-lg leading-tight mb-1">Запросы</h3>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-tight text-balance">Такт. помощь</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/guides"
+                  className="bg-white p-6 rounded-[3rem] flex flex-col justify-between h-40 shadow-xl border border-black/5 group active:scale-95 transition-all text-left"
+                >
+                  <BookOpen className="text-kherch-dark" size={28} />
+                  <div>
+                    <h3 className="text-kherch-dark font-black text-lg leading-tight mb-1">Гайды</h3>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-tight text-balance">Память общины</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/vouch"
+                  className="col-span-2 bg-white p-6 rounded-[3rem] flex items-center justify-between h-28 shadow-xl border border-black/5 group active:scale-95 transition-all"
+                >
+                  <div className="text-left">
+                    <h3 className="text-kherch-dark font-black text-xl leading-tight mb-1">Доверие</h3>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-tight text-balance">Поручительство</p>
+                  </div>
+                  <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-kherch-dark">
+                    <Users size={28} />
+                  </div>
+                </Link>
+              </div>
+
               {/* Search & Intelligence */}
               <div className="relative">
                 <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-5 shadow-inner border border-black/5 flex items-center gap-4">
