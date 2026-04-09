@@ -10,9 +10,7 @@ export default function Admin() {
   const router = useRouter();
   const [pendingMembers, setPendingMembers] = useState<any[]>([]);
   const [tickets, setTickets] = useState<any[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [isLoggedIn] = useState(true);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -53,17 +51,6 @@ export default function Admin() {
 
     return () => unsubscribe();
   }, [isLoggedIn]);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === 'chechnyalive') {
-      setIsLoggedIn(true);
-      setError('');
-    } else {
-      setError('Неверный пароль.');
-      setPassword('');
-    }
-  };
 
   const handleApprove = async (id: string, prenom: string) => {
     try {
@@ -118,58 +105,6 @@ export default function Admin() {
     }
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-[#fbfbfd] flex flex-col items-center justify-center p-6 text-[#1d1d1f] selection:bg-black selection:text-white">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-sm"
-        >
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/10">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>Безопасный вход</h1>
-            <p className="text-sm text-[#86868b] uppercase tracking-widest font-bold">Кхел • Модерация</p>
-          </div>
-          
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <input 
-                type="password" 
-                placeholder="Пароль"
-                className="w-full bg-white px-5 py-4 rounded-2xl text-center text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
-              />
-              {error && <p className="text-[#ff3b30] text-sm text-center mt-3 font-medium">{error}</p>}
-            </div>
-            <button 
-              type="submit"
-              className="w-full bg-[#1d1d1f] hover:bg-black text-white py-4 rounded-2xl text-lg font-bold shadow-[0_5px_20px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all"
-            >
-              Войти
-            </button>
-          </form>
-          
-          <div className="mt-8 text-center">
-            <button 
-              onClick={() => router.push('/')}
-              className="text-[#86868b] hover:text-[#1d1d1f] text-sm font-medium transition-colors"
-            >
-              Вернуться на карту
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#fbfbfd] text-[#1d1d1f] selection:bg-black selection:text-white pb-safe">
       <div className="max-w-4xl mx-auto px-6 py-12 md:py-20">
@@ -192,10 +127,10 @@ export default function Admin() {
               <span className="w-2 h-2 rounded-full bg-[#34c759]"></span> В сети
             </div>
             <button 
-              onClick={() => setIsLoggedIn(false)}
+              onClick={() => router.push('/')}
               className="px-5 py-2.5 bg-black/5 hover:bg-[#ff3b30]/10 hover:text-[#ff3b30] rounded-full text-sm font-bold transition-colors"
             >
-              Выйти
+              На карту
             </button>
           </div>
         </motion.div>
