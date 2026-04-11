@@ -224,6 +224,7 @@ export function useDiasporaLogic() {
       status: 'published',
       ville: ticketDraft.ville || communityMember?.ville || "",
       pays: ticketDraft.pays || communityMember?.pays || "Франция",
+      hasAudio: !!audioUrl
     };
 
     try {
@@ -236,16 +237,9 @@ export function useDiasporaLogic() {
         m.id === user.uid ? { ...m, hasActiveTicket: true, lastTicketId: newTicketRef.key } : m
       ));
 
-      // Reset
-      setTicketDraft({
-        title: '',
-        description: '',
-        category: 'administrative',
-        ville: '',
-        pays: 'Франция',
-        isEmergency: false,
-      });
-      setFinalTranscript('');
+      // Reset everything
+      setTicketDraft({ title: '', description: '', category: 'administrative', ville: '', pays: 'Франция', isEmergency: false });
+      resetAudio();
       setActiveModal(null);
     } catch (e) {
       console.error("Ticket submission failed", e);
@@ -264,6 +258,7 @@ export function useDiasporaLogic() {
     handleVouch,
     ticketDraft, setTicketDraft, submitTicket,
     isListening, setIsListening, ticketInputMode, setTicketInputMode,
-    finalTranscript, setFinalTranscript, interimTranscript
+    finalTranscript, setFinalTranscript, interimTranscript,
+    isRecording, startRecording, stopRecording, audioUrl, resetAudio
   };
 }
