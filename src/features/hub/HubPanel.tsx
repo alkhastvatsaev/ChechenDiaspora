@@ -70,6 +70,44 @@ export function HubPanel({
                 <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-text-primary">Активное ОРЦА (Призывы о помощи)</h3>
                 <span className="px-3 py-1 bg-red-50 text-red-500 rounded-full text-[10px] font-black animate-pulse">ОТКРЫТО</span>
               </div>
+
+              {/* Expert Discovery Results */}
+              {logic.selectedExpertType && filteredMembers.length > 0 && (
+                <div className="space-y-4 pb-4">
+                  <div className="flex items-center justify-between px-1">
+                    <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-brand-blue">Наденные эксперты</h3>
+                    <button 
+                      onClick={() => logic.setSelectedExpertType(null)}
+                      className="text-[10px] font-bold text-text-tertiary uppercase hover:text-danger flex items-center gap-1"
+                    >
+                      <X size={10} /> Сбросить
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {filteredMembers.map(m => (
+                      <div key={m.id} className="p-4 bg-white rounded-3xl border border-black/[0.03] shadow-sm flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-bg-secondary rounded-2xl flex items-center justify-center font-black text-brand-blue border border-black/[0.03]">
+                            {m.prenom[0]}
+                          </div>
+                          <div>
+                            <div className="text-sm font-black text-text-primary">{m.prenom} {m.nom}</div>
+                            <div className="text-[10px] font-bold text-text-tertiary">{m.profession}</div>
+                          </div>
+                        </div>
+                        <a 
+                          href={`https://wa.me/${m.phone || '33600000000'}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 bg-success/10 text-success rounded-xl flex items-center justify-center active:scale-95 transition-all"
+                        >
+                          <MessageSquare size={18} />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               <div className="space-y-3">
                 {logic.publishedTickets?.length > 0 ? (

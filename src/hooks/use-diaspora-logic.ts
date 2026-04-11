@@ -255,6 +255,9 @@ export function useDiasporaLogic() {
       if (selectedExpertType) {
         if (selectedExpertType === 'isLegalDefender' && !m.isLegalDefender) return false;
         if (selectedExpertType === 'isTranslator' && !m.isTranslator) return false;
+        if (selectedExpertType === 'isSocialHelper' && !m.isSocialHelper) return false;
+        if (selectedExpertType === 'isBusiness' && !m.isBusiness) return false;
+        if (selectedExpertType === 'juriste' && !m.profession?.toLowerCase().includes('юрист')) return false;
       }
       const fullName = `${m.prenom} ${m.nom ?? ''}`.toLowerCase();
       const query = searchQuery.toLowerCase();
