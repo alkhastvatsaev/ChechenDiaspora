@@ -291,41 +291,42 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         
         {showHeatmap && (
           <Fragment>
-            {countryGeoJson && (
-              <GeoJSON 
-                data={countryGeoJson}
-                style={{
-                  color: '#1d1d1f',
-                  weight: 0.8,
-                  opacity: 0.1,
-                  fillColor: 'transparent',
-                  fillOpacity: 0
-                }}
-              />
-            )}
+            {/* Organic Diaspora Outlines (Simulated Administrative Boundaries) */}
+            {DIASPORA_REGIONS.map((region, idx) => {
+              // Creating a rough irregular polygon around the center to simulate real city borders
+              const points = 8;
+              const coords: [number, number][] = [];
+              for (let i = 0; i < points; i++) {
+                const angle = (i * 360) / points;
+                // Use a pseudo-random fixed offset based on idx to make it irregular but stable
+                const seed = (idx * 1337 + i * 42) % 100;
+                const offset = 0.85 + (seed / 400); // 0.85 to 1.1
+                const r = region.radius * offset;
+                const dx = (r / 111320) * Math.cos(angle * (Math.PI / 180));
+                const dy = (r / (111320 * Math.cos(region.lat * (Math.PI / 180)))) * Math.sin(angle * (Math.PI / 180));
+                coords.push([region.lat + dx, region.lng + dy]);
+              }
 
-            {/* Localized Diaspora Presence Halos */}
-            {DIASPORA_REGIONS.map((region, idx) => (
-              <Circle
-                key={`region-${idx}`}
-                center={[region.lat, region.lng]}
-                radius={region.radius}
-                pathOptions={{
-                  color: '#007AFF',
-                  weight: 1,
-                  opacity: 0.4,
-                  fillColor: '#007AFF',
-                  fillOpacity: 0.15,
-                  className: 'diaspora-halo'
-                }}
-                eventHandlers={{
-                  click: (e) => {
-                    L.DomEvent.stopPropagation(e);
-                    setSelectedCountryInfo({ name: region.name, count: region.count });
-                  }
-                }}
-              />
-            ))}
+              return (
+                <Polygon
+                  key={`zone-${idx}`}
+                  positions={coords}
+                  pathOptions={{
+                    color: '#007AFF', // Solid administrative line
+                    weight: 2,
+                    opacity: 0.9,
+                    fillColor: '#007AFF',
+                    fillOpacity: 0.1,
+                  }}
+                  eventHandlers={{
+                    click: (e) => {
+                      L.DomEvent.stopPropagation(e);
+                      setSelectedCountryInfo({ name: region.name, count: region.count });
+                    }
+                  }}
+                />
+              );
+            })}
 
             <GeoJSON 
               data={diasporaBorders as any}
