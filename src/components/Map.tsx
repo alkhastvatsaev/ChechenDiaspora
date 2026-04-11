@@ -199,12 +199,18 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
   }, [showHeatmap, isMounted]);
 
   if (!isMounted || !icons) {
-    return <div className="w-full h-full bg-apple-light flex items-center justify-center font-bold text-gray-400">Инициализация...</div>;
+    return (
+      <div className="w-full h-full bg-bg-secondary flex flex-col items-center justify-center gap-4">
+        <div className="w-12 h-12 border-4 border-brand-blue/20 border-t-brand-blue rounded-full animate-spin" />
+        <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest animate-pulse">Инициализация карты...</span>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full h-full absolute top-0 left-0 z-0 bg-apple-light">
+    <div className="w-full h-full absolute top-0 left-0 z-0 bg-bg-secondary">
       <MapContainer 
+        key="diaspora-map-main"
         center={center || [43.318, 45.694]} 
         zoom={3} 
         style={{ height: '100%', width: '100%' }}
