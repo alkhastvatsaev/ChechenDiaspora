@@ -26,14 +26,14 @@ const PROVERBS = [
   {
     id: 4,
     che: "Къинхетам боцуш верг — адамаллех воьхна",
-    rus: "Кто не знает милосердия, тот потерял человечность",
+    rus: "Кто не знает милосерdia, тот потерял человечность",
     context: "О важности доброты и сострадания (Белхи)"
   }
 ];
 
 export default function WisdomCard() {
   const wisdom = useMemo(() => {
-    // Pick based on day of year to keep it consistent for all users on the same day
+    // Pick based on day of year to keep it consistent
     const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     return PROVERBS[dayOfYear % PROVERBS.length];
   }, []);
@@ -42,46 +42,46 @@ export default function WisdomCard() {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden bg-gradient-to-br from-kherch-dark to-[#1a1c1e] p-6 rounded-[2.5rem] shadow-2xl border border-white/5 group mb-8"
+      className="relative overflow-hidden bg-white p-6 rounded-[2.5rem] shadow-xl border border-black/[0.05] group mb-8"
     >
       {/* Background Micro-Decoration */}
-      <div className="absolute top-[-10%] right-[-5%] opacity-5 transition-transform group-hover:scale-110 duration-1000">
+      <div className="absolute top-[-10%] right-[-5%] text-black/[0.02] transition-transform group-hover:scale-110 duration-1000">
         <Quote size={120} />
       </div>
       
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 bg-chechen-blue rounded-xl flex items-center justify-center shadow-lg shadow-chechen-blue/20">
+        <div className="w-8 h-8 bg-brand-blue rounded-xl flex items-center justify-center shadow-lg shadow-brand-blue/20">
           <Sparkles size={14} className="text-white" />
         </div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-chechen-blue">
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-blue">
           Мудрость дня / Нохчалла
         </span>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-black text-white leading-tight tracking-tight">
+      <div className="space-y-4 relative z-10">
+        <h2 className="text-2xl font-black text-text-primary leading-tight tracking-tight uppercase italic">
           «{wisdom.che}»
         </h2>
         
-        <div className="space-y-1">
-          <p className="text-sm font-bold text-vainakh-stone/60 leading-relaxed italic">
+        <div className="space-y-2">
+          <p className="text-[15px] font-bold text-text-secondary leading-relaxed">
             — {wisdom.rus}
           </p>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#86868b]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-brand-amber">
             {wisdom.context}
           </p>
         </div>
       </div>
 
       {/* Actionable Hint */}
-      <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-         <span className="text-[9px] font-medium text-gray-500 uppercase tracking-widest">
+      <div className="mt-6 pt-4 border-t border-black/[0.05] flex items-center justify-between">
+         <span className="text-[9px] font-black text-text-tertiary uppercase tracking-widest">
            Храните достоинство во всем
          </span>
-         <div className="flex gap-1">
-            <div className="w-1 h-1 bg-chechen-blue rounded-full"></div>
-            <div className="w-1 h-1 bg-white/20 rounded-full"></div>
-            <div className="w-1 h-1 bg-white/20 rounded-full"></div>
+         <div className="flex gap-1.5">
+            <div className="w-1.5 h-1.5 bg-brand-blue rounded-full"></div>
+            <div className="w-1.5 h-1.5 bg-black/10 rounded-full"></div>
+            <div className="w-1.5 h-1.5 bg-black/10 rounded-full"></div>
          </div>
       </div>
     </motion.div>
