@@ -231,15 +231,17 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
         scrollWheelZoom={true}
-        worldCopyJump={true}
-        maxBounds={[[-90, -180], [90, 180]]}
+        worldCopyJump={false}
+        maxBounds={[[-85, -180], [85, 180]]}
         maxBoundsViscosity={1.0}
+        minZoom={2}
       >
         <ZoomHandler />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png"
           attribution=""
           className="map-tiles-premium contrast-[105%] brightness-[102%]"
+          noWrap={true}
         />
 
         {center && <ChangeView center={center} />}
