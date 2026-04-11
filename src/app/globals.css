@@ -2,25 +2,25 @@
 
 @theme {
   /* 
-   * PRODUCTION DESIGN SYSTEM (VAINAKH v2.1) - Readability & Contrast Pass
-   * Focus: WCAG Compliance for Mobile Visibility.
+   * PRODUCTION DESIGN SYSTEM (VAINAKH v2.2) - High-Contrast Pass
+   * Objective: Perfect legibility on Glassmorphism.
    */
   
-  /* Brand Palette - Deep Navy Blue for better contrast on light backgrounds */
-  --color-brand-blue: hsl(210, 100%, 45%);
-  --color-brand-blue-soft: hsl(210, 100%, 94%);
+  /* Brand Palette - Deeper for visibility */
+  --color-brand-blue: hsl(210, 100%, 42%);
+  --color-brand-blue-soft: hsl(210, 100%, 92%);
   
-  /* Neutral Palette - Hardened for readability */
+  /* Neutral Palette - Drastically Darkened for Contrast */
   --color-bg-primary: hsl(0, 0%, 100%);
-  --color-bg-secondary: hsl(240, 15%, 97%);
-  --color-text-primary: hsl(240, 20%, 8%);  /* Solid Onyx */
-  --color-text-secondary: hsl(240, 10%, 35%); /* Deep Slate */
-  --color-text-tertiary: hsl(240, 5%, 55%);
+  --color-bg-secondary: hsl(240, 10%, 96%);
+  --color-text-primary: hsl(240, 30%, 5%);   /* Almost Pure Black */
+  --color-text-secondary: hsl(240, 15%, 25%); /* Rich Charcoal */
+  --color-text-tertiary: hsl(240, 10%, 42%);  /* Dark Slate for Labels */
   
-  /* Functional Colors */
-  --color-success: hsl(150, 70%, 35%);
-  --color-warning: hsl(35, 100%, 40%);
-  --color-danger: hsl(0, 85%, 50%);
+  /* Functional Colors - Saturated for importance */
+  --color-success: hsl(150, 80%, 30%);
+  --color-warning: hsl(35, 100%, 35%);
+  --color-danger: hsl(0, 80%, 45%);
   
   /* Spacing Grid (8px based) */
   --spacing-1: 0.25rem;
