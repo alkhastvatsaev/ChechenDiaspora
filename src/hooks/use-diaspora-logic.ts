@@ -298,11 +298,11 @@ export function useDiasporaLogic() {
       ...ticketDraft,
       description: content,
       authorId: user.uid,
-      authorName: communityMember?.prenom || "Аноним",
+      authorName: (communityMember as any)?.prenom || "Аноним",
       createdAt: Date.now(),
       status: 'published',
-      ville: ticketDraft.ville || communityMember?.ville || "",
-      pays: ticketDraft.pays || communityMember?.pays || "Франция",
+      ville: ticketDraft.ville || (communityMember as any)?.ville || "",
+      pays: ticketDraft.pays || (communityMember as any)?.pays || "Франция",
       hasAudio: !!audioUrl
     };
 
