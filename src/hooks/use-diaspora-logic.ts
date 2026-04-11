@@ -155,32 +155,83 @@ export function useDiasporaLogic() {
     return () => { unsubRTDB(); unsubTickets(); if (unsubFirestore) unsubFirestore(); };
   }, []);
 
-  // -- Voice Logic --
+  // -- Audio / Transcription Engine (WhatsApp-Style) --
+  const recognitionRef = useRef<any | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  
+  // -- Transcription Logic --
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognitionCtor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    setSpeechSupported(!!SpeechRecognitionCtor);
-    
-    if (SpeechRecognitionCtor) {
-      const recognition = new SpeechRecognitionCtor();
-      recognition.lang = 'ru-RU';
-      recognition.interimResults = true;
-      recognition.continuous = true;
-      recognition.onresult = (event: any) => {
-        let interim = '';
-        let finalAdd = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const res = event.results[i];
-          if (res.isFinal) finalAdd += res[0].transcript;
-          else interim += res[0].transcript;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'ru-RU';
+
+    recognition.onresult = (event: any) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          setFinalTranscript(prev => prev + event.results[i][0].transcript);
+        } else {
+          interim += event.results[i][0].transcript;
         }
-        if (finalAdd) setFinalTranscript(p => p ? `${p} ${finalAdd}` : finalAdd);
-        setInterimTranscript(interim);
-      };
-      recognition.onend = () => setIsListening(false);
-      recognitionRef.current = recognition;
-    }
+      }
+      setInterimTranscript(interim);
+    };
+    recognition.onend = () => setIsListening(false);
+    recognitionRef.current = recognition;
+
+    return () => recognition.stop();
   }, []);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        setAudioUrl(URL.createObjectURL(blob));
+        setAudioChunks(chunks);
+      };
+
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+      setIsListening(true);
+      if (recognitionRef.current) recognitionRef.current.start();
+    } catch (err) {
+      console.error("Mic access denied", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(t => t.stop());
+    }
+    if (recognitionRef.current) recognitionRef.current.stop();
+    setIsRecording(false);
+    setIsListening(false);
+  };
+
+  const resetAudio = () => {
+    setAudioUrl(null);
+    setAudioChunks([]);
+    setFinalTranscript('');
+    setInterimTranscript('');
+  };
 
   // -- Actions --
   const handleVouch = async (memberId: string) => {
@@ -232,12 +283,10 @@ export function useDiasporaLogic() {
       const newTicketRef = push(ticketsRef);
       await set(newTicketRef, newTicket);
       
-      // Update local member state to show 'Has Active Ticket'
       setMembers(prev => prev.map(m => 
         m.id === user.uid ? { ...m, hasActiveTicket: true, lastTicketId: newTicketRef.key } : m
       ));
 
-      // Reset everything
       setTicketDraft({ title: '', description: '', category: 'administrative', ville: '', pays: 'Франция', isEmergency: false });
       resetAudio();
       setActiveModal(null);
