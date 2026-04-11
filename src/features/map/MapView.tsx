@@ -1,26 +1,17 @@
 import dynamic from 'next/dynamic';
-import { Member, TicketItem } from '@/types/diaspora';
 import { useMemo } from 'react';
 
 const MapComponent = dynamic(() => import('@/components/Map'), { 
   ssr: false,
-  loading: () => <div className="w-full h-full bg-bg-primary animate-pulse flex items-center justify-center font-bold text-text-tertiary">Chargement du Kherch...</div>
+  loading: () => <div className="w-full h-full bg-bg-primary animate-pulse flex items-center justify-center font-bold text-text-tertiary">Загрузка карты...</div>
 });
-
-interface MapViewProps {
-  members: Member[];
-  publishedTickets: TicketItem[];
-  center: [number, number] | null;
-  showHeatmap?: boolean;
-  onEntityClick: (entity: any) => void;
-}
 
 export function MapView({ 
   members = [], 
   publishedTickets = [], 
-  center, 
-  showHeatmap, 
-  onMemberClick 
+  center = null, 
+  showHeatmap = true, 
+  onMemberClick = () => {} 
 }: any) {
   const mapEntities = useMemo(() => {
     const safeTickets = Array.isArray(publishedTickets) ? publishedTickets : [];
@@ -28,7 +19,7 @@ export function MapView({
     
     const ticketMarkers = safeTickets
       .filter((t: any) => t && typeof t.lat === 'number' && typeof t.lng === 'number')
-      .map((t) => ({
+      .map((t: any) => ({
         id: t.id,
         lat: t.lat,
         lng: t.lng,
@@ -45,19 +36,19 @@ export function MapView({
         profession: 'Запрос',
       }));
 
-    return [...members, ...ticketMarkers];
+    return [...safeMembers, ...ticketMarkers];
   }, [members, publishedTickets]);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-bg-primary">
       <MapComponent 
         members={mapEntities} 
         center={center} 
         showHeatmap={showHeatmap}
         onMemberClick={onMemberClick}
       />
-      {/* Premium Gradient Overlay to integrate with UI */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-bg-primary/40 via-transparent to-bg-primary/20"></div>
+      {/* Premium Gradient Overlay */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-bg-primary/40 via-transparent to-bg-primary/20" />
     </div>
   );
 }
