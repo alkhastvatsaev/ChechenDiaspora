@@ -15,10 +15,19 @@ interface MapViewProps {
   onEntityClick: (entity: any) => void;
 }
 
-export function MapView({ members, publishedTickets, center, showHeatmap, onEntityClick }: MapViewProps) {
+export function MapView({ 
+  members = [], 
+  publishedTickets = [], 
+  center, 
+  showHeatmap, 
+  onMemberClick 
+}: any) {
   const mapEntities = useMemo(() => {
-    const ticketMarkers = publishedTickets
-      .filter((t) => typeof t.lat === 'number' && typeof t.lng === 'number')
+    const safeTickets = Array.isArray(publishedTickets) ? publishedTickets : [];
+    const safeMembers = Array.isArray(members) ? members : [];
+    
+    const ticketMarkers = safeTickets
+      .filter((t: any) => t && typeof t.lat === 'number' && typeof t.lng === 'number')
       .map((t) => ({
         id: t.id,
         lat: t.lat,
