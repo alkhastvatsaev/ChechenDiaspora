@@ -195,8 +195,8 @@ export default function DevRoadmap() {
             <Database size={12} /> Database Schema
           </div>
           <p className="text-[11px] text-vainakh-stone/40 leading-relaxed font-mono">
-            RTDB: /members/{id}<br />
-            Firestore: /members/{id}<br />
+            RTDB: /members/[id]<br />
+            Firestore: /members/[id]<br />
             Vouches: Array&lt;userId&gt;
           </p>
         </div>
