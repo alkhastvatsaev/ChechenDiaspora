@@ -8,11 +8,20 @@ interface BottomNavProps {
   logic: any;
 }
 
+const QUICK_EXPERTS = [
+  { id: 'isLegalDefender', label: 'Адвокат', icon: <Scale size={18} /> },
+  { id: 'juriste', label: 'Юрист', icon: <ShieldCheck size={18} /> },
+  { id: 'isTranslator', label: 'Переводчик', icon: <Globe size={18} /> },
+  { id: 'isSocialHelper', label: 'Соц. помощь', icon: <MessageSquare size={18} /> },
+  { id: 'isBusiness', label: 'Бизнес', icon: <Briefcase size={18} /> },
+];
+
 export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
   const { 
     ticketDraft, setTicketDraft, submitTicket, 
     isListening, interimTranscript, finalTranscript,
-    isRecording, startRecording, stopRecording, audioUrl, resetAudio
+    isRecording, startRecording, stopRecording, audioUrl, resetAudio,
+    setSelectedExpertType, isSearchFocused, setIsSearchFocused
   } = logic;
 
   const handleMicClick = () => {
@@ -24,10 +33,41 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
     }
   };
 
+  const handleCategoryClick = (id: string) => {
+    setSelectedExpertType(id);
+    setActiveTab('hub');
+    setIsSearchFocused(false);
+  };
+
   return (
     <div className="fixed bottom-0 inset-x-0 z-[100] px-6 pb-[calc(env(safe-area-inset-bottom)+24px)] pointer-events-none">
       <div className="max-w-2xl mx-auto pointer-events-auto">
         
+        {/* Quick Expertise Bubbles */}
+        <AnimatePresence>
+          {isSearchFocused && !isRecording && !audioUrl && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              className="mb-4 flex flex-wrap gap-2 justify-center"
+            >
+              {QUICK_EXPERTS.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategoryClick(cat.id)}
+                  className="px-4 py-3 glass-premium rounded-full flex items-center gap-2 shadow-xl border border-white/40 active:scale-95 transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                    {cat.icon}
+                  </div>
+                  <span className="text-[13px] font-black tracking-tight text-text-primary">{cat.label}</span>
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Transcription Preview (Floating above) */}
         <AnimatePresence>
           {(isRecording || interimTranscript || finalTranscript) && !audioUrl && (
@@ -81,7 +121,11 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
                 type="text"
                 value={ticketDraft.description}
                 onChange={(e) => setTicketDraft({ ...ticketDraft, description: e.target.value })}
-                onFocus={() => activeTab !== 'hub' && setActiveTab('hub')}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  if (activeTab !== 'hub') setActiveTab('hub');
+                }}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Чем мы можем помочь?"
                 className="flex-1 bg-transparent px-4 py-2 text-[15px] font-bold focus:outline-none placeholder:text-text-tertiary"
               />
