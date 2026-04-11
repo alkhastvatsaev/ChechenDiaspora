@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo, Fragment } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Globe, X } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMap, GeoJSON, Circle, Polygon, Polyline } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
@@ -221,31 +223,24 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
     }
   }, [isMounted]);
 
-  const DIASPORA_POPULATIONS = [
-    { name: 'Турция', count: '100k+', lat: 38.9637, lng: 35.2433 },
-    { name: 'Франция', count: '67k', lat: 46.2276, lng: 2.2137 },
-    { name: 'Германия', count: '50k', lat: 51.1657, lng: 10.4515 },
-    { name: 'Казахстан', count: '45k', lat: 48.0196, lng: 66.9237 },
-    { name: 'Австрия', count: '30k', lat: 47.5162, lng: 14.5501 },
-    { name: 'Бельгия', count: '17k', lat: 50.5039, lng: 4.4699 },
-    { name: 'Иордания', count: '15k', lat: 31.2530, lng: 36.5000 },
-    { name: 'Польша', count: '15k', lat: 51.9194, lng: 19.1451 },
-    { name: 'Норвегия', count: '10k', lat: 60.4720, lng: 8.4689 },
-    { name: 'Грузия', count: '8k', lat: 42.1672, lng: 44.7554 },
-    { name: 'Ирак', count: '15k', lat: 33.3152, lng: 44.3661 },
-  ];
+  const [selectedCountryInfo, setSelectedCountryInfo] = useState<{name: string, count: string} | null>(null);
 
-  const populationIcon = (name: string, count: string) => L.divIcon({
-    className: 'bg-transparent',
-    html: `
-      <div class="flex flex-col items-center pointer-events-none opacity-60 hover:opacity-100 transition-opacity duration-500">
-        <span class="text-[8px] font-black uppercase tracking-[0.2em] text-chechen-blue/40 mb-0.5">${name}</span>
-        <span class="text-[10px] font-black text-chechen-blue/80 tracking-tighter leading-none">${count}</span>
-      </div>
-    `,
-    iconSize: [0, 0],
-    iconAnchor: [0, 0]
-  });
+  const DIASPORA_STATS: {[key: string]: string} = {
+    'France': '67,000+',
+    'Germany': '50,000+',
+    'Austria': '30,000+',
+    'Belgium': '17,000+',
+    'Turkey': '100,000+',
+    'Jordan': '15,000+',
+    'Palestine': '10,000+', // Historical link
+    'Kazakhstan': '45,000+',
+    'Poland': '15,000+',
+    'Norway': '10,000+',
+    'Georgia': '8,000+',
+    'Iraq': '15,000+',
+    'United Kingdom': '5,000+',
+    'Finland': '3,000+'
+  };
 
   if (!isMounted || !icons) {
     return (
@@ -286,11 +281,25 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <GeoJSON 
                 data={countryGeoJson}
                 style={{
-                  color: '#1d1d1f', // Apple Onyx / Ink
+                  color: '#1d1d1f',
                   weight: 0.8,
                   opacity: 0.2,
                   fillColor: 'transparent',
                   fillOpacity: 0
+                }}
+                onEachFeature={(feature, layer) => {
+                  layer.on({
+                    click: (e) => {
+                      L.DomEvent.stopPropagation(e);
+                      const name = feature.properties.ADMIN || feature.properties.name || "";
+                      const stats = DIASPORA_STATS[name] || DIASPORA_STATS[name.split(' ')[0]] || null;
+                      if (stats) {
+                        setSelectedCountryInfo({ name, count: stats });
+                      } else {
+                        setSelectedCountryInfo(null);
+                      }
+                    }
+                  });
                 }}
               />
             )}
@@ -304,17 +313,16 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 fillColor: '#007AFF',
                 fillOpacity: 0.1,
               }}
+              onEachFeature={(feature, layer) => {
+                layer.on({
+                  click: (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    // Handle clicks on custom borders if 
+                    setSelectedCountryInfo(null); // Reset or specific logic
+                  }
+                });
+              }}
             />
-
-            {/* Diaspora Population Badges */}
-            {zoom <= 5 && DIASPORA_POPULATIONS.map(pop => (
-              <Marker 
-                key={`pop-${pop.name}`}
-                position={[pop.lat, pop.lng]}
-                icon={populationIcon(pop.name, pop.count)}
-                zIndexOffset={-500}
-              />
-            ))}
             
             <Polygon
               positions={CHECHNYA_BORDER_POINTS}
@@ -406,6 +414,40 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           ))}
         </MarkerClusterGroup>
       </MapContainer>
+
+      {/* Demographic Insight Card (Premium Apple Style) */}
+      <AnimatePresence>
+        {selectedCountryInfo && (
+          <motion.div 
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            className="absolute bottom-6 inset-x-6 z-[1000] pointer-events-none"
+          >
+            <div className="max-w-md mx-auto glass-premium rounded-[2.5rem] p-6 border border-white/40 shadow-2xl flex items-center justify-between pointer-events-auto">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-brand-blue/10 rounded-2xl flex items-center justify-center text-brand-blue">
+                  <Globe size={24} />
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mb-1">Присутствие диаспоры</h4>
+                  <div className="text-xl font-black text-text-primary tracking-tight">{selectedCountryInfo.name}</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-black text-brand-blue tracking-tighter">~{selectedCountryInfo.count}</div>
+                <div className="text-[10px] font-bold text-text-tertiary uppercase tracking-tight">Вайнех</div>
+              </div>
+              <button 
+                onClick={() => setSelectedCountryInfo(null)}
+                className="absolute -top-3 -right-3 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
