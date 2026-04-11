@@ -6,8 +6,8 @@ import { MapView } from '@/features/map/MapView';
 import { HubPanel } from '@/features/hub/HubPanel';
 import { BottomNav } from '@/features/navigation/BottomNav';
 import { ModalRegistry } from '@/features/modals/ModalRegistry';
-import { MemberProfile } from '@/components/MemberProfile';
-import { StoryOverlay } from '@/components/StoryOverlay';
+import MemberProfile from '@/components/MemberProfile';
+import StoryOverlay from '@/components/StoryOverlay';
 import Manifesto from '@/components/Manifesto';
 import { Search, Info, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -70,7 +70,7 @@ export default function AppShell() {
               className="px-4 py-2 bg-warning/10 text-warning text-[10px] font-black uppercase tracking-widest rounded-full border border-warning/20 flex items-center gap-2"
             >
               <div className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse" />
-              Оффлайн
+              ВНЕ СЕТИ
             </motion.div>
           )}
           <button className="w-11 h-11 glass-premium rounded-full flex items-center justify-center tap-haptic overflow-hidden">
