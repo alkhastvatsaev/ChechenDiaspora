@@ -5,9 +5,10 @@ import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, Ext
 interface MemberProfileProps {
   member: any;
   onClose: () => void;
+  onVouch?: (id: string) => void;
 }
 
-export default function MemberProfile({ member, onClose }: MemberProfileProps) {
+export default function MemberProfile({ member, onClose, onVouch }: MemberProfileProps) {
   if (!member) return null;
 
   return (
@@ -56,6 +57,11 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
               <span className="px-3 py-1 bg-white border border-black/5 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-full">
                 {member.teip}
               </span>
+              {member.vouchCount > 0 && (
+                <span className="px-3 py-1 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm flex items-center gap-1">
+                  <Shield size={10} fill="currentColor" /> {member.vouchCount} ВАУЧЕЙ
+                </span>
+              )}
             </div>
 
             {/* Strategic High-Leverage Badges */}
@@ -88,7 +94,25 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Текущий город</span>
                 <span className="font-bold text-kherch-dark">{member.ville}, {member.pays}</span>
              </div>
+
+             {member.isBusiness && (
+                <div className="col-span-2 bg-emerald-600/5 p-6 rounded-[2rem] border border-emerald-600/10 flex flex-col gap-3">
+                   <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center">
+                         <Briefcase size={20} />
+                      </div>
+                      <div>
+                         <h4 className="text-emerald-900 font-black text-sm uppercase tracking-tight">Бизнес / Услуги</h4>
+                         <p className="text-[11px] text-emerald-700/60 font-medium">{member.businessName || 'Поддержим своих'}</p>
+                      </div>
+                   </div>
+                   <p className="text-xs text-emerald-900/70 font-medium leading-relaxed">
+                      {member.businessDescription || 'Проверенный бизнес нашей общины. Доверие и качество.'}
+                   </p>
+                </div>
+              )}
           </div>
+
 
           <div className="p-5 bg-chechen-blue/5 rounded-3xl border border-chechen-blue/10 mb-8">
             <h4 className="flex items-center gap-2 text-chechen-blue font-black uppercase text-[10px] tracking-widest mb-2">
@@ -103,6 +127,12 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
           <div className="space-y-3">
             <button className="w-full py-5 bg-kherch-dark text-white rounded-[1.5rem] font-black text-sm shadow-xl tap-effect flex items-center justify-center gap-3">
               СВЯЗАТЬСЯ <MessageCircle size={18} />
+            </button>
+            <button 
+              onClick={() => onVouch?.(member.id)}
+              className="w-full py-4 bg-amber-50 text-amber-600 border border-amber-200 rounded-[1.5rem] font-black text-xs shadow-sm tap-effect flex items-center justify-center gap-3 uppercase tracking-widest"
+            >
+              ПОРУЧИТЬСЯ (VOUCH) <ShieldCheck size={18} />
             </button>
             <div className="grid grid-cols-2 gap-3">
               <button 

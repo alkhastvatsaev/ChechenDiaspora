@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, ShieldAlert, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, ShieldAlert, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, ChevronRight, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db, storage, firestore } from '@/lib/firebase';
@@ -11,6 +11,12 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
 import StoryOverlay from '@/components/StoryOverlay';
+import WisdomCard from '@/components/WisdomCard';
+import IntegrationRoadmap from '@/components/IntegrationRoadmap';
+import Manifesto from '@/components/Manifesto';
+
+
+
 
 // Use dynamic import for Leaflet Map as it needs 'window' (client-side only)
 const MapComponent = dynamic(() => import('@/components/Map'), { 
@@ -18,9 +24,16 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
   loading: () => <div className="w-full h-full bg-apple-light animate-pulse flex items-center justify-center font-bold text-gray-400">Загрузка карты...</div>
 });
 
+const COMMON_TEIPS = [
+  "Беной", "Гендаргеной", "Билтой", "Зандкъой", "Энганой", 
+  "Аллерой", "Цонтарой", "Белтой", "Шикарой", "Варандой"
+];
+
 const sampleExperts = [
-  { id: 'S1', prenom: "Аслан", nom: "Базаров", profession: "Юрист / Право убежища", isLegalDefender: true, ville: "Страсбург", pays: "Франция", village: "Шали", teip: "Шолой", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Готов помочь братьям юридически.", hasStory: true, storyContent: { type: 'berkat', title: 'Срочная помощь', text: 'Нужен переводчик для семьи в Страсбурге на завтра. Кто свободен?', date: '2ч назад' } },
-  { id: 'S2', prenom: "Зелим", nom: "Умаров", profession: "Инженер ПО", ville: "Берлин", pays: "Германия", village: "Гехи", teip: "Гехой", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Могу стать наставником в IT." },
+  { id: 'S1', prenom: "Аслан", nom: "Базаров", profession: "Юрист / Право убежища", isLegalDefender: true, vouchCount: 12, ville: "Страсбург", pays: "Франция", village: "Шали", teip: "Шолой", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Готов помочь братьям юридически.", hasStory: true, storyContent: { type: 'berkat', title: 'Срочная помощь', text: 'Нужен переводчик для семьи в Страсбурге на завтра. Кто свободен?', date: '2ч назад' } },
+  { id: 'S2', prenom: "Зелим", nom: "Умаров", profession: "Инженер ПО", vouchCount: 5, ville: "Берлин", pays: "Германия", village: "Гехи", teip: "Гехой", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Могу стать наставником в IT." },
+  { id: 'S10', prenom: "Муса", nom: "Ахматов", profession: "Автосервис / Ремонт", isBusiness: true, businessName: "Vainakh Auto Shop", businessDescription: "Профессиональный ремонт BMW/Audi. Своим скидки.", vouchCount: 45, ville: "Париж", pays: "Франция", village: "Валерик", teip: "Валорой", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
+  { id: 'S11', prenom: "Тимур", nom: "Бокаев", profession: "Грузоперевозки / EU", isBusiness: true, businessName: "Bokaev Logistics", businessDescription: "Доставка грузов по всей Европе. Надежно и быстро.", vouchCount: 28, ville: "Брюссель", pays: "Бельгия", village: "Шатой", teip: "Шатой", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
   { id: 'S3', prenom: "Амина", nom: "Исаева", profession: "Присяжный переводчик", isTranslator: true, ville: "Вена", pays: "Австрия", village: "Ведено", teip: "Белтой", lat: 48.2082, lng: 16.3738, isLive: true, approved: true, message: "Перевод: Арабский/Немецкий/Французский.", hasStory: true, storyContent: { type: 'heritage', title: 'Урок языка', text: 'Сегодня разбираем тему Адатов в нашем культурном центре.', date: '30м назад' } },
   { id: 'S4', prenom: "Беслан", nom: "Цароев", profession: "Нотариус", ville: "Ницца", pays: "Франция", village: "Гудермес", teip: "Гордалой", lat: 43.7102, lng: 7.2620, isLive: false, approved: true },
   { id: 'S5', prenom: "Мансур", nom: "Гакаев", profession: "Тренер / ММА", ville: "Варшава", pays: "Польша", village: "Аргун", teip: "Элистанжхой", lat: 52.2297, lng: 21.0122, isLive: true, approved: true },
@@ -62,13 +75,16 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<'amanat' | 'perevozchik' | 'administrative' | 'union-son' | 'union-daughter' | 'berkat-form' | null>(null);
+  const [activeModal, setActiveModal] = useState<'amanat' | 'perevozchik' | 'administrative' | 'union-son' | 'union-daughter' | 'berkat-form' | 'roadmap' | null>(null);
+
   const [showBerkat, setShowBerkat] = useState(false);
   
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeip, setSelectedTeip] = useState('');
+  const [selectedVillage, setSelectedVillage] = useState('');
   const [selectedProfession, setSelectedProfession] = useState('');
+  const [suggestionType, setSuggestionType] = useState<'all' | 'expert' | 'country' | 'village'>('all');
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedExpertType, setSelectedExpertType] = useState<string | null>(null);
@@ -392,6 +408,40 @@ export default function Home() {
     };
   }, []);
 
+  // Vouch Logic (Approved Infrastructure)
+  const handleVouch = async (memberId: string) => {
+    if (!communityMember) return;
+    
+    const currentUserId = user?.uid || 'anonymous_verified_member';
+    
+    try {
+      const { ref: dbRef, get, set: dbSet } = require('firebase/database');
+      const memberRef = dbRef(db, `members/${memberId}`);
+      const snapshot = await get(memberRef);
+      
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const vouchedBy = data.vouchedBy || [];
+        
+        if (vouchedBy.includes(currentUserId)) {
+          console.log("Member already vouched for this person");
+          return;
+        }
+        
+        const newVouchedBy = [...vouchedBy, currentUserId];
+        await dbSet(memberRef, {
+          ...data,
+          vouchedBy: newVouchedBy,
+          vouchCount: newVouchedBy.length
+        });
+        
+        // Update local state if needed (RTDB listener will handle it)
+      }
+    } catch (err) {
+      console.error("Vouching system error:", err);
+    }
+  };
+
   // Geolocation handling
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -419,6 +469,7 @@ export default function Home() {
         if (selectedExpertType === 'isTranslator' && !m.isTranslator) return false;
         if (selectedExpertType === 'isGuide' && !m.isGuide) return false;
         if (selectedExpertType === 'openToMentorship' && !m.openToMentorship) return false;
+        if (selectedExpertType === 'isBusiness' && !m.isBusiness) return false;
       }
 
       const fullName = `${m.prenom} ${m.nom}`.toLowerCase();
@@ -433,11 +484,12 @@ export default function Home() {
       );
       
       const matchesTeip = selectedTeip ? m.teip === selectedTeip : true;
+      const matchesVillage = selectedVillage ? m.village === selectedVillage : true;
       const matchesProfession = selectedProfession ? m.profession === selectedProfession : true;
       
-      return matchesSearch && matchesTeip && matchesProfession;
+      return matchesSearch && matchesTeip && matchesVillage && matchesProfession;
     });
-  }, [members, searchQuery, selectedTeip, selectedProfession, selectedExpertType]);
+  }, [members, searchQuery, selectedExpertType, selectedTeip, selectedVillage, selectedProfession]);
 
   const liveCount = useMemo(() => {
     return members.filter(m => m.isLive).length + Math.floor(members.length * 0.1) + 3;
@@ -566,8 +618,41 @@ export default function Home() {
                 <X size={24} />
               </button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+160px)] space-y-8 scrollbar-hide overscroll-contain">
+            <div className="flex-1 overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+160px)] space-y-2 scrollbar-hide overscroll-contain">
+
+              
+              {/* Wisdom of the Day (Identity) */}
+              <WisdomCard />
+
+              {/* Ancestral Discovery (Teips Filter) */}
+              <div className="space-y-4 mb-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 ml-2">Поиск по Тейпам</h3>
+                  {selectedTeip && (
+                    <button 
+                      onClick={() => setSelectedTeip('')}
+                      className="text-[10px] font-bold text-chechen-blue uppercase tracking-widest"
+                    >
+                      Сбросить
+                    </button>
+                  )}
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-6 px-6">
+                  {COMMON_TEIPS.map((teip) => (
+                    <button
+                      key={teip}
+                      onClick={() => setSelectedTeip(selectedTeip === teip ? '' : teip)}
+                      className={`whitespace-nowrap px-6 py-3 rounded-2xl text-xs font-black transition-all duration-300 ${
+                        selectedTeip === teip 
+                          ? 'bg-kherch-dark text-white shadow-xl scale-105' 
+                          : 'bg-white text-kherch-dark border border-black/5 hover:border-black/10'
+                      }`}
+                    >
+                      {teip.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* High-Impact Actions */}
               <div className="grid grid-cols-2 gap-4">
@@ -578,7 +663,7 @@ export default function Home() {
                   <UserPlus className="text-white" size={28} />
                   <div className="relative z-10">
                     <h3 className="text-white font-black text-lg leading-tight mb-1">Вступить в Сеть</h3>
-                    <p className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Ст ть ч стью сообществ </p>
+                    <p className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Стать частью сообщества</p>
                   </div>
                 </Link>
                 
@@ -599,8 +684,8 @@ export default function Home() {
                 >
                   <Gavel className="text-indigo-600" size={28} />
                   <div>
-                    <h3 className="text-indigo-900 font-black text-lg leading-tight mb-1">Помощь</h3>
-                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest leading-tight text-balance">Админ. Франция</p>
+                    <h3 className="text-indigo-900 font-black text-lg leading-tight mb-1">Bouclier</h3>
+                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest leading-tight text-balance">Юристы / Сопровождение</p>
                   </div>
                 </button>
 
@@ -632,24 +717,51 @@ export default function Home() {
                      <BookOpen size={120} />
                   </div>
                 </button>
+
+                <button 
+                  onClick={() => setActiveModal('mentorship')}
+                  className="col-span-2 bg-indigo-50 p-6 rounded-[3rem] flex items-center justify-between h-32 shadow-xl border border-indigo-200/30 group active:scale-95 transition-all relative overflow-hidden"
+                >
+                  <div className="relative z-10 flex flex-col justify-center text-left">
+                    <h3 className="text-indigo-900 font-black text-xl leading-tight mb-1 uppercase tracking-tighter">Mentorat / Наставничество</h3>
+                    <p className="text-[11px] text-indigo-400 font-bold uppercase tracking-[0.2em] leading-tight">Долг опытных — направлять молодых</p>
+                  </div>
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-inner border border-indigo-100 flex-shrink-0 relative z-10">
+                     <GraduationCap className="text-indigo-600" size={32} />
+                  </div>
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 translate-x-4">
+                     <Users size={120} />
+                  </div>
+                </button>
               </div>
 
-              {/* Berkat (Work & Opportunities) Tile */}
-              <button 
-                onClick={() => setShowBerkat(true)}
-                className="w-full bg-emerald-50 p-6 rounded-[2.5rem] border border-emerald-100/50 shadow-sm flex items-center justify-between group active:scale-[0.98] transition-all"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-emerald-500">
-                    <Briefcase size={24} />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-kherch-dark font-black text-lg leading-tight uppercase tracking-tighter">Беркат</h3>
-                    <p className="text-[10px] text-emerald-600/60 font-bold uppercase tracking-widest">Работа и Местные Советы</p>
-                  </div>
+              {/* Berkat (Work & Business) Entry Point */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 ml-2">Экономика Общины</h3>
                 </div>
-                <ArrowRight size={20} className="text-emerald-300 group-hover:translate-x-1 transition-transform" />
-              </button>
+                <button 
+                  onClick={() => handleSuggestionSelect(selectedExpertType === 'isBusiness' ? '' : 'isBusiness', 'expert')}
+                  className={`w-full p-6 rounded-[2.5rem] border ${
+                    selectedExpertType === 'isBusiness' 
+                    ? 'bg-emerald-600 text-white border-transparent' 
+                    : 'bg-emerald-50 text-emerald-900 border-emerald-100/50'
+                  } shadow-sm flex items-center justify-between group active:scale-[0.98] transition-all`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 ${selectedExpertType === 'isBusiness' ? 'bg-white/20' : 'bg-white'} rounded-2xl flex items-center justify-center shadow-sm`}>
+                      <Briefcase size={24} className={selectedExpertType === 'isBusiness' ? 'text-white' : 'text-emerald-500'} />
+                    </div>
+                    <div className="text-left">
+                      <h4 className={`font-black text-lg leading-tight ${selectedExpertType === 'isBusiness' ? 'text-white' : 'text-emerald-900'}`}>Бизнес Диаспоры</h4>
+                      <p className={`text-[10px] font-bold uppercase tracking-widest leading-tight ${selectedExpertType === 'isBusiness' ? 'text-white/70' : 'text-emerald-400'}`}>
+                        {selectedExpertType === 'isBusiness' ? 'Показаны только бизнесы' : 'Поддержим своих предпринимателей'}
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight size={20} className={selectedExpertType === 'isBusiness' ? 'text-white/50' : 'text-emerald-300'} />
+                </button>
+              </div>
 
               {/* Anti-WhatsApp Core */}
               <div className="grid grid-cols-2 gap-4">
@@ -688,6 +800,24 @@ export default function Home() {
                   </div>
                 </Link>
               </div>
+
+              {/* Structured Roadmap Card (Phase 3) */}
+              <button 
+                onClick={() => setActiveModal('roadmap')}
+                className="w-full bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-[3rem] shadow-2xl shadow-indigo-500/20 flex items-center justify-between group active:scale-95 transition-all text-left relative overflow-hidden"
+              >
+                <div className="relative z-10">
+                  <h3 className="text-white font-black text-xl leading-tight mb-1">Дорожная Карта</h3>
+                  <p className="text-[11px] text-indigo-100/60 font-bold uppercase tracking-widest">Интеграция во Франции 🇫🇷</p>
+                </div>
+                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-white backdrop-blur-md">
+                   <ArrowRight size={24} />
+                </div>
+                <div className="absolute -bottom-4 -right-4 opacity-10 rotate-12">
+                   <Globe size={120} />
+                </div>
+              </button>
+
 
               {/* Search & Intelligence */}
               <div className="relative">
@@ -793,22 +923,8 @@ export default function Home() {
             className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+60px)] z-[80] bg-kherch-dark text-white rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col border-t border-white/10 overflow-hidden"
           >
             <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto my-4 flex-shrink-0" onClick={() => setActiveTab('map')}></div>
-            <div className="flex-1 overflow-y-auto px-10 py-20 pb-[calc(env(safe-area-inset-bottom)+100px)] text-center space-y-8 scrollbar-hide overscroll-contain">
-              <div className="relative inline-block">
-                <div className="absolute -inset-4 bg-hearth-amber/20 blur-2xl rounded-full"></div>
-                <Flame size={64} className="relative text-hearth-amber mx-auto mb-6" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-black tracking-tighter mb-4 uppercase">Наследие</h1>
-                <h2 className="text-xl font-bold text-hearth-amber/80 mb-8">Совет Старейшин</h2>
-                <div className="w-16 h-1 bg-hearth-amber/30 mx-auto rounded-full mb-8"></div>
-                <p className="text-lg font-medium text-vainakh-stone/60 leading-relaxed max-w-sm mx-auto">
-                  Этот раздел посвящен сохранению нашего Адата и языка.
-                </p>
-                <div className="mt-12 p-8 bg-white/5 rounded-[2.5rem] border border-white/5 backdrop-blur-md">
-                   <p className="text-xs font-black uppercase tracking-[0.3em] text-vainakh-stone/40">Статус: В разработке</p>
-                </div>
-              </div>
+            <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain">
+               <Manifesto />
             </div>
           </motion.div>
         )}
@@ -920,6 +1036,20 @@ export default function Home() {
                   <div className="text-lg font-black text-kherch-dark tracking-tight">Говорите, чтобы создать запрос</div>
                   <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Меньше слов, больше дела</div>
                 </div>
+
+                {/* Emergency Toggle */}
+                <div className="flex items-center gap-4 bg-white/50 p-2 rounded-2xl border border-black/5">
+                   <button 
+                     type="button"
+                     onClick={() => setTicketDraft(d => ({ ...d, isEmergency: !d.isEmergency }))}
+                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                       ticketDraft.isEmergency ? 'bg-red-500 text-white shadow-lg' : 'bg-white text-gray-400'
+                     }`}
+                   >
+                     {ticketDraft.isEmergency ? '🆘 СРОЧНО' : 'Обычный запрос'}
+                   </button>
+                </div>
+
 
                 <div className="relative">
                   {isRecordingAudio && (
@@ -1074,8 +1204,8 @@ export default function Home() {
                       <Gavel size={28} />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-black text-kherch-dark">Админ. Помощь</h2>
-                      <p className="text-xs font-bold text-gray-400">Сопровождение во Франции</p>
+                      <h2 className="text-2xl font-black text-kherch-dark tracking-tight uppercase">Bouclier Juridique</h2>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Правовой щит и сопровождение</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-3">
@@ -1127,6 +1257,10 @@ export default function Home() {
                   </div>
                   <button className="w-full py-5 bg-emerald-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">Опубликовать</button>
                 </div>
+              ) : activeModal === "roadmap" ? (
+                <div className="max-h-[80vh] overflow-y-auto scrollbar-hide px-2">
+                   <IntegrationRoadmap />
+                </div>
               ) : (
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
@@ -1139,6 +1273,7 @@ export default function Home() {
                   <button className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-xl">Оставить намерение</button>
                 </div>
               )}
+
             </motion.div>
           </div>
         )}

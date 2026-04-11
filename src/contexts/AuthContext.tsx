@@ -25,15 +25,20 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [communityMember, setCommunityMember] = useState(false);
-
-  useEffect(() => {
+  const [communityMember, setCommunityMember] = useState(() => {
     // TEMPORARY: Auto-verify everyone and skip passphrase login
     if (typeof window !== 'undefined') {
-      setCommunityMember(true);
+      const stored = sessionStorage.getItem('vainakh_verified');
+      if (stored === 'true') return true;
+      
+      // Auto-verify even if not in session storage (preserving temporary skip logic)
       sessionStorage.setItem('vainakh_verified', 'true');
+      return true;
     }
+    return false;
+  });
 
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
