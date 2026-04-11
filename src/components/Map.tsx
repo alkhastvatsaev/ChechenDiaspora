@@ -156,49 +156,48 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
     };
   }, []);
 
-  const activeCountries = useMemo(() => {
-    const countries = new Set<string>();
-    members.forEach(m => { if (m.pays) countries.add(m.pays); });
-    return countries;
-  }, [members]);
-
   useEffect(() => {
     if (isMounted) {
-      // Fetch full global data to handle 'graying out' inactive countries
       fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
         .then(res => res.json())
         .then(data => {
-          setCountryGeoJson(data);
+          const diasporaCountriesMap: { [key: string]: string[] } = {
+            'France': ['France'],
+            'Germany': ['Germany'],
+            'Austria': ['Austria'],
+            'Belgium': ['Belgium'],
+            'Norway': ['Norway'],
+            'Turkey': ['Turkey'],
+            'Jordan': ['Jordan'],
+            'Russia': ['Russia', 'Russian Federation'],
+            'UK': ['United Kingdom', 'Great Britain'],
+            'USA': ['United States of America', 'United States', 'USA'],
+            'Netherlands': ['Netherlands'],
+            'Syria': ['Syria', 'Syrian Arab Republic'],
+            'Kazakhstan': ['Kazakhstan'],
+            'Iraq': ['Iraq'],
+            'Egypt': ['Egypt'],
+            'Switzerland': ['Switzerland'],
+            'Denmark': ['Denmark'],
+            'Sweden': ['Sweden'],
+            'Poland': ['Poland'],
+            'Canada': ['Canada']
+          };
+          
+          const allTargetNames = Object.values(diasporaCountriesMap).flat();
+          const filtered = {
+            ...data,
+            features: data.features.filter((f: any) => {
+              const name = f.properties.ADMIN || f.properties.name || f.properties.NAME;
+              if (!name) return false;
+              return allTargetNames.some(tn => name.includes(tn) || tn.includes(name));
+            })
+          };
+          setCountryGeoJson(filtered);
         })
-        .catch(err => console.error("Failed to load global borders", err));
+        .catch(err => console.error("Failed to load country borders", err));
     }
   }, [isMounted]);
-
-  const countryStyle = (feature: any) => {
-    const name = feature.properties.ADMIN || feature.properties.name || feature.properties.NAME || "";
-    
-    // Normalize names for comparison
-    const isActive = Array.from(activeCountries).some(c => {
-      if (!c) return false;
-      const countryName = String(c).toLowerCase();
-      const featureName = name.toLowerCase();
-      return featureName.includes(countryName) || countryName.includes(featureName);
-    });
-
-    if (isActive) {
-      return {
-        stroke: false,
-        fillColor: 'transparent',
-        fillOpacity: 0
-      };
-    }
-
-    return {
-      stroke: false,
-      fillColor: '#f4f4f5', // Very light neutral gray
-      fillOpacity: 0.8
-    };
-  };
 
   if (!isMounted || !icons) {
     return (
@@ -232,9 +231,14 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           <Fragment>
             {countryGeoJson && (
               <GeoJSON 
-                key={`countries-focus-${activeCountries.size}`}
                 data={countryGeoJson}
-                style={countryStyle}
+                style={{
+                  color: '#333333',
+                  weight: 1,
+                  opacity: 0.25,
+                  fillColor: 'transparent',
+                  fillOpacity: 0
+                }}
               />
             )}
 
