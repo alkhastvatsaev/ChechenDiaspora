@@ -209,16 +209,6 @@ export function useDiasporaLogic() {
     });
   }, [members, searchQuery, selectedExpertType]);
 
-  return {
-    user, loading, communityMember,
-    activeTab, setActiveTab, activeModal, setActiveModal,
-    searchQuery, setSearchQuery, selectedTeip, setSelectedTeip,
-    selectedVillage, setSelectedVillage, selectedProfession, setSelectedProfession,
-    selectedExpertType, setSelectedExpertType, isSearchFocused, setIsSearchFocused,
-    members, filteredMembers, publishedTickets, liveCount: members.length + 3,
-    selectedMember, setSelectedMember, selectedStoryMember, setSelectedStoryMember,
-    mapCenter, setMapCenter,
-    handleVouch,
   const submitTicket = async () => {
     if (!user) return;
     
