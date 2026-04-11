@@ -62,8 +62,28 @@ export function useDiasporaLogic() {
   // -- Data Sync (Firebase) --
   useEffect(() => {
     const travelers = [
-      { id: 'V1', prenom: "Вадик", isTraveling: true, routePoints: [[48.5734, 7.7521], [43.318, 45.694]], lat: 48.5734, lng: 7.7521, approved: true },
-      { id: 'T1', prenom: "Мансур", nom: "Дадаев", isTraveling: true, routePoints: [[50.8503, 4.3517], [43.318, 45.694]], lat: 50.8503, lng: 4.3517, approved: true }
+      { 
+        id: 'V1', 
+        prenom: "Вадик", 
+        isTraveling: true, 
+        lat: 48.5734, 
+        lng: 7.7521, 
+        approved: true,
+        routePoints: [
+          [48.5734, 7.7521],   // Strasbourg
+          [48.1351, 11.5820],  // Munich
+          [48.2082, 16.3738],  // Vienna
+          [47.4979, 19.0402],  // Budapest
+          [44.8125, 20.4612],  // Belgrade
+          [42.6977, 23.3219],  // Sofia
+          [41.0082, 28.9784],  // Istanbul
+          [41.2867, 36.33],    // Samsun
+          [41.6168, 41.6367],  // Batumi
+          [41.7151, 44.8271],  // Tbilisi
+          [43.0246, 44.6817],  // Vladikavkaz
+          [43.318, 45.694]     // Grozny
+        ]
+      }
     ] as Member[];
 
     const dataMap = new Map<string, Member>();
