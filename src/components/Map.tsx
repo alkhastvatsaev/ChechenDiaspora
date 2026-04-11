@@ -231,6 +231,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
         scrollWheelZoom={true}
+        worldCopyJump={true}
+        maxBounds={[[-90, -180], [90, 180]]}
+        maxBoundsViscosity={1.0}
       >
         <ZoomHandler />
         <TileLayer
