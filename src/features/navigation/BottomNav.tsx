@@ -1,4 +1,4 @@
-import { Map as MapIcon, Search, Globe, Plus, Mic, Send, Square, Trash2, Play, Pause, Scale, ShieldCheck, Briefcase, MessageSquare } from 'lucide-react';
+import { Map as MapIcon, Search, Globe, Plus, Mic, Send, Square, Trash2, Play, Pause, Scale, ShieldCheck, Briefcase, MessageSquare, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ActiveTab } from '@/types/diaspora';
 
