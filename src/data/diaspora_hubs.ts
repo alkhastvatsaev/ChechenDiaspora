@@ -137,6 +137,10 @@ export const DIASPORA_HUBS: DiasporaHub[] = [
   { name: "Стокгольм", country: "Швеция", lat: 59.3293, lng: 18.0686 },
   { name: "Варшава", country: "Польша", lat: 52.2297, lng: 21.0122 },
   { name: "Брест", country: "Франция", lat: 48.3904, lng: -4.4861 },
-  { name: "Нант", country: "Франция", lat: 47.2184, lng: -1.5536 }
+  { name: "Нант", country: "Франция", lat: 47.2184, lng: -1.5536 },
+  { name: "Дуиси", country: "Грузия", lat: 42.1672, lng: 44.7554 },
+  { name: "Хельсинки", country: "Финляндия", lat: 60.1695, lng: 24.9354 },
+  { name: "Бремен", country: "Германия", lat: 53.0793, lng: 8.8017 },
+  { name: "Ташкент", country: "Узбекистан", lat: 41.2995, lng: 69.2401 }
 ];
 

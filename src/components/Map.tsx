@@ -202,7 +202,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             'Denmark': ['Denmark'],
             'Sweden': ['Sweden'],
             'Poland': ['Poland'],
-            'Canada': ['Canada']
+            'Canada': ['Canada'],
+            'Georgia': ['Georgia'],
+            'Finland': ['Finland']
           };
           
           const allTargetNames = Object.values(diasporaCountriesMap).flat();
