@@ -1,28 +1,38 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ShieldCheck, Globe, GraduationCap, Briefcase, Info } from 'lucide-react';
+import { Search, X, ShieldCheck, Globe, Mic, Send, MessageSquare, Briefcase, Home, Scale, HelpingHand } from 'lucide-react';
 import { Member } from '@/types/diaspora';
 import WisdomCard from '@/components/WisdomCard';
 
 interface HubPanelProps {
   isVisible: boolean;
   onClose: () => void;
-  logic: any; // Type-safety: using any for the large logic object for now, will refine later
+  logic: any;
   searchQuery: string;
   setSearchQuery: (val: string) => void;
   filteredMembers: Member[];
   onMemberClick: (m: Member) => void;
-  selectedTeip: string;
-  setSelectedTeip: (t: string) => void;
-  selectedVillage: string;
-  setSelectedVillage: (v: string) => void;
 }
+
+const CATEGORY_ICONS: Record<string, any> = {
+  'work': <Briefcase size={16} />,
+  'housing': <Home size={16} />,
+  'administrative': <Scale size={16} />,
+  'other': <MessageSquare size={16} />
+};
+
+const RUSSIAN_CATEGORIES: Record<string, string> = {
+  'work': 'Работа',
+  'housing': 'Жилье',
+  'administrative': 'Админ. вопросы',
+  'other': 'Общее'
+};
 
 export function HubPanel({ 
   isVisible, onClose, logic, searchQuery, setSearchQuery, 
-  filteredMembers, onMemberClick,
-  selectedTeip, setSelectedTeip,
-  selectedVillage, setSelectedVillage 
+  filteredMembers, onMemberClick
 }: HubPanelProps) {
+  const { ticketDraft, setTicketDraft, submitTicket, isListening, setIsListening, finalTranscript } = logic;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -36,8 +46,8 @@ export function HubPanel({
           {/* Header */}
           <div className="px-6 pt-6 pb-2 flex items-center justify-between shrink-0">
             <div>
-              <h1 className="text-3xl font-black text-text-primary tracking-tight">Кхерч / Хаб</h1>
-              <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-1">Plateforme Régalienne • Diaspora Hub</p>
+              <h1 className="text-3xl font-black text-text-primary tracking-tight">Взаимопомощь</h1>
+              <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-1">Дом Вайнахской Солидарности</p>
             </div>
             <button 
               onClick={onClose}
@@ -47,126 +57,77 @@ export function HubPanel({
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+120px)] space-y-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+180px)] space-y-8 scrollbar-hide">
             
-            {/* Context Layer */}
+            {/* Wisdom / Manifesto Context */}
             <div className="pt-4">
               <WisdomCard />
             </div>
 
-            {/* Global Search Bar */}
-            <div className="sticky top-0 z-20 pt-2 pb-4 mr-[-24px] pr-[24px]">
-               <div className="relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-text-primary group-focus-within:text-brand-blue transition-colors" size={18} />
-                <input 
-                  type="text" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Поиск по специалистам, городам..."
-                  className="w-full bg-white rounded-2xl py-5 pl-12 pr-6 text-[15px] font-bold border border-black/[0.08] shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-blue/5 transition-all placeholder:text-text-tertiary"
-                />
-              </div>
-            </div>
-
-            {/* Main Expert Hub Filters */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary px-1">Опыт и Взаимопомощь</h3>
-              <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide py-1">
-                {[
-                  { id: 'isLegalDefender', label: 'Юридическая Защита', icon: <ShieldCheck size={14} /> },
-                  { id: 'openToMentorship', label: 'Наставничество', icon: <GraduationCap size={14} /> },
-                  { id: 'isTranslator', label: 'Переводчики', icon: <Info size={14} /> },
-                  { id: 'isBusiness', label: 'Бизнес-Сеть', icon: <Briefcase size={14} /> }
-                ].map((chip) => (
-                  <button 
-                    key={chip.id}
-                    onClick={() => logic.setSelectedExpertType(logic.selectedExpertType === chip.id ? null : chip.id)}
-                    className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl text-[13px] font-black tracking-tight transition-all shrink-0 border-2 ${
-                      logic.selectedExpertType === chip.id 
-                      ? 'bg-brand-blue text-white border-brand-blue shadow-xl scale-105' 
-                      : 'bg-white text-text-primary border-black/[0.05] shadow-sm'
-                    }`}
-                  >
-                    {chip.icon}
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Ancestral Navigation */}
-            <div className="space-y-6">
-               <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Фильтр по Сообществам</h3>
-                  {selectedTeip && (
-                    <button onClick={() => setSelectedTeip('')} className="text-[10px] font-bold text-brand-blue uppercase">Сбросить</button>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
-                  {['Беной', 'Гендаргеной', 'Билтой', 'Энганой', 'Шолой'].map((t) => (
-                    <button 
-                      key={t}
-                      onClick={() => setSelectedTeip(selectedTeip === t ? '' : t)}
-                      className={`px-5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shrink-0 border-1.5 ${
-                        selectedTeip === t ? 'bg-brand-blue text-white border-brand-blue shadow-md' : 'bg-white text-text-primary border-black/[0.08]'
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary">Village d&apos;origine</h3>
-                  {selectedVillage && (
-                    <button onClick={() => setSelectedVillage('')} className="text-[10px] font-bold text-success uppercase">Annuler</button>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
-                  {['Гехи', 'Шали', 'Шатой', 'Ведено', 'Гудермес'].map((v) => (
-                    <button 
-                      key={v}
-                      onClick={() => setSelectedVillage(selectedVillage === v ? '' : v)}
-                      className={`px-5 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all shrink-0 ${
-                        selectedVillage === v ? 'bg-success text-white shadow-lg' : 'nav-pill-inactive'
-                      }`}
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Results Grid */}
+            {/* Active Help Requests (Tickets) */}
             <div className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary px-1">
-                {searchQuery || selectedTeip || selectedVillage ? 'Résultats trouvés' : 'Membres en Vedette'}
-              </h3>
+              <div className="flex items-center justify-between px-1">
+                <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-text-primary">Нужна помощь (Активные заявки)</h3>
+                <span className="px-3 py-1 bg-red-50 text-red-500 rounded-full text-[10px] font-black animate-pulse">LIVE</span>
+              </div>
+              
+              <div className="space-y-3">
+                {logic.publishedTickets?.length > 0 ? (
+                  logic.publishedTickets.map((ticket: any) => (
+                    <div key={ticket.id} className="p-5 card-premium hover:scale-[1.01] transition-transform space-y-3 border-l-4 border-brand-blue">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-brand-blue/10 rounded-lg flex items-center justify-center text-brand-blue">
+                            {CATEGORY_ICONS[ticket.category] || <HelpingHand size={16} />}
+                          </div>
+                          <span className="text-[11px] font-black uppercase tracking-wider text-brand-blue">
+                            {RUSSIAN_CATEGORIES[ticket.category] || 'Помощь'}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-text-tertiary">{ticket.ville}</span>
+                      </div>
+                      <p className="text-[15px] font-bold text-text-primary leading-snug">
+                        {ticket.description}
+                      </p>
+                      <div className="flex items-center justify-between pt-2 border-t border-black/[0.03]">
+                        <span className="text-[10px] font-bold text-text-tertiary italic">от {ticket.authorName}</span>
+                        <button className="text-[11px] font-black text-brand-blue uppercase tracking-tight">Помочь →</button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center bg-white/50 rounded-3xl border-2 border-dashed border-black/[0.05]">
+                    <MessageSquare className="mx-auto text-text-tertiary mb-3 opacity-20" size={32} />
+                    <p className="text-[13px] font-bold text-text-tertiary leading-relaxed">
+                      Активных заявок пока нет.<br/>Будьте первым, кому нужна помощь нашей общины.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Specialist / Experts Hub */}
+            <div className="space-y-4">
+              <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-text-primary px-1">Специалисты (Готовы помочь)</h3>
               <div className="grid grid-cols-1 gap-4">
-                {filteredMembers.map((m) => (
+                {filteredMembers.filter(m => m.tag === 'expert' || m.hasActiveTicket).map((m) => (
                   <button 
                     key={m.id}
                     onClick={() => onMemberClick(m)}
-                    className="flex items-center gap-4 p-5 card-premium text-left group hover:scale-[1.01] overflow-hidden"
+                    className="flex items-center gap-4 p-5 card-premium text-left group transition-all"
                   >
-                    <div className="w-14 h-14 bg-brand-blue-soft rounded-2xl flex items-center justify-center text-brand-blue relative shrink-0">
+                    <div className="w-14 h-14 bg-brand-blue/5 rounded-2xl flex items-center justify-center text-brand-blue relative shrink-0">
                       <span className="text-xl font-black">{m.prenom[0]}</span>
-                      {m.isLive && (
-                        <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-success rounded-full border-2 border-white ring-2 ring-success/10" />
+                      {m.hasActiveTicket && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-[17px] font-black text-text-primary leading-tight flex items-center gap-2">
                         {m.prenom} {m.nom}
-                        {m.vouchCount && m.vouchCount > 5 && <ShieldCheck size={14} className="text-brand-blue" />}
+                        <ShieldCheck size={14} className="text-brand-blue opacity-40" />
                       </h4>
-                      <div className="flex items-center gap-2 mt-1">
-                         <span className="text-[12px] font-bold text-text-secondary line-clamp-1">{m.profession}</span>
-                      </div>
+                      <span className="text-[12px] font-bold text-brand-blue/70 block mt-0.5">{m.profession}</span>
                       <div className="flex items-center gap-2 mt-2 opacity-60">
                          <Globe size={10} />
                          <span className="text-[10px] font-bold uppercase tracking-wider">{m.ville}, {m.pays}</span>
@@ -175,6 +136,41 @@ export function HubPanel({
                   </button>
                 ))}
               </div>
+            </div>
+          </div>
+
+          {/* Sticky Quick Help Bar */}
+          <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-white via-white to-white/0 pt-12">
+            <div className="max-w-2xl mx-auto relative">
+              <div className="glass-premium rounded-3xl p-2 shadow-2xl border border-black/[0.05] flex items-center gap-2">
+                <button 
+                  onClick={() => setIsListening(!isListening)}
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                    isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-bg-secondary text-text-primary'
+                  }`}
+                >
+                  <Mic size={20} />
+                </button>
+                
+                <input 
+                  type="text"
+                  value={finalTranscript || ticketDraft.description}
+                  onChange={(e) => setTicketDraft({ ...ticketDraft, description: e.target.value })}
+                  placeholder={isListening ? 'Слушаю вас...' : 'Как вам помочь? Напишите или скажите...'}
+                  className="flex-1 bg-transparent px-3 py-3 text-[15px] font-bold focus:outline-none placeholder:text-text-tertiary"
+                />
+
+                <button 
+                  onClick={submitTicket}
+                  disabled={!ticketDraft.description && !finalTranscript}
+                  className="w-12 h-12 bg-brand-blue text-white rounded-2xl flex items-center justify-center shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  <Send size={20} />
+                </button>
+              </div>
+              <p className="text-center text-[9px] font-bold text-text-tertiary uppercase tracking-widest mt-4">
+                Ваша просьба будет видна всей диаспоре в этом регионе
+              </p>
             </div>
           </div>
         </motion.div>

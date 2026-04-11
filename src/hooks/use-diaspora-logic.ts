@@ -219,6 +219,61 @@ export function useDiasporaLogic() {
     selectedMember, setSelectedMember, selectedStoryMember, setSelectedStoryMember,
     mapCenter, setMapCenter,
     handleVouch,
-    ticketDraft, setTicketDraft, submitTicket: () => {} // Implement full logic later
+  const submitTicket = async () => {
+    if (!user) return;
+    
+    const content = finalTranscript || ticketDraft.description;
+    if (!content) return;
+
+    const newTicket: any = {
+      ...ticketDraft,
+      description: content,
+      authorId: user.uid,
+      authorName: communityMember?.prenom || "Аноним",
+      createdAt: Date.now(),
+      status: 'published',
+      ville: ticketDraft.ville || communityMember?.ville || "",
+      pays: ticketDraft.pays || communityMember?.pays || "Франция",
+    };
+
+    try {
+      const ticketsRef = ref(db, 'tickets');
+      const newTicketRef = push(ticketsRef);
+      await set(newTicketRef, newTicket);
+      
+      // Update local member state to show 'Has Active Ticket'
+      setMembers(prev => prev.map(m => 
+        m.id === user.uid ? { ...m, hasActiveTicket: true, lastTicketId: newTicketRef.key } : m
+      ));
+
+      // Reset
+      setTicketDraft({
+        title: '',
+        description: '',
+        category: 'administrative',
+        ville: '',
+        pays: 'Франция',
+        isEmergency: false,
+      });
+      setFinalTranscript('');
+      setActiveModal(null);
+    } catch (e) {
+      console.error("Ticket submission failed", e);
+    }
+  };
+
+  return {
+    user, loading, communityMember,
+    activeTab, setActiveTab, activeModal, setActiveModal,
+    searchQuery, setSearchQuery, selectedTeip, setSelectedTeip,
+    selectedVillage, setSelectedVillage, selectedProfession, setSelectedProfession,
+    selectedExpertType, setSelectedExpertType, isSearchFocused, setIsSearchFocused,
+    members, filteredMembers, publishedTickets, liveCount: members.length + 3,
+    selectedMember, setSelectedMember, selectedStoryMember, setSelectedStoryMember,
+    mapCenter, setMapCenter,
+    handleVouch,
+    ticketDraft, setTicketDraft, submitTicket,
+    isListening, setIsListening, ticketInputMode, setTicketInputMode,
+    finalTranscript, setFinalTranscript, interimTranscript
   };
 }

@@ -110,6 +110,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
       },
       memberAvatar: (member: any) => {
         const initials = `${member.prenom?.[0] || ''}${member.nom?.[0] || ''}`.toUpperCase();
+        const hasTicket = member.hasActiveTicket;
         
         return L.divIcon({
           className: 'bg-transparent',
@@ -118,6 +119,11 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <div class="w-10 h-10 bg-brand-blue/10 backdrop-blur-[2px] rounded-full shadow-sm border-2 border-brand-blue flex items-center justify-center transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
                 <span class="text-[11px] font-black text-brand-blue tracking-widest">${initials}</span>
               </div>
+              ${hasTicket ? `
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse flex items-center justify-center shadow-lg">
+                  <span class="text-[7px] text-white font-black">!</span>
+                </div>
+              ` : ''}
             </div>
           `,
           iconSize: [40, 40],
