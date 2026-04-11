@@ -128,10 +128,17 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         className: 'bg-transparent',
         html: `
           <div class="relative group flex flex-col items-center">
-            <div class="px-1.5 py-0.5 bg-white/80 backdrop-blur-sm rounded-md shadow-sm border border-brand-blue/10 mb-1">
-              <span class="text-[6px] font-bold text-brand-blue/60 tracking-wider uppercase select-none">${name}</span>
-            </div>
-            <div class="w-9 h-9 bg-[#ecfdf5] rounded-xl shadow-lg border-2 border-[#10b981]/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+            <!-- Curved Name Badge -->
+            <svg class="absolute -top-3 w-16 h-8 overflow-visible pointer-events-none">
+              <path id="curve-${name}" d="M 0,16 A 32,32 0 0,1 64,16" fill="transparent" />
+              <text class="text-[8px] font-black tracking-[0.2em] uppercase fill-[#059669]">
+                <textPath xlink:href="#curve-${name}" startOffset="50%" text-anchor="middle">
+                  ${name}
+                </textPath>
+              </text>
+            </svg>
+            
+            <div class="w-9 h-9 bg-[#ecfdf5] rounded-xl shadow-lg border-2 border-[#10b981]/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 mt-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
                 <path d="M15 18H9"></path>
@@ -142,8 +149,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             </div>
           </div>
         `,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18]
+        iconSize: [40, 48],
+        iconAnchor: [20, 24]
       }),
       clusterCustom: (cluster: any) => {
         const count = cluster.getChildCount();
