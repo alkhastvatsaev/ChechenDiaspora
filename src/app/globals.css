@@ -1,25 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core Foundation */
-  --color-chechen-blue: #007AFF;
-  --color-apple-light: #FBFBFD;
-  --color-apple-dark: #1C1C1E;
+  /* 
+   * PRODUCTION DESIGN SYSTEM (VAINAKH v2.0)
+   * Inspired by San Francisco, Inter, and Apple Native Design.
+   */
   
-  /* Semantic Logic */
-  --color-status-online: #34C759;
-  --color-status-urgent: #FF3B30;
-  --color-status-warning: #FF9500;
+  /* Brand Palette - HSL based for consistency */
+  --color-brand-blue: hsl(210, 100%, 50%);
+  --color-brand-blue-soft: hsl(210, 100%, 96%);
   
-  /* Surface & Accents */
-  --color-vainakh-stone: #F2F2F7;
-  --color-hearth-glow: #5AC8FA;
-  --color-kherch-dark: #1C1C1E;
+  /* Neutral Palette */
+  --color-bg-primary: hsl(240, 30%, 98%);
+  --color-bg-secondary: hsl(240, 20%, 99%);
+  --color-text-primary: hsl(240, 10%, 10%);
+  --color-text-secondary: hsl(240, 5%, 45%);
+  --color-text-tertiary: hsl(240, 5%, 70%);
   
-  /* Mobile-First Spacing */
-  --spacing-mobile-edge: 1.25rem;
-  --radius-mobile-card: 2rem;
-  --radius-mobile-button: 1.25rem;
+  /* Functional Colors */
+  --color-success: hsl(142, 60%, 45%);
+  --color-warning: hsl(35, 90%, 50%);
+  --color-danger: hsl(0, 85%, 60%);
+  
+  /* Spacing Grid (8px based) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  
+  /* Native Radius */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-hero: 3rem;
 }
 
 @layer base {
@@ -28,138 +48,100 @@
     --sar: env(safe-area-inset-right);
     --sab: env(safe-area-inset-bottom);
     --sal: env(safe-area-inset-left);
+    
+    /* Global Spring Transitions */
+    --spring-duration: 0.4s;
+    --spring-easing: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   html, body {
-    @apply w-full select-none;
-    height: 100dvh;
-    height: -webkit-fill-available; /* Fix for iOS viewport height */
+    @apply w-full h-full bg-bg-primary text-text-primary antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     overscroll-behavior: none;
+    user-select: none;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    background-color: var(--color-apple-light);
   }
 
   body {
-    @apply text-apple-dark antialiased overflow-hidden;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    /* Remove padding from body to let components handle safe areas independently */
-  }
-
-  #root, .h-screen-dynamic {
-    height: 100dvh;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
   }
 }
 
 @layer utilities {
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
+  /* World Class Blur Utility */
+  .glass-premium {
+    @apply bg-white/70 backdrop-blur-2xl border border-white/40;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
   }
-  .pt-safe {
-    padding-top: env(safe-area-inset-top);
+  
+  .glass-dark {
+    @apply bg-black/80 backdrop-blur-3xl border border-white/10;
   }
-  .pt-safe-top {
-    padding-top: env(safe-area-inset-top);
+
+  /* Interaction Feedbacks */
+  .tap-active {
+    @apply active:scale-[0.97] transition-all duration-200;
   }
-  .pb-safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
+  
+  .tap-haptic {
+    @apply active:scale-95 active:brightness-95 transition-all duration-150;
   }
-  .px-safe {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+
+  /* Safe Area Utilities */
+  .p-safe {
+    padding: var(--sat) var(--sar) var(--sab) var(--sal);
   }
-  .min-h-dvh {
-    min-height: 100dvh;
+  .pb-safe { padding-bottom: var(--sab); }
+  .pt-safe { padding-top: var(--sat); }
+
+  /* Standardized Cards */
+  .card-premium {
+    @apply bg-white rounded-xl shadow-sm border border-black/[0.03] p-5;
+    transition: transform 0.2s var(--spring-easing), box-shadow 0.2s var(--spring-easing);
   }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
   }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
 }
 
-/* Custom map styling to make it apple-like */
+/* Map Overrides for Production */
 .leaflet-container {
-  background: transparent !important;
-  font-family: inherit !important;
+  background: hsl(240, 30%, 98%) !important;
 }
 
-/* Hide leaflet attribution for cleaner look */
-.leaflet-control-attribution {
-  display: none !important;
+.map-grayscale-premium {
+  filter: grayscale(100%) opacity(0.3) contrast(1.1) brightness(1.05);
 }
 
-/* Hyper-premium minimalist map tiles: Grayscale, brightened, and completely integrated into the background */
-.map-tiles-premium {
-  filter: grayscale(100%) opacity(0.4) contrast(0.85);
+/* Navigation System Utilities */
+.nav-pill-active {
+  @apply bg-brand-blue text-white shadow-lg shadow-brand-blue/20 scale-105;
 }
 
-@keyframes slide-up {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.nav-pill-inactive {
+  @apply bg-white text-text-secondary border border-black/[0.05];
 }
 
-@keyframes scale-in {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* Production-Ready Animations */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.animate-scale-in {
-  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-ios-slide {
+  animation: slideUp var(--spring-duration) var(--spring-easing);
 }
 
-/* Native App Feel Utilities */
-.ios-glass {
-  @apply bg-white/70 backdrop-blur-3xl border border-white/40;
-}
-
-.tap-effect {
-  @apply active:scale-95 transition-transform duration-200;
-}
-
-.mobile-card {
-  @apply bg-white rounded-[2rem] p-5 shadow-sm border border-black/[0.03];
-}
-
-.native-input {
-  @apply w-full bg-white/80 backdrop-blur-md rounded-2xl px-5 py-4 text-[17px] font-medium outline-none border border-black/5 focus:ring-2 focus:ring-black/5 transition-all;
-}
-
-.bottom-sheet-drag-handle {
-  @apply w-10 h-1 bg-black/10 rounded-full mx-auto mb-4;
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(0.98); }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
-}
-
-.debug-badge {
-  @apply fixed top-[calc(env(safe-area-inset-top)+12px)] right-4 z-[200] px-3 py-1.5 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg flex items-center gap-2;
+.animate-fade {
+  animation: fadeIn 0.3s ease-out;
 }
