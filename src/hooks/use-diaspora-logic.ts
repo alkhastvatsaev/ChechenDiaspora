@@ -90,14 +90,22 @@ export function useDiasporaLogic() {
 
     const dataMap = new Map<string, Member>();
     const updateMembers = () => {
-      const merged = Array.from(dataMap.values()).filter(m => m.approved !== false);
-      let final: Member[] = [];
-      if (merged.length === 0) {
-        final = [...sampleExperts, ...travelers];
-      } else {
-        final = [...merged];
-        travelers.forEach(t => { if (!final.find(m => m.id === t.id)) final.push(t); });
-      }
+      const mergedFromDB = Array.from(dataMap.values()).filter(m => m.approved !== false);
+      
+      // FOR THE BETA: Always start with sample experts and merge real ones
+      const final: Member[] = [...sampleExperts];
+      
+      mergedFromDB.forEach(dbMember => {
+        const idx = final.findIndex(sm => sm.id === dbMember.id);
+        if (idx >= 0) {
+          final[idx] = { ...final[idx], ...dbMember };
+        } else {
+          final.push(dbMember);
+        }
+      });
+
+      travelers.forEach(t => { if (!final.find(m => m.id === t.id)) final.push(t); });
+      
       setMembers(final);
       
       // PERSIST FOR OFFLINE USE
