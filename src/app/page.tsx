@@ -540,7 +540,7 @@ export default function Home() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto px-6 pb-40 space-y-8 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+160px)] space-y-8 scrollbar-hide overscroll-contain">
 
               {/* High-Impact Actions */}
               <div className="grid grid-cols-2 gap-4">
@@ -729,7 +729,7 @@ export default function Home() {
               <button onClick={() => setActiveModal('berkat-form')} className="text-emerald-500 font-bold text-xs uppercase tracking-widest">Опубл.</button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 pb-20">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 pb-[calc(env(safe-area-inset-bottom)+40px)] overscroll-contain">
               <div className="bg-emerald-50/50 p-5 rounded-3xl border border-emerald-100">
                 <p className="text-[11px] font-bold text-emerald-800 leading-relaxed uppercase tracking-tight">
                   Здесь старшие из диаспоры советуют прибывшим компании, которые реально нанимают.
@@ -766,7 +766,7 @@ export default function Home() {
             className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+60px)] z-[80] bg-kherch-dark text-white rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col border-t border-white/10 overflow-hidden"
           >
             <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto my-4 flex-shrink-0" onClick={() => setActiveTab('map')}></div>
-            <div className="flex-1 overflow-y-auto px-10 py-20 text-center space-y-8 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto px-10 py-20 pb-[calc(env(safe-area-inset-bottom)+100px)] text-center space-y-8 scrollbar-hide overscroll-contain">
               <div className="relative inline-block">
                 <div className="absolute -inset-4 bg-hearth-amber/20 blur-2xl rounded-full"></div>
                 <Flame size={64} className="relative text-hearth-amber mx-auto mb-6" />
@@ -841,7 +841,7 @@ export default function Home() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+30px)] shadow-2xl overflow-y-auto max-h-[90vh] scrollbar-hide"
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] px-8 pt-8 pb-[calc(env(safe-area-inset-bottom)+40px)] shadow-2xl overflow-y-auto max-h-[92vh] scrollbar-hide overscroll-contain"
             >
               <div className="w-12 h-1.5 bg-kherch-dark/5 rounded-full mx-auto mb-6 flex-shrink-0" />
               
@@ -949,7 +949,7 @@ export default function Home() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+30px)] shadow-2xl"
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+40px)] shadow-2xl overflow-y-auto max-h-[92vh] overscroll-contain scrollbar-hide"
             >
               <div className="w-12 h-1.5 bg-kherch-dark/5 rounded-full mx-auto mb-6 flex-shrink-0" />
 
