@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
-import diasporaBorders from '@/data/diaspora_borders.json';
+import diasporaMasterZones from '@/data/diaspora_master_zones.json';
 import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
 import { HOMELAND_POINTS, CHECHNYA_BORDER_POINTS } from '@/data/chechen_homeland';
 
@@ -227,35 +227,6 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
 
   const [selectedCountryInfo, setSelectedCountryInfo] = useState<{name: string, count: string} | null>(null);
 
-  const DIASPORA_REGIONS = [
-    // France
-    { name: 'Paris & Région', count: '25,000+', lat: 48.8566, lng: 2.3522, radius: 80000 },
-    { name: 'Nice & Riviera', count: '12,000+', lat: 43.7102, lng: 7.2620, radius: 60000 },
-    { name: 'Strasbourg & Grand Est', count: '10,000+', lat: 48.5734, lng: 7.7521, radius: 50000 },
-    // Turquie
-    { name: 'Istanbul & Yalova', count: '45,000+', lat: 41.0082, lng: 28.9784, radius: 120000 },
-    { name: 'Sivas & Anatolie Central', count: '15,000+', lat: 39.7505, lng: 37.0150, radius: 100000 },
-    // Kazakhstan
-    { name: 'Almaty & Sud', count: '20,000+', lat: 43.2220, lng: 76.8512, radius: 150000 },
-    { name: 'Astana & Nord', count: '15,000+', lat: 51.1605, lng: 71.4272, radius: 120000 },
-    { name: 'Karaganda', count: '10,000+', lat: 49.8019, lng: 73.1021, radius: 80000 },
-    // Jordanie
-    { name: 'Amman & Zarqa', count: '15,000+', lat: 31.9454, lng: 35.9284, radius: 70000 },
-    // Géorgie
-    { name: 'Pankissi (Duisi)', count: '8,000+', lat: 42.1866, lng: 45.2443, radius: 40000 },
-    // Allemagne
-    { name: 'Bremen & Hambourg', count: '15,000+', lat: 53.0793, lng: 8.8017, radius: 90000 },
-    { name: 'Berlin', count: '12,000+', lat: 52.5200, lng: 13.4050, radius: 70000 },
-    // Autriche
-    { name: 'Vienne & Linz', count: '25,000+', lat: 48.2082, lng: 16.3738, radius: 90000 },
-    // Belgique
-    { name: 'Bruxelles & Anvers', count: '15,000+', lat: 50.8503, lng: 4.3517, radius: 60000 },
-    // Norvège
-    { name: 'Oslo Region', count: '8,000+', lat: 59.9139, lng: 10.7522, radius: 60000 },
-    // USA
-    { name: 'NJ & New York', count: '5,000+', lat: 40.7128, lng: -74.0060, radius: 100000 },
-  ];
-
   if (!isMounted || !icons) {
     return (
       <div className="w-full h-full bg-bg-secondary flex flex-col items-center justify-center gap-4">
@@ -291,47 +262,11 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         
         {showHeatmap && (
           <Fragment>
-            {/* Organic Diaspora Outlines (Simulated Administrative Boundaries) */}
-            {DIASPORA_REGIONS.map((region, idx) => {
-              // Creating a rough irregular polygon around the center to simulate real city borders
-              const points = 8;
-              const coords: [number, number][] = [];
-              for (let i = 0; i < points; i++) {
-                const angle = (i * 360) / points;
-                // Use a pseudo-random fixed offset based on idx to make it irregular but stable
-                const seed = (idx * 1337 + i * 42) % 100;
-                const offset = 0.85 + (seed / 400); // 0.85 to 1.1
-                const r = region.radius * offset;
-                const dx = (r / 111320) * Math.cos(angle * (Math.PI / 180));
-                const dy = (r / (111320 * Math.cos(region.lat * (Math.PI / 180)))) * Math.sin(angle * (Math.PI / 180));
-                coords.push([region.lat + dx, region.lng + dy]);
-              }
-
-              return (
-                <Polygon
-                  key={`zone-${idx}`}
-                  positions={coords}
-                  pathOptions={{
-                    color: '#007AFF', // Solid administrative line
-                    weight: 2,
-                    opacity: 0.9,
-                    fillColor: '#007AFF',
-                    fillOpacity: 0.1,
-                  }}
-                  eventHandlers={{
-                    click: (e) => {
-                      L.DomEvent.stopPropagation(e);
-                      setSelectedCountryInfo({ name: region.name, count: region.count });
-                    }
-                  }}
-                />
-              );
-            })}
-
+            {/* Diaspora Master Zones (Administrative Outlines for all centers) */}
             <GeoJSON 
-              data={diasporaBorders as any}
+              data={diasporaMasterZones as any}
               style={{
-                color: '#007AFF',
+                color: '#007AFF', // Solid Administrative Blue
                 weight: 2,
                 opacity: 0.9,
                 fillColor: '#007AFF',
@@ -341,8 +276,11 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 layer.on({
                   click: (e) => {
                     L.DomEvent.stopPropagation(e);
-                    const name = feature.properties.name || "Zone d'influence";
-                    setSelectedCountryInfo({ name, count: "Forte concentration" });
+                    const name = feature.properties.name || "Zone de présence";
+                    setSelectedCountryInfo({ 
+                      name, 
+                      count: "Haute densité" 
+                    });
                   }
                 });
               }}

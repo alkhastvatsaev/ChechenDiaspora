@@ -51,6 +51,37 @@ La plateforme a été optimisée pour la mise en relation ultra-rapide entre ceu
 
 ---
 
+## 📍 Master Diaspora Zones Registry (2026)
+*Toutes ces zones sont gérées dans `src/data/diaspora_master_zones.json` avec des polygones administratifs réels.*
+
+### 🇪🇺 Europe
+- **Paris & Île-de-France** (Forte concentration historique)
+- **Nice & Côte d'Azur** (Foyer majeur du sud)
+- **Strasbourg & Grand Est** (Présence institutionnelle)
+- **Marseille** (Portail méditerranéen)
+- **Berlin & Bremen** (Cœur de la diaspora allemande)
+- **Bruxelles & Anvers** (Centre logistique européen)
+- **Vienne & Linz** (Forte densité historique)
+- **Oslo Region** (Scandinavie)
+
+### 🇰🇿 Asie Centrale (Routes de 1944)
+- **Almaty & Zone Sud** (Triangle d'or de la diaspora)
+- **Astana** (Nouveau centre névralgique)
+- **Karaganda** (Zone minière et historique)
+
+### 🇹🇷 Moyen-Orient & Anatolie
+- **Istanbul & Yalova** (Foyer massif et maritime)
+- **Sivas & Anatolie Centrale** (Villages traditionnels)
+- **Amman & Zarqa** (Descendants des Muhajirs)
+
+### 🇬🇪 Caucase (Hors Tchétchénie)
+- **Vallée de Pankissi (Duisi)** (Lien direct avec la terre)
+
+### 🇺🇸 Amérique
+- **New York / New Jersey** (Diaspora émergente)
+
+---
+
 ## 🎨 4. Design System "Less is More"
 
 Inspiré par le minimalisme d'Apple, le design priorise le contenu sacré et opérationnel :
