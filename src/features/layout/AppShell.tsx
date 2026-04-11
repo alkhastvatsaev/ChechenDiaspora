@@ -6,11 +6,11 @@ import { MapView } from '@/features/map/MapView';
 import { HubPanel } from '@/features/hub/HubPanel';
 import { BottomNav } from '@/features/navigation/BottomNav';
 import { ModalRegistry } from '@/features/modals/ModalRegistry';
-import { Search, Info, ShieldAlert, X } from 'lucide-react';
-import MemberProfile from '@/components/MemberProfile';
-import StoryOverlay from '@/components/StoryOverlay';
+import { MemberProfile } from '@/components/MemberProfile';
+import { StoryOverlay } from '@/components/StoryOverlay';
 import Manifesto from '@/components/Manifesto';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Search, Info, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AppShell() {
   const logic = useDiasporaLogic();
@@ -32,35 +32,22 @@ export default function AppShell() {
   const {
     activeTab, setActiveTab, activeModal, setActiveModal,
     searchQuery, setSearchQuery, selectedTeip, setSelectedTeip,
-    selectedVillage, setSelectedVillage, filteredMembers, 
-    publishedTickets, mapCenter, setMapCenter,
-    selectedMember, setSelectedMember, selectedStoryMember, setSelectedStoryMember,
-    handleVouch, communityMember, loading
+    selectedVillage, setSelectedVillage, 
+    filteredMembers, selectedMember, setSelectedMember,
+    selectedStoryMember, setSelectedStoryMember,
+    handleVouch
   } = logic;
 
-  const handleEntityClick = (entity: any) => {
-    if (entity?.isTicket) {
-      // Logic for ticket modal (can be merged later)
-      return;
-    }
-    if (entity.hasStory) {
-      setSelectedStoryMember(entity);
-    } else {
-      setSelectedMember(entity);
-    }
-  };
-
   return (
-    <main className="flex h-full w-full flex-col bg-bg-primary overflow-hidden fixed inset-0">
+    <main className="relative h-screen w-full overflow-hidden bg-bg-primary text-text-primary">
       
-      {/* Background Interactive Map */}
-      <MapView 
-        members={logic.members} 
-        publishedTickets={publishedTickets} 
-        center={mapCenter} 
-        showHeatmap={true}
-        onEntityClick={handleEntityClick}
-      />
+      {/* Background Layer (Map) */}
+      <div className={`absolute inset-0 transition-all duration-700 ${activeTab !== 'map' ? 'scale-105 blur-md opacity-40' : 'scale-100'}`}>
+        <MapView 
+          members={filteredMembers} 
+          onMemberClick={setSelectedMember}
+        />
+      </div>
 
       {/* Header (Premium Minimalist) */}
       <div className="absolute top-0 inset-x-0 z-[60] px-6 pt-safe pb-4 flex items-center justify-between pointer-events-none">
@@ -83,7 +70,7 @@ export default function AppShell() {
               className="px-4 py-2 bg-warning/10 text-warning text-[10px] font-black uppercase tracking-widest rounded-full border border-warning/20 flex items-center gap-2"
             >
               <div className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse" />
-              Offline
+              Оффлайн
             </motion.div>
           )}
           <button className="w-11 h-11 glass-premium rounded-full flex items-center justify-center tap-haptic overflow-hidden">
@@ -101,10 +88,7 @@ export default function AppShell() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         filteredMembers={filteredMembers}
-        onMemberClick={(m) => {
-            setSelectedMember(m);
-            setActiveTab('map');
-        }}
+        onMemberClick={setSelectedMember}
         selectedTeip={selectedTeip}
         setSelectedTeip={setSelectedTeip}
         selectedVillage={selectedVillage}
@@ -131,20 +115,20 @@ export default function AppShell() {
         )}
       </AnimatePresence>
 
-      {/* Navigation & Controls */}
+      {/* Persistent Navigation */}
       <BottomNav 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        onAddClick={() => setActiveModal('administrative')}
+        onAddClick={() => setActiveModal('addMember')}
       />
 
-      {/* Global Modals & Overlays */}
+      {/* Modal Systems */}
       <ModalRegistry 
         activeModal={activeModal} 
         onClose={() => setActiveModal(null)} 
       />
 
-      {/* Profile Overlays */}
+      {/* Overlays */}
       <AnimatePresence>
         {selectedMember && (
           <MemberProfile 

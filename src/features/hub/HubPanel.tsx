@@ -62,7 +62,7 @@ export function HubPanel({
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher un membre, un métier, un lieu..."
+                  placeholder="Поиск по специалистам, городам..."
                   className="w-full bg-white rounded-2xl py-5 pl-12 pr-6 text-[15px] font-bold border border-black/[0.08] shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-blue/5 transition-all placeholder:text-text-tertiary"
                 />
               </div>
@@ -70,13 +70,13 @@ export function HubPanel({
 
             {/* Main Expert Hub Filters */}
             <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary px-1">Expertise & Entraide</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary px-1">Опыт и Взаимопомощь</h3>
               <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide py-1">
                 {[
-                  { id: 'isLegalDefender', label: 'Bouclier Juridique', icon: <ShieldCheck size={14} /> },
-                  { id: 'openToMentorship', label: 'Mentorats', icon: <GraduationCap size={14} /> },
-                  { id: 'isTranslator', label: 'Traducteurs', icon: <Info size={14} /> },
-                  { id: 'isBusiness', label: 'Entreprises', icon: <Briefcase size={14} /> }
+                  { id: 'isLegalDefender', label: 'Юридическая Защита', icon: <ShieldCheck size={14} /> },
+                  { id: 'openToMentorship', label: 'Наставничество', icon: <GraduationCap size={14} /> },
+                  { id: 'isTranslator', label: 'Переводчики', icon: <Info size={14} /> },
+                  { id: 'isBusiness', label: 'Бизнес-Сеть', icon: <Briefcase size={14} /> }
                 ].map((chip) => (
                   <button 
                     key={chip.id}
@@ -98,9 +98,9 @@ export function HubPanel({
             <div className="space-y-6">
                <div className="space-y-3">
                 <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Filtre par Teip (Clan)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Фильтр по Сообществам</h3>
                   {selectedTeip && (
-                    <button onClick={() => setSelectedTeip('')} className="text-[10px] font-bold text-brand-blue uppercase">Annuler</button>
+                    <button onClick={() => setSelectedTeip('')} className="text-[10px] font-bold text-brand-blue uppercase">Сбросить</button>
                   )}
                 </div>
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">

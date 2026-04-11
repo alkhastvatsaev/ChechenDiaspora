@@ -10,9 +10,9 @@ interface BottomNavProps {
 
 export function BottomNav({ activeTab, setActiveTab, onAddClick }: BottomNavProps) {
   const tabs = [
-    { id: 'map', label: 'Карта', icon: <MapIcon size={20} />, color: 'brand-blue' },
-    { id: 'hub', label: 'Кхерч', icon: <Search size={20} />, color: 'brand-blue' },
-    { id: 'council', label: 'Кхел', icon: <Globe size={20} />, color: 'brand-blue' },
+    { id: 'map', label: 'КАРТА', icon: <MapIcon size={20} />, color: 'brand-blue' },
+    { id: 'hub', label: 'СОБРАНИЕ', icon: <Search size={20} />, color: 'brand-blue' },
+    { id: 'council', label: 'СОВЕТ', icon: <Globe size={20} />, color: 'brand-blue' },
   ];
 
   return (

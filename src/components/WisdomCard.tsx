@@ -15,7 +15,7 @@ const PROVERBS = [
     id: 2,
     che: "Къонахчуьн дош — цуьн намыс",
     rus: "Слово мужчины — его честь",
-    context: "Верность данному слову — основа вайнахского общества"
+    context: "Верность данному слову — основа общества"
   },
   {
     id: 3,
@@ -26,14 +26,14 @@ const PROVERBS = [
   {
     id: 4,
     che: "Къинхетам боцуш верг — адамаллех воьхна",
-    rus: "Кто не знает милосерdia, тот потерял человечность",
-    context: "О важности доброты и сострадания (Белхи)"
+    rus: "Кто не знает милосердия, тот потерял человечность",
+    context: "О важности доброты и сострадания к ближнему"
   }
 ];
 
 export default function WisdomCard() {
   const wisdom = useMemo(() => {
-    // Pick based on day of year to keep it consistent
+    // Pick based on day of year
     const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     return PROVERBS[dayOfYear % PROVERBS.length];
   }, []);
@@ -53,21 +53,21 @@ export default function WisdomCard() {
         <div className="w-8 h-8 bg-brand-blue rounded-xl flex items-center justify-center shadow-lg shadow-brand-blue/20">
           <Sparkles size={14} className="text-white" />
         </div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-blue">
-          Мудрость дня / Нохчалла
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-blue text-vainakh-primary">
+          Мудрость дня
         </span>
       </div>
 
       <div className="space-y-4 relative z-10">
         <h2 className="text-2xl font-black text-text-primary leading-tight tracking-tight uppercase italic">
-          «{wisdom.che}»
+          «{wisdom.rus}»
         </h2>
         
         <div className="space-y-2">
-          <p className="text-[15px] font-bold text-text-secondary leading-relaxed">
-            — {wisdom.rus}
+          <p className="text-[11px] font-bold text-text-secondary/30 leading-relaxed italic">
+            {wisdom.che}
           </p>
-          <p className="text-[10px] font-black uppercase tracking-widest text-brand-amber">
+          <p className="text-[10px] font-black uppercase tracking-widest text-brand-amber text-right">
             {wisdom.context}
           </p>
         </div>

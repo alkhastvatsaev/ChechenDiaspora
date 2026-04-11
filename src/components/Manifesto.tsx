@@ -6,54 +6,54 @@ import { Shield, Users, Briefcase, GraduationCap, Flame, ChevronRight, Globe } f
 const MANIFESTO_SECTIONS = [
   {
     id: "01",
-    title: "Les Racines de l'Exode",
-    subtitle: "Орамаш / Корни",
-    content: "Comprendre la diaspora tchétchène moderne nécessite de regarder la vérité en face. Nous n'avons pas quitté les montagnes du Caucase par pur opportunisme économique. Nous avons été propulsés hors de nos terres (Daimohk) par la violence inouïe de deux guerres dévastatrices. Notre exil est avant tout un instinct de survie, un acte de protection pour nos familles, nos enfants et notre patrimoine génétique même.",
-    content2: "Arrivés en Europe – en France, en Allemagne, en Autriche, en Belgique – nos parents ont dû affronter un monde inconnu, une barrière linguistique de fer, et le traumatisme sourd de la perte. Pourtant, ils ont construit. Ils ont bâti des vies à partir des cendres.",
+    title: "Корни Исхода",
+    subtitle: "Орамаш / Истоки",
+    content: "Понимание современной истории требует честного взгляда на истину. Мы покинули родные горы не ради экономических выгод. Нас вытолкнула за пределы родной земли (Даймохк) жестокая реальность двух разрушительных войн. Наш исход — это прежде всего инстинкт выживания, акт защиты наших семей, детей и самого нашего будущего.",
+    content2: "Прибыв в Европу — во Францию, Германию, Австрию, Бельгию — наши родители столкнулись с неизвестным миром, железным языковым барьером и глубокой травмой потери. Тем не менее, они выстояли. Они построили жизнь из пепла.",
     icon: <Globe className="text-brand-blue" size={24} />
   },
   {
     id: "02",
-    title: "Le Poids du Stigmate",
+    title: "Груз Стереотипов",
     subtitle: "Йист / Грань",
-    content: "Aujourd'hui, nous faisons face à un second front. Il n'est plus armé, il est sociétal, médiatique et administratif. En Europe et ailleurs, une étiquette lourde, injuste et stigmatisante a été collée sur le front de notre communauté.",
-    content2: "Le récit médiatique est brutal. La communauté est trop souvent observée à travers le prisme de la sécurité, de la suspicion, et de la criminalisation collective. Dans certains pays hôtes, le simple fait de porter un nom à consonance nord-caucasienne peut déclencher des vérifications supplémentaires, des refus de logement, des obstacles à l'embauche, voire un harcèlement administratif ou le spectre terrifiant d'une déportation.",
-    highlight: "La Tragédie du 1% et le Silence des 99%",
-    highlightContent: "Les actions d'une infime minorité — le 1% qui s'égare — sont systématiquement instrumentalisées pour définir l'ensemble de notre peuple. Mais qui parle des 99% ? Le monde ignore délibérément les milliers de médecins, d'ingénieurs et d'entrepreneurs d'origine tchétchène qui sauvent des vies et créent de la valeur chaque jour.",
+    content: "Сегодня мы стоим перед вторым фронтом. Он больше не вооружен, он социальный, медийный и административный. На наше сообщество наклеена тяжелая, несправедливая и стигматизирующая этикетка.",
+    content2: "Медийный дискурс часто бывает жесток. Нас слишком часто рассматривают через призму безопасности и подозрительности. Простые действия могут вызвать дополнительные проверки, отказы в жилье или препятствия при приеме на работу. Это несправедливый груз, который мы не обязаны нести в тишине.",
+    highlight: "Трагедия 1% и Молчание 99%",
+    highlightContent: "Действия ничтожного меньшинства — тех 1%, кто сбился с пути — систематически используются для определения всего народа. Но кто говорит о 99%? Мир игнорирует тысячи врачей, инженеров и предпринимателей нашего происхождения, которые спасают жизни и создают ценности каждый день.",
     icon: <Shield className="text-danger" size={24} />
   },
   {
     id: "03",
-    title: "Le Devoir de l'Invité (Le Haasha)",
+    title: "Долг Гостя (Хаша)",
     subtitle: "Хьаша / Гость",
-    content: "Notre tradition, le Nokhchalla, exige de nous une gratitude sans borne et un respect intransigeant des lois de nos sociétés d'accueil. Ces pays ont accordé l'asile à nos pères quand ils fuyaient les bombes. Ils ont nourri, soigné et scolarisé nos familles.",
-    quote: '« Celui qui ne respecte pas le toit qui l\'abrite n\'est ni un héros, ni un homme d\'honneur. Il est la honte de son Teip. »',
+    content: "Наша традиция требует от нас безграничной благодарности и бескомпромиссного соблюдения законов обществ, которые нас приняли. Эти страны предоставили убежище нашим отцам, когда они бежали от обстрелов. Они кормили, лечили и учили наши семьи.",
+    quote: '«Тот, кто не уважает крышу, которая его приютила, не является ни героем, ни человеком чести. Он — позор своего рода.»',
     icon: <Users className="text-brand-amber" size={24} />
   },
   {
     id: "04",
-    title: "Détruire les Préjugés par l'Excellence",
+    title: "Преодоление Предрассудков через Совершенство",
     subtitle: "Кхиам / Успех",
-    content: "Comment détruire ces stéréotypes ? Ce ne sera ni par la victimisation, ni par la plainte. Le monde ne respecte que la force intellectuelle, la contribution manifeste et le succès. Nous devons écraser le préjugé sous le poids de notre excellence.",
+    content: "Как разрушить эти стереотипы? Это не будет сделано ни через виктимизацию, ни через жалобы. Мир уважает только интеллектуальную силу, явный вклад и успех. Мы должны сокрушить предрассудки грузом нашего совершенства.",
     icon: <Flame className="text-warning" size={24} />
   },
   {
     id: "05",
-    title: "L'Arme de l'Éducation (Кхетам)",
+    title: "Оружие Образования (Кхетам)",
     subtitle: "Дешар / Просвещение",
-    content: "L'éducation est notre porte de salut. Ne trahisons pas le sacrifice de nos parents. C'est pourquoi, au sein de cet outil, le Mentorat est central. Ceux qui ont réussi ont le devoir moral absolu de guider la jeunesse qui doute.",
+    content: "Образование — это наш путь к спасению. Давайте не предадим жертву наших родителей. Именно поэтому в рамках этого инструмента Наставничество является центральным. Те, кто добился успеха, имеют абсолютный моральный долг направлять молодежь.",
     icon: <GraduationCap className="text-brand-blue" size={24} />
   },
   {
     id: "06",
-    title: "La Fonction du Foyer \"Вайнах\"",
+    title: "Функция Очага \"Вайнах\"",
     subtitle: "Кхерч / Очаг",
-    content: "Cette application n'est pas un réseau social pour tuer le temps. C'est une infrastructure numérique stricte, dédiée à la protection et à l'ascension de notre communauté.",
+    content: "Это приложение — не социальная сеть для убийства времени. Это строгая цифровая инфраструктура, посвященная защите и возвышению нашего сообщества.",
     list: [
-      "Un Bouclier Juridique : Protéger ceux menacés d'abus administratifs.",
-      "Un Relais de Mentorat : Transmettre l'excellence aux plus jeunes.",
-      "Un Réseau Économique : Favoriser l'emploi et le logement entre nous.",
-      "Un Devoir Sacré : Faciliter le rapatriement funéraire de nos anciens."
+      "Юридический Щит : Защита тех, кто сталкивается с административным произволом.",
+      "Реле Наставничества : Передача опыта и знаний подрастающему поколению.",
+      "Экономическая Сеть : Содействие трудоустройству и решению жилищных вопросов.",
+      "Священный Долг : Помощь в репатриации и поддержка традиционных ценностей."
     ],
     icon: <Briefcase className="text-success" size={24} />
   }
@@ -74,10 +74,10 @@ export default function Manifesto() {
            <Flame size={48} className="relative text-brand-amber mx-auto" />
         </div>
         <h1 className="text-4xl font-black tracking-tighter uppercase leading-none text-text-primary">
-          Manifeste de la <span className="text-brand-amber">Diaspora</span>
+          Манифест <span className="text-brand-amber">Сообщества</span>
         </h1>
         <p className="text-xl font-bold text-text-secondary italic tracking-tight">
-          Le Fardeau et l&apos;Excellence.
+          Бремя и Совершенство.
         </p>
         <div className="w-16 h-1 bg-brand-amber/20 mx-auto rounded-full mt-6"></div>
       </motion.div>
@@ -86,7 +86,7 @@ export default function Manifesto() {
       <div className="px-8 mb-12">
         <div className="p-8 bg-black/[0.02] rounded-[2.5rem] border border-black/[0.05] backdrop-blur-md shadow-sm">
           <p className="text-lg font-medium leading-relaxed text-text-secondary text-center">
-            Une introspection absolue sur notre réalité en exil. Détruire le stigmate, non pas par la plainte, mais par l&apos;irréfutable preuve de notre excellence.
+            Абсолютная интроспекция нашей реальности в изгнании. Мы разрушим стигму не жалобами, а неопровержимыми доказательствами нашего профессионализма.
           </p>
         </div>
       </div>
@@ -167,14 +167,14 @@ export default function Manifesto() {
         >
           <div className="w-20 h-0.5 bg-brand-amber/20 mx-auto rounded-full"></div>
           <p className="text-2xl font-black tracking-tight leading-relaxed max-w-sm mx-auto uppercase italic text-brand-amber">
-            &quot;Personne ne viendra nous sauver, si ce n&apos;est nous-mêmes, par la grâce de Dieu.&quot;
+            &quot;Никто не придет спасать нас, кроме нас самих, по воле Всевышнего.&quot;
           </p>
           <div className="space-y-4">
             <p className="text-text-secondary font-medium leading-loose max-w-lg mx-auto">
-              Soyons les meilleurs citoyens, soyons les plus éduqués, soyons d&apos;une droiture inébranlable et d&apos;une utilité incontestable pour le monde qui nous entoure.
+              Давайте будем лучшими гражданами, самыми образованными, непоколебимо честными и бесспорно полезными для мира, который нас окружает.
             </p>
             <p className="text-lg font-black tracking-widest text-brand-amber uppercase mt-12">
-              Далла аьтто бойла вай.
+              Да поможет нам Бог.
             </p>
           </div>
         </motion.div>
