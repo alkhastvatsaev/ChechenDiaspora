@@ -92,19 +92,31 @@ export function useDiasporaLogic() {
     const updateMembers = () => {
       const mergedFromDB = Array.from(dataMap.values()).filter(m => m.approved !== false);
       
-      // FOR THE BETA: Always start with sample experts and merge real ones
-      const final: Member[] = [...sampleExperts];
+      // Starting list: Sample Experts
+      let final: Member[] = [...sampleExperts];
       
+      // Merge logic with deduplication by Name + City
       mergedFromDB.forEach(dbMember => {
-        const idx = final.findIndex(sm => sm.id === dbMember.id);
-        if (idx >= 0) {
-          final[idx] = { ...final[idx], ...dbMember };
+        const fullName = `${dbMember.prenom}${dbMember.nom || ''}`.toLowerCase();
+        
+        // Check if this person already exists in 'final' (either in sample or added previously)
+        const duplicateIdx = final.findIndex(m => 
+          (`${m.prenom}${m.nom || ''}`.toLowerCase() === fullName) && 
+          (m.ville === dbMember.ville)
+        );
+
+        if (duplicateIdx >= 0) {
+          // Update existing with fresh DB data
+          final[duplicateIdx] = { ...final[duplicateIdx], ...dbMember };
         } else {
           final.push(dbMember);
         }
       });
 
-      travelers.forEach(t => { if (!final.find(m => m.id === t.id)) final.push(t); });
+      travelers.forEach(t => { 
+        const isPresent = final.find(m => m.id === t.id);
+        if (!isPresent) final.push(t); 
+      });
       
       setMembers(final);
       
