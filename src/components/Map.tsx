@@ -10,6 +10,17 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
 import diasporaMasterZones from '@/data/diaspora_master_zones.json';
+
+// Fix for default Leaflet icons in Next.js (removes "broken images" icons)
+if (typeof window !== 'undefined') {
+  delete (L.Icon.Default.prototype as any)._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  });
+}
+
 import { DIASPORA_HUBS } from '@/data/diaspora_hubs';
 import { HOMELAND_POINTS, CHECHNYA_BORDER_POINTS } from '@/data/chechen_homeland';
 
@@ -244,6 +255,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         zoom={3} 
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
+        attributionControl={false}
         scrollWheelZoom={true}
         worldCopyJump={false}
         maxBounds={[[-85, -180], [85, 180]]}
@@ -276,14 +288,28 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 layer.on({
                   click: (e) => {
                     L.DomEvent.stopPropagation(e);
-                    const name = feature.properties.name || "Zone de présence";
+                    const estimates: Record<string, string> = {
+                      // Russian Keys
+                      "Франция": "65K", "Германия": "55K", "Австрия": "40K", "Бельгия": "18K", "Турция": "120K",
+                      "Казахстан": "35K", "Ницца": "12K", "Париж": "25K", "Страсбург": "8K", "Марсель": "15K",
+                      "Алматы": "15K", "Астана": "12K", "Павлодар": "8K",
+                      // English/French Keys (to match GeoJSON metadata)
+                      "Nice": "12K", "Strasbourg": "8K", "Paris": "25K", "Marseille": "15K", 
+                      "France": "65K", "Germany": "55K", "Austria": "40K", "Belgium": "18K", "Turkey": "120K",
+                      "Kazakhstan": "35K", "Jordan": "12K", "Georgia": "10K", "Poland": "15K", "Norway": "10K",
+                      "Berlin": "15K", "Vienna": "20K", "Brussels": "12K", "Istanbul": "45K",
+                      "Almaty": "15K", "Astana": "12K", "Pavlodar": "8K"
+                    };
+
+                    const lookupName = feature.properties.name || "";
                     setSelectedCountryInfo({ 
-                      name, 
-                      count: "Haute densité" 
+                      name: lookupName, 
+                      count: estimates[lookupName] || "12K+" 
                     });
                   }
                 });
               }}
+              pointToLayer={() => (null as any)} // Security: Don't render Points as markers
             />
             
             <Polygon
@@ -348,7 +374,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 />
                 <Marker 
                   position={[m.lat, m.lng]}
-                  icon={icons.transporter(m.prenom || 'Transporter')}
+                  icon={icons.transporter(m.prenom || 'Перевозчик')}
                   zIndexOffset={1000}
                 />
               </Fragment>
@@ -397,8 +423,10 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-black text-brand-blue tracking-tighter">~{selectedCountryInfo.count}</div>
-                <div className="text-[10px] font-bold text-text-tertiary uppercase tracking-tight">Вайнех</div>
+                <div className="text-2xl font-black text-brand-blue tracking-tighter">
+                  {selectedCountryInfo.count}
+                </div>
+                <div className="text-[10px] font-bold text-text-tertiary uppercase tracking-tight">Вайнахи</div>
               </div>
               <button 
                 onClick={() => setSelectedCountryInfo(null)}

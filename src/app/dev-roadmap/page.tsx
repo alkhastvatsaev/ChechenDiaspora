@@ -22,80 +22,80 @@ import Link from 'next/link';
 const PILLARS = [
   {
     id: "trust",
-    title: "Système de Vouching",
-    status: "Logique Connectée",
+    title: "Система Поручительства (Vouching)",
+    status: "Логика подключена",
     progress: 60,
     icon: <ShieldCheck className="text-amber-500" size={24} />,
     tasks: [
-      "Architecture de données (vouchedBy array) - TERMINÉ",
-      "Logique de vote (handleVouch) - TERMINÉ",
-      "Interface de profil avec bouton Vouch - TERMINÉ",
-      "Badge d'honneur pour les membres multi-vouchés"
+      "Архитектура данных (массив vouchedBy) — ЗАВЕРШЕНО",
+      "Логика голосования (handleVouch) — ЗАВЕРШЕНО",
+      "Интерфейс профиля с кнопкой — ЗАВЕРШЕНО",
+      "Знак почета для подтвержденных участников"
     ]
   },
   {
     id: "ancestral",
-    title: "Connexion Ancestrale",
-    status: "Filtres Actifs",
+    title: "Связь Поколений",
+    status: "Фильтры активны",
     progress: 50,
     icon: <Globe className="text-blue-500" size={24} />,
     tasks: [
-      "Filtre par Teip (Clan) - TERMINÉ",
-      "Filtre par Village d'origine - TERMINÉ",
-      "Hubs de village (mini-communautés par terroir)",
-      "Intégration sur la carte interactive"
+      "Фильтр по Тейпу (Клану) — ЗАВЕРШЕНО",
+      "Фильтр по родному селу — ЗАВЕРШЕНО",
+      "Сельские хабы (мини-сообщества земляков)",
+      "Интеграция на интерактивную карту"
     ]
   },
   {
     id: "legal",
-    title: "Bouclier Juridique",
-    status: "Contexte Intégré",
+    title: "Юридический Щит",
+    status: "Контекст добавлен",
     progress: 25,
     icon: <Gavel className="text-rose-500" size={24} />,
     tasks: [
-      "Annuaire des avocats spécialisés (Asile/Interpol)",
-      "Bouton d'urgence administrative",
-      "Base de connaissances (fiches pratiques par pays)",
-      "Traducteurs assermentés vérifiés"
+      "Справочник адвокатов (Убежище / Интерпол)",
+      "Кнопка экстренной помощи",
+      "База знаний (практические советы по странам)",
+      "Проверенные присяжные переводчики"
     ]
   },
   {
     id: "mentorship",
-    title: "Mentorat & Excellence",
-    status: "Bouton Activé",
+    title: "Наставничество и Успех",
+    status: "Кнопка активирована",
     progress: 20,
     icon: <Database className="text-emerald-500" size={24} />,
     tasks: [
-      "Profil Mentor (compétences, dispo)",
-      "Mise en relation sécurisée",
-      "Suivi des réussites de la jeunesse",
-      "Webinaires de carrière internes"
+      "Профиль ментора (навыки, доступность)",
+      "Безопасная система связи",
+      "Отслеживание достижений молодежи",
+      "Внутренние карьерные вебинары"
     ]
   },
   {
     id: "economy",
-    title: "Solidarité Économique",
-    status: "Partiellement Opérationnel",
+    title: "Экономическая Солидарность",
+    status: "Частично оперативно",
     progress: 40,
     icon: <Briefcase className="text-indigo-500" size={24} />,
     tasks: [
-      "Répertoire des entreprises de la diaspora",
-      "Offres d'emploi exclusives à la communauté",
-      "Système de caution par les frères (Logement)",
-      "Partenariats commerciaux internes"
+      "Реестр предприятий диаспоры",
+      "Эксклюзивные вакансии для своих",
+      "Система поручительства (Жилье)",
+      "Внутреннее бизнес-партнерство"
     ]
   },
   {
     id: "pwa",
-    title: "PWA Core & Architecture",
-    status: "Opérationnel",
+    title: "Ядро PWA и Архитектура",
+    status: "Оперативно",
     progress: 90,
     icon: <Flame className="text-orange-500" size={24} />,
     tasks: [
-      "Synchronisation Firebase Temps Réel",
-      "Mode Hors-ligne (PWA)",
-      "Sécurité par Passphrase Communautaire",
-      "Design System Glassmorphism (Apple-style)"
+      "Синхронизация Firebase в реальном времени",
+      "Оффлайн режим (PWA)",
+      "Безопасность через пароль сообщества",
+      "Дизайн-система Glassmorphism (Apple-style)"
     ]
   }
 ];
@@ -114,15 +114,15 @@ export default function DevRoadmap() {
             <Terminal className="text-hearth-glow" size={24} />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase leading-none">Console de Développement</h1>
-            <p className="text-sm text-vainakh-stone/40 font-bold uppercase tracking-widest mt-2">Diaspora Hub / Mission Control</p>
+            <h1 className="text-3xl font-black tracking-tighter uppercase leading-none">Консоль Разработки</h1>
+            <p className="text-sm text-vainakh-stone/40 font-bold uppercase tracking-widest mt-2">Diaspora Hub / Пункт Управления</p>
           </div>
         </div>
 
         <div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 backdrop-blur-md">
-           <h2 className="text-lg font-bold text-hearth-amber mb-2 italic">« Détruire le stigmate par l'excellence. »</h2>
+           <h2 className="text-lg font-bold text-hearth-amber mb-2 italic">«Разрушить стигму через совершенство.»</h2>
            <p className="text-sm text-vainakh-stone/60 leading-relaxed">
-             Cette console trace l'évolution technique de l'infrastructure numérique de la diaspora. Chaque fonctionnalité est conçue pour le levier communautaire.
+             Эта консоль отслеживает техническое развитие цифровой инфраструктуры диаспоры. Каждая функция создана для усиления нашего сообщества.
            </p>
         </div>
       </motion.div>
@@ -184,7 +184,7 @@ export default function DevRoadmap() {
       {/* Navigation Return */}
       <div className="max-w-4xl mx-auto mt-12 text-center">
         <Link href="/" className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full text-sm font-black uppercase tracking-widest transition-all">
-          Retour au Hub <ArrowRight size={16} />
+          Вернуться в Хаб <ArrowRight size={16} />
         </Link>
       </div>
 
@@ -192,7 +192,7 @@ export default function DevRoadmap() {
       <div className="max-w-4xl mx-auto mt-20 pt-8 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase text-hearth-glow tracking-widest">
-            <Database size={12} /> Database Schema
+            <Database size={12} /> Схема Базы Данных
           </div>
           <p className="text-[11px] text-vainakh-stone/40 leading-relaxed font-mono">
             RTDB: /members/[id]<br />
@@ -202,7 +202,7 @@ export default function DevRoadmap() {
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase text-hearth-glow tracking-widest">
-            <Terminal size={12} /> Tech Stack
+            <Terminal size={12} /> Тех. Стек
           </div>
           <p className="text-[11px] text-vainakh-stone/40 leading-relaxed font-mono">
             Next.js 15+ (App Router)<br />
@@ -212,10 +212,10 @@ export default function DevRoadmap() {
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase text-hearth-glow tracking-widest">
-            <Code2 size={12} /> Project Mission
+            <Code2 size={12} /> Миссия Проекта
           </div>
           <p className="text-[11px] text-vainakh-stone/40 leading-relaxed italic">
-            "High Leverage, Community Driven, Expert Visibility."
+            "Высокая эффективность, вклад сообщества, видимость экспертов."
           </p>
         </div>
       </div>

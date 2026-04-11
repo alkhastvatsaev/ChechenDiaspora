@@ -5,37 +5,37 @@ import Link from 'next/link';
 import { ChevronLeft, Search, Book, GraduationCap, History, Bookmark, Globe, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Initial seed data (could be expanded to thousands of words later)
+// Initial seed data
 const DICTIONARY_SEED = [
   // Greeting / Common
-  { ce: "Маршалла", fr: "Salutations / Paix", ru: "Приветствие / Мир", cat: "Приветствие" },
-  { ce: "Де дика хуьлда", fr: "Bonjour", ru: "Добрый день", cat: "Приветствие" },
-  { ce: "Баркалла", fr: "Merci", ru: "Спасибо", cat: "Вежливость" },
-  { ce: "Дела реза хилда", fr: "Que Dieu soit satisfait de toi (Merci)", ru: "Да будет доволен тобой Аллах (Спасибо)", cat: "Вежливость" },
-  { ce: "ХIаъ", fr: "Oui", ru: "Да", cat: "Общее" },
-  { ce: "ХIан-хIа", fr: "Non", ru: "Нет", cat: "Общее" },
+  { ce: "Маршалла", ru: "Приветствие / Мир", cat: "Приветствие" },
+  { ce: "Де дика хуьлда", ru: "Добрый день", cat: "Приветствие" },
+  { ce: "Баркалла", ru: "Спасибо", cat: "Вежливость" },
+  { ce: "Дела реза хилда", ru: "Да будет доволен тобой Аллах (Спасибо)", cat: "Вежливость" },
+  { ce: "ХIаъ", ru: "Да", cat: "Общее" },
+  { ce: "ХIан-хIа", ru: "Нет", cat: "Общее" },
   
   // Nokhchalla / Culture
-  { ce: "Нохчалла", fr: "L'identité/vertu tchétchène (Code d'honneur)", ru: "Чеченство (Кодекс чести)", cat: "Культура" },
-  { ce: "Къонах", fr: "Homme d'honneur / Brave", ru: "Благородный муж / Витязь", cat: "Культура" },
-  { ce: "Яхь", fr: "Émulation noble / Fierté saine", ru: "Здоровое соперничество / Честь", cat: "Культура" },
-  { ce: "Оьздангалла", fr: "Noblesse / Étiquette / Politesse", ru: "Благородство / Этикет", cat: "Культура" },
-  { ce: "ГIиллакх", fr: "Coutume / Politesse / Savoir-vivre", ru: "Обычай / Этикет", cat: "Культура" },
+  { ce: "Нохчалла", ru: "Чеченство (Кодекс чести)", cat: "Культура" },
+  { ce: "Къонах", ru: "Благородный муж / Витязь", cat: "Культура" },
+  { ce: "Яхь", ru: "Здоровое соперничество / Честь", cat: "Культура" },
+  { ce: "Оьздангалла", ru: "Благородство / Этикет", cat: "Культура" },
+  { ce: "ГIиллакх", ru: "Обычай / Этикет", cat: "Культура" },
   
   // Family / People
-  { ce: "Ваша", fr: "Frère", ru: "Брат", cat: "Семья" },
-  { ce: "Йиша", fr: "Sœur", ru: "Сестра", cat: "Семья" },
-  { ce: "Да", fr: "Père", ru: "Отец", cat: "Семья" },
-  { ce: "Нана", fr: "Mère", ru: "Мать", cat: "Семья" },
-  { ce: "КIант", fr: "Garçon / Fils", ru: "Сын / Парень", cat: "Семья" },
-  { ce: "ЙоI", fr: "Fille", ru: "Дочь / Девушка", cat: "Семья" },
-  { ce: "Гергарло", fr: "Parenté / Lien", ru: "Родство / Связь", cat: "Семья" },
+  { ce: "Ваша", ru: "Брат", cat: "Семья" },
+  { ce: "Йиша", ru: "Сестра", cat: "Семья" },
+  { ce: "Да", ru: "Отец", cat: "Семья" },
+  { ce: "Нана", ru: "Мать", cat: "Семья" },
+  { ce: "КIант", ru: "Сын / Парень", cat: "Семья" },
+  { ce: "ЙоI", ru: "Дочь / Девушка", cat: "Семья" },
+  { ce: "Гергарло", ru: "Родство / Связь", cat: "Семья" },
   
   // Nature / Places
-  { ce: "Лам", fr: "Montagne", ru: "Гора", cat: "Природа" },
-  { ce: "Аре", fr: "Plaine / Dehors", ru: "Равнина / Улица", cat: "Природа" },
-  { ce: "Хи", fr: "Eau / Rivière", ru: "Вода / Река", cat: "Природа" },
-  { ce: "Даймохк", fr: "Patrie (Terre des pères)", ru: "Отечество / Родина", cat: "Общее" },
+  { ce: "Лам", ru: "Гора", cat: "Природа" },
+  { ce: "Аре", ru: "Равнина / Улица", cat: "Природа" },
+  { ce: "Хи", ru: "Вода / Река", cat: "Природа" },
+  { ce: "Даймохк", ru: "Отечество / Родина", cat: "Общее" },
 ];
 
 export default function DictionaryPage() {
@@ -48,7 +48,6 @@ export default function DictionaryPage() {
     return DICTIONARY_SEED.filter(word => {
       const matchesSearch = 
         word.ce.toLowerCase().includes(search.toLowerCase()) ||
-        word.fr.toLowerCase().includes(search.toLowerCase()) ||
         word.ru.toLowerCase().includes(search.toLowerCase());
       
       const matchesCategory = activeCategory === "Все" || word.cat === activeCategory;
@@ -58,11 +57,11 @@ export default function DictionaryPage() {
   }, [search, activeCategory]);
 
   return (
-    <div className="min-h-screen bg-[#fbfbfd] text-gray-900 pb-20 selection:bg-chechen-blue/20">
+    <div className="min-h-screen bg-[#fbfbfd] text-gray-900 pb-20 selection:bg-brand-blue/20">
       {/* Search Header */}
       <div className="sticky top-0 z-50 bg-[#fbfbfd]/80 backdrop-blur-xl border-b border-black/5">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between gap-4 pt-safe-top">
-          <Link href="/heritage" className="p-2 -ml-2 text-gray-400 hover:text-black transition-colors shrink-0">
+          <Link href="/" className="p-2 -ml-2 text-gray-400 hover:text-black transition-colors shrink-0">
             <ChevronLeft size={24} />
           </Link>
           
@@ -102,12 +101,12 @@ export default function DictionaryPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         <header className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-chechen-blue/10 text-chechen-blue rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-blue/10 text-brand-blue rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
             <Book size={12} strokeWidth={3} />
             Архив: Дошлор
           </div>
           <h1 className="text-4xl font-black tracking-tight mb-3">Словарь Наследия</h1>
-          <p className="text-gray-500 font-medium">Сохранение и передача языка наших предков.</p>
+          <p className="text-gray-500 font-medium text-sm">Хранение и передача языка наших предков.</p>
         </header>
 
         {/* Word Grid */}
@@ -135,7 +134,7 @@ export default function DictionaryPage() {
                     </div>
                     <h3 className="text-2xl font-black mb-2 flex items-center gap-3">
                        {word.ce}
-                       <span className="w-1.5 h-1.5 rounded-full bg-chechen-blue/30" />
+                       <span className="w-1.5 h-1.5 rounded-full bg-brand-blue/30" />
                     </h3>
                     <div className="space-y-1">
                       <p className="text-gray-600 font-medium leading-tight">
@@ -149,7 +148,7 @@ export default function DictionaryPage() {
                       <div className="w-1 h-1 rounded-full bg-gray-200" />
                       <div className="w-1 h-1 rounded-full bg-gray-200" />
                     </div>
-                    <button className="text-xs font-bold text-gray-300 hover:text-chechen-blue transition-colors flex items-center gap-1 group">
+                    <button className="text-xs font-bold text-gray-300 hover:text-brand-blue transition-colors flex items-center gap-1 group">
                       Подробнее <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
@@ -163,7 +162,7 @@ export default function DictionaryPage() {
                 <p className="font-bold text-gray-400">Дош ца карийна (Слово не найдено)</p>
                 <button 
                   onClick={() => {setSearch(""); setActiveCategory("Все");}}
-                  className="text-chechen-blue font-bold text-sm underline underline-offset-4"
+                  className="text-brand-blue font-bold text-sm underline underline-offset-4"
                 >
                   Показать все слова
                 </button>
