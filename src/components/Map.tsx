@@ -175,30 +175,28 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
   }, [isMounted]);
 
   const countryStyle = (feature: any) => {
-    const name = feature.properties.ADMIN || feature.properties.name || feature.properties.NAME;
+    const name = feature.properties.ADMIN || feature.properties.name || feature.properties.NAME || "";
     
     // Normalize names for comparison
-    const isActive = Array.from(activeCountries).some(c => 
-      name.toLowerCase().includes(c.toLowerCase()) || 
-      c.toLowerCase().includes(name.toLowerCase())
-    );
+    const isActive = Array.from(activeCountries).some(c => {
+      if (!c) return false;
+      const countryName = String(c).toLowerCase();
+      const featureName = name.toLowerCase();
+      return featureName.includes(countryName) || countryName.includes(featureName);
+    });
 
     if (isActive) {
       return {
-        color: '#007AFF',
-        weight: 1,
-        opacity: 0.3,
+        stroke: false,
         fillColor: 'transparent',
         fillOpacity: 0
       };
     }
 
     return {
-      color: '#d1d5db',
-      weight: 0.5,
-      opacity: 0.1,
-      fillColor: '#f9fafb',
-      fillOpacity: 0.85
+      stroke: false,
+      fillColor: '#f4f4f5', // Very light neutral gray
+      fillOpacity: 0.8
     };
   };
 
