@@ -129,9 +129,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         html: `
           <div class="relative group flex flex-col items-center">
             <!-- Curved Name Badge -->
-            <svg class="absolute -top-3 w-16 h-8 overflow-visible pointer-events-none">
-              <path id="curve-${name}" d="M 0,16 A 32,32 0 0,1 64,16" fill="transparent" />
-              <text class="text-[8px] font-black tracking-[0.2em] uppercase fill-[#059669]">
+            <svg class="absolute -top-2 w-16 h-10 overflow-visible pointer-events-none">
+              <path id="curve-${name}" d="M 8,24 A 24,24 0 0,1 56,24" fill="transparent" />
+              <text class="text-[7px] font-black tracking-[0.1em] uppercase fill-[#059669]">
                 <textPath xlink:href="#curve-${name}" startOffset="50%" text-anchor="middle">
                   ${name}
                 </textPath>
