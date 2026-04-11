@@ -239,10 +239,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
     className: 'bg-transparent',
     html: `
       <div class="flex flex-col items-center pointer-events-none opacity-60 hover:opacity-100 transition-opacity duration-500">
-        <span class="text-[8px] font-black uppercase tracking-[0.2em] text-chechen-blue/60 mb-0.5">${name}</span>
-        <div class="px-2 py-0.5 bg-chechen-blue/5 backdrop-blur-[1px] rounded-full border border-chechen-blue/10">
-          <span class="text-[9px] font-black text-chechen-blue tracking-tighter">${count}</span>
-        </div>
+        <span class="text-[8px] font-black uppercase tracking-[0.2em] text-chechen-blue/40 mb-0.5">${name}</span>
+        <span class="text-[10px] font-black text-chechen-blue/80 tracking-tighter leading-none">${count}</span>
       </div>
     `,
     iconSize: [0, 0],
