@@ -384,7 +384,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="absolute bottom-6 inset-x-6 z-[1000] pointer-events-none"
+            className="absolute bottom-24 inset-x-4 z-[1000] pointer-events-none"
           >
             <div className="max-w-md mx-auto glass-premium rounded-[2.5rem] p-6 border border-white/40 shadow-2xl flex items-center justify-between pointer-events-auto">
               <div className="flex items-center gap-4">
