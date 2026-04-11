@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ref, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion } from 'framer-motion';
+import { UserPlus } from 'lucide-react';
 
 export default function Join() {
   const router = useRouter();

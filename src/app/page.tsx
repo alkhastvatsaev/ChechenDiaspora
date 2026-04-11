@@ -6,14 +6,14 @@ import Link from 'next/link';
 import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, ShieldAlert, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
-import { db, storage } from '@/lib/firebase';
+import { db, storage, firestore } from '@/lib/firebase';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import MemberProfile from '@/components/MemberProfile';
 import LanguageModal from '@/components/LanguageModal';
 import StoryOverlay from '@/components/StoryOverlay';
 
 // Use dynamic import for Leaflet Map as it needs 'window' (client-side only)
-const Map = dynamic(() => import('@/components/Map'), { 
+const MapComponent = dynamic(() => import('@/components/Map'), { 
   ssr: false,
   loading: () => <div className="w-full h-full bg-apple-light animate-pulse flex items-center justify-center font-bold text-gray-400">Загрузка карты...</div>
 });
@@ -343,16 +343,16 @@ export default function Home() {
     ];
 
     // Maintain a map to merge data from multiple sources
-    const dataMap = new Map();
+    const dataMap = new Map<string, any>();
     const updateMembers = () => {
-      const merged = Array.from(dataMap.values()).filter(m => m.approved !== false);
+      const merged = Array.from(dataMap.values()).filter((m: any) => m.approved !== false);
       if (merged.length === 0) {
         setMembers([...sampleExperts, ...travelers]);
       } else {
         // Ensure travelers are always present
         const final = [...merged];
         travelers.forEach(t => {
-          if (!final.find(m => m.id === t.id)) final.push(t);
+          if (!final.find((m: any) => m.id === t.id)) final.push(t);
         });
         setMembers(final);
       }
@@ -489,7 +489,7 @@ export default function Home() {
       )}
       {/* Background Interactive Map - Always Presence */}
       <div className="absolute inset-0 z-0">
-        <Map 
+        <MapComponent 
           members={mapEntities} 
           center={mapCenter} 
           showHeatmap={showHeatmap}
