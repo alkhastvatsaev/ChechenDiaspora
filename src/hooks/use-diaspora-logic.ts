@@ -39,19 +39,6 @@ export function useDiasporaLogic() {
   const [members, setMembers] = useState<Member[]>([]);
   const [publishedTickets, setPublishedTickets] = useState<TicketItem[]>([]);
   
-  // -- Voice & Audio Stats --
-  const [ticketInputMode, setTicketInputMode] = useState<'voice' | 'text'>('voice');
-  const [isListening, setIsListening] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
-  const recognitionRef = useRef<any | null>(null);
-  const [finalTranscript, setFinalTranscript] = useState('');
-  const [interimTranscript, setInterimTranscript] = useState('');
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrlLocal, setAudioUrlLocal] = useState<string>('');
-  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<any[]>([]);
-
   const [ticketDraft, setTicketDraft] = useState<Partial<TicketItem>>({
     title: '',
     description: '',
@@ -156,6 +143,11 @@ export function useDiasporaLogic() {
   }, []);
 
   // -- Audio / Transcription Engine (WhatsApp-Style) --
+  const [ticketInputMode, setTicketInputMode] = useState<'voice' | 'text'>('voice');
+  const [isListening, setIsListening] = useState(false);
+  const [finalTranscript, setFinalTranscript] = useState('');
+  const [interimTranscript, setInterimTranscript] = useState('');
+  
   const recognitionRef = useRef<any | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
