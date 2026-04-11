@@ -115,8 +115,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           className: 'bg-transparent',
           html: `
             <div class="relative group">
-              <div class="w-10 h-10 bg-chechen-blue rounded-full shadow-lg border-2 border-white flex items-center justify-center transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
-                <span class="text-[11px] font-black text-white tracking-widest">${initials}</span>
+              <div class="w-10 h-10 bg-brand-blue/10 backdrop-blur-[2px] rounded-full shadow-sm border-2 border-brand-blue flex items-center justify-center transform hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
+                <span class="text-[11px] font-black text-brand-blue tracking-widest">${initials}</span>
               </div>
             </div>
           `,
@@ -128,11 +128,11 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         className: 'bg-transparent',
         html: `
           <div class="relative group flex flex-col items-center">
-            <div class="px-1.5 py-0.5 bg-white/80 backdrop-blur-sm rounded-md shadow-sm border border-emerald-500/10 mb-1">
-              <span class="text-[6px] font-bold text-emerald-800/40 tracking-wider uppercase select-none">${name}</span>
+            <div class="px-1.5 py-0.5 bg-white/80 backdrop-blur-sm rounded-md shadow-sm border border-brand-blue/10 mb-1">
+              <span class="text-[6px] font-bold text-brand-blue/60 tracking-wider uppercase select-none">${name}</span>
             </div>
-            <div class="w-9 h-9 bg-[#ecfdf5] rounded-xl shadow-lg border-2 border-[#10b981]/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <div class="w-9 h-9 bg-brand-blue/5 rounded-xl shadow-lg border-2 border-brand-blue/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
                 <path d="M15 18H9"></path>
                 <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
@@ -148,7 +148,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
       clusterCustom: (cluster: any) => {
         const count = cluster.getChildCount();
         return L.divIcon({
-          html: `<div class="w-10 h-10 bg-chechen-blue/90 text-white rounded-full flex items-center justify-center font-black text-xs border-2 border-white/50 backdrop-blur-md shadow-[0_8px_20px_rgba(0,122,255,0.3)] transform active:scale-90 transition-all">${count}</div>`,
+          html: `<div class="w-10 h-10 bg-white/90 text-brand-blue rounded-full flex items-center justify-center font-black text-xs border-2 border-brand-blue shadow-lg transform active:scale-90 transition-all">${count}</div>`,
           className: 'bg-transparent',
           iconSize: L.point(40, 40, true),
         });
