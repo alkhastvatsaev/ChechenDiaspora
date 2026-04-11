@@ -118,12 +118,12 @@ export default function AppShell() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[90] glass-dark overflow-y-auto px-6 py-safe pb-40"
+            className="fixed inset-0 z-[90] glass-premium overflow-y-auto px-6 py-safe pb-40"
           >
             <Manifesto />
             <button 
               onClick={() => setActiveTab('map')}
-              className="fixed top-safe right-6 w-11 h-11 bg-white/10 rounded-full flex items-center justify-center text-white tap-haptic"
+              className="fixed top-safe right-6 w-11 h-11 bg-black/5 rounded-full flex items-center justify-center text-text-primary tap-haptic"
             >
               <X size={22} />
             </button>
