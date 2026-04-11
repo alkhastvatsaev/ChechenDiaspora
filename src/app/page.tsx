@@ -905,6 +905,17 @@ export default function Home() {
                   </button>
                 </div>
 
+                {/* Live Transcription Block */}
+                {(finalTranscript || interimTranscript) && (
+                  <div className="max-w-sm w-full bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-black/5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Transcription en direct</div>
+                    <p className="text-sm font-bold text-kherch-dark leading-relaxed">
+                      {finalTranscript}
+                      <span className="text-gray-400"> {interimTranscript}</span>
+                    </p>
+                  </div>
+                )}
+
                 {audioUrlLocal && (
                   <div className="w-full space-y-6 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <audio controls src={audioUrlLocal} className="w-full" />
