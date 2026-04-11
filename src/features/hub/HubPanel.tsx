@@ -46,8 +46,8 @@ export function HubPanel({
           {/* Header */}
           <div className="px-6 pt-6 pb-2 flex items-center justify-between shrink-0">
             <div>
-              <h1 className="text-3xl font-black text-text-primary tracking-tight">Взаимопомощь</h1>
-              <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-1">Дом Вайнахской Солидарности</p>
+              <h1 className="text-3xl font-black text-text-primary tracking-tight">Вайнехан Бёлхи</h1>
+              <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-1">Традиция взаимопомощи • Diaspora Belkhi</p>
             </div>
             <button 
               onClick={onClose}
@@ -67,21 +67,21 @@ export function HubPanel({
             {/* Active Help Requests (Tickets) */}
             <div className="space-y-4">
               <div className="flex items-center justify-between px-1">
-                <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-text-primary">Нужна помощь (Активные заявки)</h3>
-                <span className="px-3 py-1 bg-red-50 text-red-500 rounded-full text-[10px] font-black animate-pulse">LIVE</span>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-text-primary">Активное ОРЦА (Призывы о помощи)</h3>
+                <span className="px-3 py-1 bg-red-50 text-red-500 rounded-full text-[10px] font-black animate-pulse">ОТКРЫТО</span>
               </div>
               
               <div className="space-y-3">
                 {logic.publishedTickets?.length > 0 ? (
                   logic.publishedTickets.map((ticket: any) => (
-                    <div key={ticket.id} className="p-5 card-premium hover:scale-[1.01] transition-transform space-y-3 border-l-4 border-brand-blue">
+                    <div key={ticket.id} className="p-5 card-premium hover:scale-[1.01] transition-transform space-y-3 border-l-4 border-red-500">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-brand-blue/10 rounded-lg flex items-center justify-center text-brand-blue">
+                          <div className="w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
                             {CATEGORY_ICONS[ticket.category] || <HelpingHand size={16} />}
                           </div>
-                          <span className="text-[11px] font-black uppercase tracking-wider text-brand-blue">
-                            {RUSSIAN_CATEGORIES[ticket.category] || 'Помощь'}
+                          <span className="text-[11px] font-black uppercase tracking-wider text-red-500">
+                            ОРЦА: {RUSSIAN_CATEGORIES[ticket.category] || 'Помощь'}
                           </span>
                         </div>
                         <span className="text-[10px] font-bold text-text-tertiary">{ticket.ville}</span>
@@ -91,15 +91,16 @@ export function HubPanel({
                       </p>
                       <div className="flex items-center justify-between pt-2 border-t border-black/[0.03]">
                         <span className="text-[10px] font-bold text-text-tertiary italic">от {ticket.authorName}</span>
-                        <button className="text-[11px] font-black text-brand-blue uppercase tracking-tight">Помочь →</button>
+                        <button className="px-4 py-2 bg-brand-blue text-white rounded-xl text-[11px] font-black uppercase tracking-tight shadow-md active:scale-95 transition-all">Прийти на помощь →</button>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-8 text-center bg-white/50 rounded-3xl border-2 border-dashed border-black/[0.05]">
-                    <MessageSquare className="mx-auto text-text-tertiary mb-3 opacity-20" size={32} />
-                    <p className="text-[13px] font-bold text-text-tertiary leading-relaxed">
-                      Активных заявок пока нет.<br/>Будьте первым, кому нужна помощь нашей общины.
+                  <div className="p-10 text-center bg-white/50 rounded-3xl border-2 border-dashed border-black/[0.05]">
+                    <HelpingHand className="mx-auto text-brand-blue/30 mb-4" size={40} />
+                    <p className="text-[14px] font-bold text-text-primary leading-relaxed">
+                      Призывов о помощи пока нет.<br/>
+                      <span className="text-[11px] text-text-tertiary font-medium">Это время для спокойствия, но помните: Бёлхи — это сердце нашего народа.</span>
                     </p>
                   </div>
                 )}
@@ -156,20 +157,21 @@ export function HubPanel({
                   type="text"
                   value={finalTranscript || ticketDraft.description}
                   onChange={(e) => setTicketDraft({ ...ticketDraft, description: e.target.value })}
-                  placeholder={isListening ? 'Слушаю вас...' : 'Как вам помочь? Напишите или скажите...'}
+                  placeholder={isListening ? 'Слушаю вас...' : 'Чем мы можем помочь? Напишите или скажите...'}
                   className="flex-1 bg-transparent px-3 py-3 text-[15px] font-bold focus:outline-none placeholder:text-text-tertiary"
                 />
 
                 <button 
                   onClick={submitTicket}
                   disabled={!ticketDraft.description && !finalTranscript}
-                  className="w-12 h-12 bg-brand-blue text-white rounded-2xl flex items-center justify-center shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                  className="px-4 bg-red-500 text-white rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform disabled:opacity-50"
                 >
-                  <Send size={20} />
+                  <span className="text-[11px] font-black uppercase tracking-widest">ОРЦА!</span>
+                  <Send size={16} />
                 </button>
               </div>
-              <p className="text-center text-[9px] font-bold text-text-tertiary uppercase tracking-widest mt-4">
-                Ваша просьба будет видна всей диаспоре в этом регионе
+              <p className="text-center text-[9px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-4">
+                Ваш призыв услышит вся община в этом регионе
               </p>
             </div>
           </div>
