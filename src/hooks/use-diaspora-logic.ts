@@ -20,7 +20,7 @@ export function useDiasporaLogic() {
   const { user, loading, communityMember } = useAuth();
   
   // -- UI States --
-  const [activeTab, setActiveTab] = useState<ActiveTab>('council');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('map');
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [selectedStoryMember, setSelectedStoryMember] = useState<Member | null>(null);
@@ -38,6 +38,16 @@ export function useDiasporaLogic() {
   // -- Data States --
   const [members, setMembers] = useState<Member[]>([]);
   const [publishedTickets, setPublishedTickets] = useState<TicketItem[]>([]);
+
+  // -- First Time User Logic --
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hasSeen = localStorage.getItem('vainakh_has_seen_manifesto');
+    if (!hasSeen) {
+      setActiveTab('council');
+      localStorage.setItem('vainakh_has_seen_manifesto', 'true');
+    }
+  }, []);
   
   const [ticketDraft, setTicketDraft] = useState<Partial<TicketItem>>({
     title: '',
