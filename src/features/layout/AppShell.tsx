@@ -99,17 +99,23 @@ export default function AppShell() {
       <AnimatePresence>
         {activeTab === 'council' && (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[90] glass-premium overflow-y-auto px-6 py-safe pb-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] overflow-y-auto px-6 py-safe pb-40 bg-white/20 backdrop-blur-[2px]"
           >
-            <Manifesto />
+            {/* The requested House of Light Gradient */}
+            <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.8)_40%,transparent_100%)]"></div>
+            
+            <div className="relative z-10 max-w-2xl mx-auto pt-12">
+              <Manifesto />
+            </div>
+            
             <button 
               onClick={() => setActiveTab('map')}
-              className="fixed top-safe right-6 w-11 h-11 bg-black/5 rounded-full flex items-center justify-center text-text-primary tap-haptic"
+              className="fixed top-safe right-6 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-text-primary tap-haptic border border-black/5 z-[100] mt-4"
             >
-              <X size={22} />
+              <X size={28} />
             </button>
           </motion.div>
         )}

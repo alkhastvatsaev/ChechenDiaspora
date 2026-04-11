@@ -8,6 +8,8 @@ import { Member, TicketItem, ActiveTab, ActiveModal } from '@/types/diaspora';
 
 const sampleExperts: Member[] = [
   { id: 'S1', prenom: "Аслан", nom: "Базаров", profession: "Юрист / Право убежища", isLegalDefender: true, vouchCount: 12, ville: "Страсбург", pays: "Франция", village: "Шали", teip: "Шолой", lat: 48.5734, lng: 7.7521, isLive: true, approved: true, message: "Готов помочь братьям юридически.", hasStory: true, storyContent: { type: 'berkat', title: 'Срочная помощь', text: 'Нужен переводчик для семьи в Страсбурге на завтра. Кто свободен?', date: '2ч назад' } },
+  { id: 'S20', prenom: "Марина", nom: "И.", profession: "Социальный наставник", isSocialHelper: true, vouchCount: 56, ville: "Страсбург", pays: "Франция", village: "Гехи", teip: "Гехой", lat: 48.5839, lng: 7.7455, isLive: true, approved: true, message: "Помощь с оформлением документов (Asile, CAF, CPAM). Знаю администрацию наизусть." },
+  { id: 'S21', prenom: "Зарема", nom: "Л.", profession: "Административный эксперт", isSocialHelper: true, vouchCount: 42, ville: "Париж", pays: "Франция", village: "Ведено", teip: "Белтой", lat: 48.8566, lng: 2.3522, isLive: true, approved: true, message: "Сопровождение новых семей. Запись в школы, медицинская страховка, интеграция." },
   { id: 'S2', prenom: "Зелим", nom: "Умаров", profession: "Инженер ПО", vouchCount: 5, ville: "Берлин", pays: "Германия", village: "Гехи", teip: "Гехой", lat: 52.5200, lng: 13.4050, isLive: false, openToMentorship: true, approved: true, message: "Могу стать наставником в IT." },
   { id: 'S10', prenom: "Муса", nom: "Ахматов", profession: "Автосервис / Ремонт", isBusiness: true, businessName: "Vainakh Auto Shop", businessDescription: "Профессиональный ремонт BMW/Audi. Своим скидки.", vouchCount: 45, ville: "Париж", pays: "Франция", village: "Валерик", teip: "Валорой", lat: 48.8566, lng: 2.3522, isLive: true, approved: true },
   { id: 'S11', prenom: "Тимур", nom: "Бокаев", profession: "Грузоперевозки / EU", isBusiness: true, businessName: "Bokaev Logistics", businessDescription: "Доставка грузов по всей Европе. Надежно и быстро.", vouchCount: 28, ville: "Брюссель", pays: "Бельгия", village: "Шатой", teip: "Шатой", lat: 50.8503, lng: 4.3517, isLive: true, approved: true },
@@ -18,7 +20,7 @@ export function useDiasporaLogic() {
   const { user, loading, communityMember } = useAuth();
   
   // -- UI States --
-  const [activeTab, setActiveTab] = useState<ActiveTab>('map');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('council');
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [selectedStoryMember, setSelectedStoryMember] = useState<Member | null>(null);
