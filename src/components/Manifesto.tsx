@@ -174,7 +174,7 @@ export default function Manifesto() {
               Давайте будем лучшими гражданами, самыми образованными, непоколебимо честными и бесспорно полезными для мира, который нас окружает.
             </p>
             <p className="text-lg font-black tracking-widest text-brand-amber uppercase mt-12">
-              Да поможет нам Аллах.
+              Да поможет нам Аллах (الله).
             </p>
           </div>
         </motion.div>
