@@ -14,6 +14,8 @@ export interface Member {
   phone?: string;
   whatsapp?: string;
   telegram?: string;
+  tag?: string;
+  hasActiveTicket?: boolean;
   isLive?: boolean;
   approved?: boolean;
   vouchCount?: number;
