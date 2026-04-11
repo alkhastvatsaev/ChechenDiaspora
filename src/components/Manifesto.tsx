@@ -173,8 +173,9 @@ export default function Manifesto() {
             <p className="text-text-secondary font-medium leading-loose max-w-lg mx-auto">
               Давайте будем лучшими гражданами, самыми образованными, непоколебимо честными и бесспорно полезными для мира, который нас окружает.
             </p>
-            <p className="text-lg font-black tracking-widest text-brand-amber uppercase mt-12">
-              Да поможет нам Аллах (الله).
+            <p className="text-xl font-black tracking-tight text-brand-amber uppercase mt-12 leading-relaxed">
+              Да облегчит Аллах наш путь и поможет нам во всём благом.<br/>
+              <span className="text-2xl mt-4 block normal-case font-medium">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</span>
             </p>
           </div>
         </motion.div>
