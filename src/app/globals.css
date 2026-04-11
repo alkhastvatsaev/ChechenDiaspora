@@ -2,25 +2,25 @@
 
 @theme {
   /* 
-   * PRODUCTION DESIGN SYSTEM (VAINAKH v2.0)
-   * Inspired by San Francisco, Inter, and Apple Native Design.
+   * PRODUCTION DESIGN SYSTEM (VAINAKH v2.1) - Readability & Contrast Pass
+   * Focus: WCAG Compliance for Mobile Visibility.
    */
   
-  /* Brand Palette - HSL based for consistency */
-  --color-brand-blue: hsl(210, 100%, 50%);
-  --color-brand-blue-soft: hsl(210, 100%, 96%);
+  /* Brand Palette - Deep Navy Blue for better contrast on light backgrounds */
+  --color-brand-blue: hsl(210, 100%, 45%);
+  --color-brand-blue-soft: hsl(210, 100%, 94%);
   
-  /* Neutral Palette */
-  --color-bg-primary: hsl(240, 30%, 98%);
-  --color-bg-secondary: hsl(240, 20%, 99%);
-  --color-text-primary: hsl(240, 10%, 10%);
-  --color-text-secondary: hsl(240, 5%, 45%);
-  --color-text-tertiary: hsl(240, 5%, 70%);
+  /* Neutral Palette - Hardened for readability */
+  --color-bg-primary: hsl(0, 0%, 100%);
+  --color-bg-secondary: hsl(240, 15%, 97%);
+  --color-text-primary: hsl(240, 20%, 8%);  /* Solid Onyx */
+  --color-text-secondary: hsl(240, 10%, 35%); /* Deep Slate */
+  --color-text-tertiary: hsl(240, 5%, 55%);
   
   /* Functional Colors */
-  --color-success: hsl(142, 60%, 45%);
-  --color-warning: hsl(35, 90%, 50%);
-  --color-danger: hsl(0, 85%, 60%);
+  --color-success: hsl(150, 70%, 35%);
+  --color-warning: hsl(35, 100%, 40%);
+  --color-danger: hsl(0, 85%, 50%);
   
   /* Spacing Grid (8px based) */
   --spacing-1: 0.25rem;
@@ -72,8 +72,8 @@
 @layer utilities {
   /* World Class Blur Utility */
   .glass-premium {
-    @apply bg-white/70 backdrop-blur-2xl border border-white/40;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    @apply bg-white/94 backdrop-blur-3xl border border-white/40;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   }
   
   .glass-dark {
