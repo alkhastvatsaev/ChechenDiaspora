@@ -54,7 +54,7 @@ export function MapView({
         members={mapEntities} 
         center={center} 
         showHeatmap={showHeatmap}
-        onMemberClick={onEntityClick}
+        onMemberClick={onMemberClick}
       />
       {/* Premium Gradient Overlay to integrate with UI */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-bg-primary/40 via-transparent to-bg-primary/20"></div>
