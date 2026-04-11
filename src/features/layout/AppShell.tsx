@@ -121,11 +121,11 @@ export default function AppShell() {
         )}
       </AnimatePresence>
 
-      {/* Persistent Navigation */}
+      {/* Persistent Navigation (Now Global Action Bar) */}
       <BottomNav 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        onAddClick={() => setActiveModal('addMember')}
+        logic={logic}
       />
 
       {/* Modal Systems */}

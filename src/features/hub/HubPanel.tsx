@@ -139,42 +139,6 @@ export function HubPanel({
               </div>
             </div>
           </div>
-
-          {/* Sticky Quick Help Bar */}
-          <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-white via-white to-white/0 pt-12">
-            <div className="max-w-2xl mx-auto relative">
-              <div className="glass-premium rounded-3xl p-2 shadow-2xl border border-black/[0.05] flex items-center gap-2">
-                <button 
-                  onClick={() => setIsListening(!isListening)}
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-                    isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-bg-secondary text-text-primary'
-                  }`}
-                >
-                  <Mic size={20} />
-                </button>
-                
-                <input 
-                  type="text"
-                  value={finalTranscript || ticketDraft.description}
-                  onChange={(e) => setTicketDraft({ ...ticketDraft, description: e.target.value })}
-                  placeholder={isListening ? 'Слушаю вас...' : 'Чем мы можем помочь? Напишите или скажите...'}
-                  className="flex-1 bg-transparent px-3 py-3 text-[15px] font-bold focus:outline-none placeholder:text-text-tertiary"
-                />
-
-                <button 
-                  onClick={submitTicket}
-                  disabled={!ticketDraft.description && !finalTranscript}
-                  className="px-4 bg-red-500 text-white rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform disabled:opacity-50"
-                >
-                  <span className="text-[11px] font-black uppercase tracking-widest">ОРЦА!</span>
-                  <Send size={16} />
-                </button>
-              </div>
-              <p className="text-center text-[9px] font-bold text-text-tertiary uppercase tracking-[0.2em] mt-4">
-                Ваш призыв услышит вся община в этом регионе
-              </p>
-            </div>
-          </div>
         </motion.div>
       )}
     </AnimatePresence>
