@@ -221,6 +221,34 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
     }
   }, [isMounted]);
 
+  const DIASPORA_POPULATIONS = [
+    { name: 'Турция', count: '100k+', lat: 38.9637, lng: 35.2433 },
+    { name: 'Франция', count: '67k', lat: 46.2276, lng: 2.2137 },
+    { name: 'Германия', count: '50k', lat: 51.1657, lng: 10.4515 },
+    { name: 'Казахстан', count: '45k', lat: 48.0196, lng: 66.9237 },
+    { name: 'Австрия', count: '30k', lat: 47.5162, lng: 14.5501 },
+    { name: 'Бельгия', count: '17k', lat: 50.5039, lng: 4.4699 },
+    { name: 'Иордания', count: '15k', lat: 31.2530, lng: 36.5000 },
+    { name: 'Польша', count: '15k', lat: 51.9194, lng: 19.1451 },
+    { name: 'Норвегия', count: '10k', lat: 60.4720, lng: 8.4689 },
+    { name: 'Грузия', count: '8k', lat: 42.1672, lng: 44.7554 },
+    { name: 'Ирак', count: '15k', lat: 33.3152, lng: 44.3661 },
+  ];
+
+  const populationIcon = (name: string, count: string) => L.divIcon({
+    className: 'bg-transparent',
+    html: `
+      <div class="flex flex-col items-center pointer-events-none opacity-60 hover:opacity-100 transition-opacity duration-500">
+        <span class="text-[8px] font-black uppercase tracking-[0.2em] text-chechen-blue/60 mb-0.5">${name}</span>
+        <div class="px-2 py-0.5 bg-chechen-blue/5 backdrop-blur-[1px] rounded-full border border-chechen-blue/10">
+          <span class="text-[9px] font-black text-chechen-blue tracking-tighter">${count}</span>
+        </div>
+      </div>
+    `,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0]
+  });
+
   if (!isMounted || !icons) {
     return (
       <div className="w-full h-full bg-bg-secondary flex flex-col items-center justify-center gap-4">
@@ -279,6 +307,16 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 fillOpacity: 0.1,
               }}
             />
+
+            {/* Diaspora Population Badges */}
+            {zoom <= 5 && DIASPORA_POPULATIONS.map(pop => (
+              <Marker 
+                key={`pop-${pop.name}`}
+                position={[pop.lat, pop.lng]}
+                icon={populationIcon(pop.name, pop.count)}
+                zIndexOffset={-500}
+              />
+            ))}
             
             <Polygon
               positions={CHECHNYA_BORDER_POINTS}
