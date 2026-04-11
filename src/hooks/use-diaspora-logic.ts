@@ -98,6 +98,8 @@ export function useDiasporaLogic() {
         Object.entries(data).forEach(([key, val]: [string, any]) => { dataMap.set(key, { id: key, ...val }); });
         updateMembers();
       }
+    }, (error) => {
+      console.warn("RTDB Members Listen Error (Permissions):", error.message);
     });
 
     const unsubTickets = onValue(ref(db, 'tickets'), (snapshot) => {
@@ -108,16 +110,25 @@ export function useDiasporaLogic() {
         .filter(t => t.status === 'published')
         .sort((a, b) => b.createdAt - a.createdAt);
       setPublishedTickets(list);
+    }, (error) => {
+      console.warn("RTDB Tickets Listen Error (Permissions):", error.message);
     });
 
     let unsubFirestore: any;
     try {
       const q = query(collection(firestore, 'members'), where('approved', '==', true));
-      unsubFirestore = onSnapshot(q, (snapshot) => {
-        snapshot.forEach((doc) => { dataMap.set(doc.id, { id: doc.id, ...doc.data() } as Member); });
-        updateMembers();
-      });
-    } catch (e) {}
+      unsubFirestore = onSnapshot(q, 
+        (snapshot) => {
+          snapshot.forEach((doc) => { dataMap.set(doc.id, { id: doc.id, ...doc.data() } as Member); });
+          updateMembers();
+        },
+        (error) => {
+          console.warn("Firestore Members Listen Error (Permissions):", error.message);
+        }
+      );
+    } catch (e) {
+      console.error("Firestore Setup Error:", e);
+    }
 
     return () => { unsubRTDB(); unsubTickets(); if (unsubFirestore) unsubFirestore(); };
   }, []);
