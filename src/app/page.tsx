@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
+import { UserPlus, Search, Menu, Target, Info, Heart, ShieldCheck, ShieldAlert, X, Filter, Globe, BookOpen, Users, Briefcase, MapPin, Flame, ChevronLeft, Gavel, GraduationCap, Truck, ArrowRight, Languages, Sparkles, Plane, Package, Plus, Mic, PenLine, Square, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db, storage } from '@/lib/firebase';
@@ -330,66 +330,69 @@ export default function Home() {
     }
   };
 
-  // Listen to members in Realtime Database
-  useEffect(() => {
-    const membersRef = ref(db, 'members');
-    const unsubscribe = onValue(membersRef, (snapshot) => {
-      const data = snapshot.val();
-      const travelers = [
-        { 
-          id: 'V1', 
-          prenom: "Вадик", 
-          isTraveling: true, 
-          routePoints: [
-            [48.5734, 7.7521],   // Strasbourg
-            [48.1351, 11.5820],  // Munich
-            [48.2082, 16.3738],  // Vienna
-            [47.4979, 19.0402],  // Budapest
-            [44.4268, 26.1025],  // Bucharest
-            [41.0082, 28.9784],  // Istanbul
-            [41.2867, 36.33],    // Samsun
-            [41.6168, 41.6367],  // Batumi
-            [41.7151, 44.7877],  // Tbilisi
-            [43.0246, 44.6656],  // Vladikavkaz
-            [43.318, 45.694]     // Grozny
-          ],
-          lat: 48.5734, lng: 7.7521, 
-          approved: true 
-        },
-        { 
-          id: 'T1', 
-          prenom: "Мансур", 
-          nom: "Дадаев", 
-          isTraveling: true, 
-          routePoints: [
-            [50.8503, 4.3517],   // Brussels
-            [50.1109, 8.6821],   // Frankfurt
-            [50.0755, 14.4378],  // Prague
-            [52.2297, 21.0122],  // Warsaw
-            [53.9006, 27.5590],  // Minsk
-            [55.7558, 37.6173],  // Moscow
-            [47.2357, 39.7015],  // Rostov
-            [43.318, 45.694]     // Grozny
-          ],
-          lat: 50.8503, lng: 4.3517, 
-          approved: true 
-        }
-      ];
+  const [isPlaceholder, setIsPlaceholder] = useState(false);
 
-      if (data) {
-        const membersList = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        }));
-        setMembers([...membersList.filter(m => m.approved !== false), ...travelers]);
-      } else {
+  useEffect(() => {
+    // 1. Check config
+    setIsPlaceholder(!db.app.options.apiKey || db.app.options.apiKey === 'placeholder');
+
+    // 2. Initial travelers
+    const travelers = [
+      { id: 'V1', prenom: "Вадик", isTraveling: true, routePoints: [[48.5734, 7.7521], [48.1351, 11.5820], [48.2082, 16.3738], [47.4979, 19.0402], [44.4268, 26.1025], [41.0082, 28.9784], [41.2867, 36.33], [41.6168, 41.6367], [41.7151, 44.7877], [43.0246, 44.6656], [43.318, 45.694]], lat: 48.5734, lng: 7.7521, approved: true },
+      { id: 'T1', prenom: "Мансур", nom: "Дадаев", isTraveling: true, routePoints: [[50.8503, 4.3517], [50.1109, 8.6821], [50.0755, 14.4378], [52.2297, 21.0122], [53.9006, 27.5590], [55.7558, 37.6173], [47.2357, 39.7015], [43.318, 45.694]], lat: 50.8503, lng: 4.3517, approved: true }
+    ];
+
+    // Maintain a map to merge data from multiple sources
+    const dataMap = new Map();
+    const updateMembers = () => {
+      const merged = Array.from(dataMap.values()).filter(m => m.approved !== false);
+      if (merged.length === 0) {
         setMembers([...sampleExperts, ...travelers]);
+      } else {
+        // Ensure travelers are always present
+        const final = [...merged];
+        travelers.forEach(t => {
+          if (!final.find(m => m.id === t.id)) final.push(t);
+        });
+        setMembers(final);
+      }
+    };
+
+    // Listen to RTDB
+    const membersRef = ref(db, 'members');
+    const unsubRTDB = onValue(membersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        Object.entries(data).forEach(([key, val]: [string, any]) => {
+          dataMap.set(key, { id: key, ...val });
+        });
+        updateMembers();
       }
     });
 
-    return () => unsubscribe();
+    // Listen to Firestore (Fallback/Secondary)
+    // We use a try-catch because Firestore might not be initialized if RTDB is preferred
+    let unsubFirestore: any;
+    try {
+      const { collection, onSnapshot, query, where } = require('firebase/firestore');
+      const q = query(collection(firestore, 'members'), where('approved', '==', true));
+      unsubFirestore = onSnapshot(q, (snapshot: any) => {
+        snapshot.forEach((doc: any) => {
+          dataMap.set(doc.id, { id: doc.id, ...doc.data() });
+        });
+        updateMembers();
+      }, (err: any) => console.log('Firestore sync skipped/error:', err));
+    } catch (e) {
+      console.log('Firestore not available');
+    }
+
+    return () => {
+      unsubRTDB();
+      if (unsubFirestore) unsubFirestore();
+    };
   }, []);
 
+  // Geolocation handling
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -405,10 +408,6 @@ export default function Home() {
           setMapCenter(pos);
         }
       );
-    } else {
-      const pos: [number, number] = [43.318, 45.694];
-      setUserLocation(pos);
-      setMapCenter(pos);
     }
   }, []);
 
@@ -481,6 +480,13 @@ export default function Home() {
 
   return (
     <main className="flex h-full w-full flex-col bg-apple-light overflow-hidden fixed inset-0">
+      {/* Firebase Config Health Check Badge (Subtle) */}
+      {isPlaceholder && (
+        <div className="debug-badge shadow-red-500/20">
+          <ShieldAlert size={10} strokeWidth={3} />
+          <span>Config Missing / Ошибка синхронизации</span>
+        </div>
+      )}
       {/* Background Interactive Map - Always Presence */}
       <div className="absolute inset-0 z-0">
         <Map 
@@ -514,6 +520,27 @@ export default function Home() {
         />
       </div>
 
+      {/* Header (Native Feel) */}
+      <div className="absolute top-0 inset-x-0 z-[60] px-6 pt-[calc(env(safe-area-inset-top)+10px)] pb-4 flex items-center justify-between pointer-events-none">
+        <div className="pointer-events-auto">
+          <h1 className="text-2xl font-black tracking-tighter text-kherch-dark">Вайнах</h1>
+        </div>
+        <div className="flex items-center gap-3 pointer-events-auto">
+          <button 
+            onClick={() => {
+              setActiveTab('hub');
+              setIsSearchFocused(true);
+            }}
+            className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full shadow-sm border border-black/5 flex items-center justify-center tap-effect"
+          >
+            <Search size={18} className="text-kherch-dark" />
+          </button>
+          <button className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full shadow-sm border border-black/5 flex items-center justify-center tap-effect overflow-hidden">
+             <div className="w-full h-full bg-gradient-to-br from-chechen-blue to-hearth-glow opacity-20"></div>
+             <Info size={18} className="text-kherch-dark absolute" />
+          </button>
+        </div>
+      </div>
 
       {/* Primary Interaction Layer (Home/Hub Content) */}
       <AnimatePresence mode="wait">
@@ -683,26 +710,26 @@ export default function Home() {
 
               {/* Expert Grid */}
               <div className="space-y-4">
-                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Сеть Вз имопомощи</h2>
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Сеть Взаимопомощи</h2>
                 <div className="grid grid-cols-1 gap-3">
                   {filteredMembers.map(member => (
                     <motion.div 
                       layout
                       key={member.id} 
                       onClick={() => setSelectedMember(member)}
-                      className="bg-white/60 p-4 rounded-3xl border border-black/[0.03] shadow-sm flex items-center gap-4 active:scale-[0.98] transition-all"
+                      className="mobile-card flex items-center gap-4 tap-effect"
                     >
-                      <div className="w-14 h-14 bg-vainakh-stone rounded-2xl flex items-center justify-center text-xl font-black text-kherch-dark shadow-inner">
+                      <div className="w-14 h-14 bg-vainakh-stone rounded-2xl flex items-center justify-center text-xl font-black text-kherch-dark shadow-inner flex-shrink-0">
                         {member.prenom?.[0]}{member.nom?.[0]}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-black text-kherch-dark text-base truncate">{member.prenom} {member.nom}</h4>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[9px] font-black uppercase tracking-widest text-hearth-amber px-2 py-0.5 bg-hearth-amber/5 rounded-full">{member.profession}</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-chechen-blue px-2 py-0.5 bg-chechen-blue/5 rounded-full">{member.profession}</span>
                           <span className="text-[9px] font-bold text-gray-300 uppercase truncate">{member.village} • {member.teip}</span>
                         </div>
                       </div>
-                      <ChevronLeft size={16} className="rotate-180 text-gray-300" />
+                      <ChevronLeft size={16} className="rotate-180 text-gray-200" />
                     </motion.div>
                   ))}
                 </div>
@@ -725,7 +752,7 @@ export default function Home() {
               <button onClick={() => setShowBerkat(false)} className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-kherch-dark">
                 <X size={20} />
               </button>
-              <h2 className="font-black text-xl tracking-tighter">Берк т / Возможности</h2>
+              <h2 className="font-black text-xl tracking-tighter">Беркат / Возможности</h2>
               <button onClick={() => setActiveModal('berkat-form')} className="text-emerald-500 font-bold text-xs uppercase tracking-widest">Опубл.</button>
             </div>
             
@@ -787,37 +814,56 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Floating Community Hub & Admin Ticket CTA (Bottom) */}
-      <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+20px)] pointer-events-none">
-        <div className="max-w-screen-sm mx-auto flex items-center bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] border border-white/40 h-20 px-3 gap-3 pointer-events-auto overflow-hidden">
-          {/* Hub Access Button */}
+      {/* Apple-style Bottom Tab Bar */}
+      <div className="absolute inset-x-0 bottom-0 z-[70] px-4 pb-[calc(env(safe-area-inset-bottom)+12px)] pointer-events-none">
+        <div className="max-w-screen-sm mx-auto flex items-center justify-around ios-glass rounded-[2.5rem] shadow-2xl h-18 px-6 pointer-events-auto">
+          {/* Map Tab */}
           <button 
-            onClick={() => setActiveTab('hub')}
-            className={`h-14 w-14 rounded-full flex flex-col items-center justify-center transition-all shrink-0 active:scale-90 ${
-              activeTab === 'hub' ? 'bg-emerald-50 text-emerald-600' : 'text-slate-400 hover:bg-slate-50'
-            }`}
+            onClick={() => setActiveTab('map')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'map' ? 'text-chechen-blue scale-110' : 'text-gray-400'}`}
           >
-            <Users size={22} strokeWidth={2.5} />
-            <span className="text-[8px] font-black uppercase tracking-widest mt-0.5">ХАБ</span>
+            <MapIcon size={22} strokeWidth={activeTab === 'map' ? 3 : 2} />
+            <span className="text-[8px] font-black uppercase tracking-widest">Карта</span>
           </button>
 
-          {/* Vertical Separator */}
-          <div className="w-px h-10 bg-slate-100 shrink-0" />
+          {/* Hub Tab */}
+           <button 
+            onClick={() => setActiveTab('hub')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'hub' ? 'text-chechen-blue scale-110' : 'text-gray-400'}`}
+          >
+            <Users size={22} strokeWidth={activeTab === 'hub' ? 3 : 2} />
+            <span className="text-[8px] font-black uppercase tracking-widest">Хаб</span>
+          </button>
 
-          {/* Online Indicator */}
-          <div className="flex items-center gap-1.5 shrink-0">
-             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-             <span className="text-xs font-black text-slate-800 tracking-tighter">{liveCount}</span>
+          {/* Native High-Impact Action */}
+          <div className="relative">
+            <button
+              onClick={() => setIsTicketModalOpen(true)}
+              className="w-16 h-16 bg-kherch-dark text-white rounded-3xl flex items-center justify-center shadow-[0_15px_30px_rgba(0,0,0,0.3)] tap-effect -mt-10 border-[6px] border-vainakh-stone"
+            >
+              <Plus size={32} />
+            </button>
           </div>
 
-          <button
-            onClick={() => setIsTicketModalOpen(true)}
-            className="flex-1 h-14 bg-kherch-dark text-vainakh-stone rounded-full flex items-center justify-center gap-2 px-5 active:scale-95 transition-all shadow-xl shadow-kherch-dark/20 min-w-0"
-            aria-label="Créer une demande"
-            title="Créer une demande"
+          {/* Council Tab */}
+          <button 
+            onClick={() => setActiveTab('council')}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'council' ? 'text-chechen-blue scale-110' : 'text-gray-400'}`}
           >
-            <ShieldCheck size={18} strokeWidth={2.5} className="shrink-0 text-hearth-amber" />
-            <span className="text-[11px] font-black uppercase tracking-widest truncate">Créer une demande</span>
+            <Flame size={22} strokeWidth={activeTab === 'council' ? 3 : 2} />
+            <span className="text-[8px] font-black uppercase tracking-widest">Совет</span>
+          </button>
+
+          {/* Experts Quick Search (Hidden Tab used to trigger focus) */}
+          <button 
+            onClick={() => {
+              setActiveTab('hub');
+              setIsLanguageModalOpen(true);
+            }}
+            className="flex flex-col items-center gap-1 text-gray-400"
+          >
+            <BookOpen size={22} strokeWidth={2} />
+            <span className="text-[8px] font-black uppercase tracking-widest">Дешар</span>
           </button>
         </div>
       </div>
@@ -851,8 +897,8 @@ export default function Home() {
                     <ShieldCheck size={28} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-kherch-dark tracking-tight">Demande</h2>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Administrateur</p>
+                    <h2 className="text-2xl font-black text-kherch-dark tracking-tight">Запрос</h2>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Администратору</p>
                   </div>
                 </div>
                 <button
@@ -871,8 +917,8 @@ export default function Home() {
               <form onSubmit={submitTicket} className="flex flex-col items-center justify-center space-y-12 py-10">
                 
                 <div className="text-center space-y-2">
-                  <div className="text-lg font-black text-kherch-dark tracking-tight">Parlez pour créer la demande</div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Moins d'écriture, plus d'action</div>
+                  <div className="text-lg font-black text-kherch-dark tracking-tight">Говорите, чтобы создать запрос</div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Меньше слов, больше дела</div>
                 </div>
 
                 <div className="relative">
@@ -908,7 +954,7 @@ export default function Home() {
                 {/* Live Transcription Block */}
                 {(finalTranscript || interimTranscript) && (
                   <div className="max-w-sm w-full bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-black/5 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Transcription en direct</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Живая расшифровка</div>
                     <p className="text-sm font-bold text-kherch-dark leading-relaxed">
                       {finalTranscript}
                       <span className="text-gray-400"> {interimTranscript}</span>
@@ -924,7 +970,7 @@ export default function Home() {
                       type="submit"
                       className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all shadow-kherch-dark/20 cursor-pointer text-sm"
                     >
-                      Отправить / Envoyer
+                      Отправить запрос
                     </button>
                   </div>
                 )}
@@ -1034,10 +1080,10 @@ export default function Home() {
                   </div>
                   <div className="grid grid-cols-1 gap-3">
                     {[
-                      { title: "Запрос Азиля", desc: "SPADA, CNDA, переводы, сроки", icon: <Globe size={18} /> },
-                      { title: "Карта жителя", desc: "Prefecture, renouvellement, 10 ans", icon: <Briefcase size={18} /> },
-                      { title: "Social / Santé", desc: "Carte Vitale, CAF, AME/PUMA", icon: <Heart size={18} /> },
-                      { title: "Составление CV", desc: "Поиск работы и интеграция", icon: <Sparkles size={18} /> }
+                      { title: "Процедура Убежища", desc: "SPADA, CNDA, переводы, сроки", icon: <Globe size={18} /> },
+                      { title: "Вид на жительство", desc: "Префектура, продление, 10 лет", icon: <Briefcase size={18} /> },
+                      { title: "Соц. помощь / Здоровье", desc: "Карта Виталь (Carte Vitale), КАФ, Страховка", icon: <Heart size={18} /> },
+                      { title: "Составление резюме", desc: "Поиск работы и интеграция", icon: <Sparkles size={18} /> }
                     ].map((item, idx) => (
                       <button key={idx} className="flex items-center gap-4 p-4 bg-white rounded-3xl border border-black/5 text-left active:scale-98 transition-all hover:border-indigo-200 group">
                         <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">

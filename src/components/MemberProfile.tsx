@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart, GraduationCap, Gavel, Truck, Map as MapIcon } from 'lucide-react';
+import { X, MapPin, Briefcase, Calendar, Home, Shield, Phone, MessageCircle, ExternalLink, Heart, GraduationCap, Gavel, Truck, Map as MapIcon, ShieldCheck, ShieldAlert } from 'lucide-react';
 
 interface MemberProfileProps {
   member: any;
@@ -19,129 +19,105 @@ export default function MemberProfile({ member, onClose }: MemberProfileProps) {
       />
       
       {/* Content Sheet */}
-      <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,122,255,0.1)] overflow-hidden animate-slide-up border border-blue-500/10 max-h-[92dvh] flex flex-col">
+      <div className="relative w-full max-w-lg bg-white/90 backdrop-blur-3xl rounded-t-[3rem] sm:rounded-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.2)] overflow-hidden animate-slide-up border border-white/40 max-h-[94dvh] flex flex-col">
+        {/* Native Drag Handle */}
+        <div className="absolute top-3 left-0 right-0 z-50">
+           <div className="w-10 h-1 bg-black/10 rounded-full mx-auto" />
+        </div>
+
         {/* Header Image/Pattern Area */}
-        <div className="h-32 bg-blue-600 relative overflow-hidden">
+        <div className="h-28 bg-kherch-dark relative overflow-hidden flex-shrink-0">
           <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
-            <Shield size={120} className="text-white" />
+            <ShieldCheck size={120} className="text-white" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-700/40 to-transparent"></div>
           <button 
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all border border-white/10"
+            className="absolute top-5 right-5 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all border border-white/10 flex items-center justify-center z-50 tap-effect"
+            aria-label="Закрыть"
           >
             <X size={20} className="text-white" />
           </button>
         </div>
 
         {/* Profile Details */}
-        <div className="px-8 pb-10 pb-safe -mt-10 relative overflow-y-auto flex-1">
-          <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center text-4xl font-black text-blue-600 mb-4 border-4 border-white transform hover:rotate-3 transition-transform">
+        <div className="px-6 pb-12 pb-safe-bottom -mt-12 relative overflow-y-auto flex-1 scrollbar-hide overscroll-contain">
+          <div className="w-24 h-24 bg-white rounded-3xl shadow-2xl flex items-center justify-center text-4xl font-black text-kherch-dark mb-4 border-4 border-white transform">
             {member.prenom?.[0]}{member.nom?.[0]}
           </div>
 
-          <div className="space-y-1.5 mb-8">
-            <h2 className="text-3xl font-black tracking-tight text-slate-900">
+          <div className="space-y-1 mb-8">
+            <h2 className="text-3xl font-black tracking-tight text-kherch-dark">
               {member.prenom} {member.nom}
             </h2>
             <div className="flex items-center gap-2 mt-2">
-              <span className="px-3 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
-                Бёлхи / {member.profession}
+              <span className="px-3 py-1 bg-chechen-blue text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">
+                БЁЛХИ / {member.profession}
               </span>
-              <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-100">
+              <span className="px-3 py-1 bg-white border border-black/5 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-full">
                 {member.teip}
               </span>
             </div>
 
             {/* Strategic High-Leverage Badges */}
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-2 pt-2">
               {member.isLegalDefender && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white rounded-xl shadow-lg shadow-red-600/20 animate-pulse-slow">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/10">
                   <Gavel size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Бакъо / Юрист</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">ЮРИСТ</span>
                 </div>
               )}
               {member.openToMentorship && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-chechen-blue text-white rounded-xl shadow-lg shadow-chechen-blue/20">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/10">
                   <GraduationCap size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Кхетам / Ментор</span>
-                </div>
-              )}
-              {member.isFuneralLogistics && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-vainakh-stone rounded-xl shadow-lg shadow-black/20">
-                  <Truck size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-vainakh-stone">Кашмаш / Ритуал</span>
-                </div>
-              )}
-              {member.isGuide && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-600/20">
-                  <MapIcon size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">ГIо-Деш / Гид</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">МЕНТОР</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-6 mb-10">
-            <div className="space-y-1">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                <Calendar size={12} className="opacity-50" /> Возраст
-              </p>
-              <p className="font-bold text-gray-800 text-lg">{member.age} лет</p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                <Home size={12} className="opacity-50" /> Родное село
-              </p>
-              <p className="font-bold text-gray-800 text-lg">{member.village}</p>
-            </div>
-
-            <div className="space-y-1 col-span-2">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 border-t border-gray-50 pt-4">
-                <MapPin size={12} className="opacity-50" /> Локация проживания
-              </p>
-              <p className="font-bold text-gray-800 text-lg flex items-center gap-2">
-                {member.ville}
-              </p>
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-8">
+             <div className="bg-white p-4 rounded-3xl border border-black/5 flex flex-col gap-1">
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Родное село</span>
+                <span className="font-bold text-kherch-dark">{member.village}</span>
+             </div>
+             <div className="bg-white p-4 rounded-3xl border border-black/5 flex flex-col gap-1">
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Возраст</span>
+                <span className="font-bold text-kherch-dark">{member.age} лет</span>
+             </div>
+             <div className="bg-white p-4 rounded-3xl border border-black/5 flex flex-col gap-1 col-span-2">
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Текущий город</span>
+                <span className="font-bold text-kherch-dark">{member.ville}, {member.pays}</span>
+             </div>
           </div>
 
-          <div className="mt-8 mb-6 p-4 md:p-5 bg-blue-50/50 border border-blue-100 rounded-2xl">
-            <h4 className="flex items-center gap-2 text-blue-900 font-black tracking-tight mb-2 uppercase text-xs tracking-widest">
-              <Heart size={14} className="text-blue-600" /> 
-              Основа — Нохчалла
+          <div className="p-5 bg-chechen-blue/5 rounded-3xl border border-chechen-blue/10 mb-8">
+            <h4 className="flex items-center gap-2 text-chechen-blue font-black uppercase text-[10px] tracking-widest mb-2">
+              <Heart size={14} /> 
+              ОСНОВА — НОХЧАЛЛА
             </h4>
-            <p className="text-xs text-kherch-dark/80 font-medium leading-relaxed">
-              Связь и взаимопомощь между нами строятся исключительно на чеченских адатах. Любая помощь, будь то совет в бизнесе или коде, изначально оказывается <strong>бесплатно</strong> (ГIо-Даккхар). 
-              Если брат или сестра желает отблагодарить — это их личный выбор и Ризк. Мы строим доверие, а не коммерцию.
+            <p className="text-[11px] text-kherch-dark/70 font-medium leading-relaxed">
+              Взаимопомощь строится на чеченских адатах. Помощь оказывается <strong>бесплатно</strong>. Доверие — наш главный актив.
             </p>
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-kherch-dark/5">
-            <button className="w-full py-4.5 bg-kherch-dark text-vainakh-stone rounded-2xl font-black shadow-xl active:scale-[0.98] transition-all hover:bg-black hover:shadow-2xl flex items-center justify-center gap-2">
-              Связаться с братом / сестрой <ExternalLink size={16} className="opacity-50" />
+          <div className="space-y-3">
+            <button className="w-full py-5 bg-kherch-dark text-white rounded-[1.5rem] font-black text-sm shadow-xl tap-effect flex items-center justify-center gap-3">
+              СВЯЗАТЬСЯ <MessageCircle size={18} />
             </button>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <button 
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    window.open(`https://wa.me/${member.whatsapp}`, '_blank');
-                  }
-                }}
-                className="flex items-center justify-center gap-2.5 py-4 bg-[#25D366]/10 text-[#25D366] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#25D366]/20 border border-[#25D366]/20"
+                onClick={() => member.whatsapp && window.open(`https://wa.me/${member.whatsapp}`, '_blank')}
+                className="flex items-center justify-center gap-2 py-4 bg-[#25D366]/10 text-[#25D366] rounded-2xl font-black text-xs tap-effect border border-[#25D366]/10"
+                aria-label="Написать в WhatsApp"
               >
-                <Phone size={18} /> Ватсап
+                WHATSAPP
               </button>
               <button 
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    window.open(`https://t.me/${member.telegram?.replace('@', '')}`, '_blank');
-                  }
-                }}
-                className="flex items-center justify-center gap-2.5 py-4 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black shadow-none active:scale-[0.95] transition-all hover:bg-[#0088cc]/20 border border-[#0088cc]/20"
+                onClick={() => member.telegram && window.open(`https://t.me/${member.telegram?.replace('@', '')}`, '_blank')}
+                className="flex items-center justify-center gap-2 py-4 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black text-xs tap-effect border border-[#0088cc]/10"
+                aria-label="Написать в Telegram"
               >
-                <MessageCircle size={18} /> Телеграм
+                TELEGRAM
               </button>
             </div>
           </div>

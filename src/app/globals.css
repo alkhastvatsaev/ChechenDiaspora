@@ -14,7 +14,12 @@
   /* Surface & Accents */
   --color-vainakh-stone: #F2F2F7;
   --color-hearth-glow: #5AC8FA;
-  --color-kherch-dark: #2C2C2E;
+  --color-kherch-dark: #1C1C1E;
+  
+  /* Mobile-First Spacing */
+  --spacing-mobile-edge: 1.25rem;
+  --radius-mobile-card: 2rem;
+  --radius-mobile-button: 1.25rem;
 }
 
 @layer base {
@@ -116,6 +121,27 @@
   animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Native App Feel Utilities */
+.ios-glass {
+  @apply bg-white/70 backdrop-blur-3xl border border-white/40;
+}
+
+.tap-effect {
+  @apply active:scale-95 transition-transform duration-200;
+}
+
+.mobile-card {
+  @apply bg-white rounded-[2rem] p-5 shadow-sm border border-black/[0.03];
+}
+
+.native-input {
+  @apply w-full bg-white/80 backdrop-blur-md rounded-2xl px-5 py-4 text-[17px] font-medium outline-none border border-black/5 focus:ring-2 focus:ring-black/5 transition-all;
+}
+
+.bottom-sheet-drag-handle {
+  @apply w-10 h-1 bg-black/10 rounded-full mx-auto mb-4;
+}
+
 @keyframes pulse-slow {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(0.98); }
@@ -132,4 +158,8 @@
 
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
+}
+
+.debug-badge {
+  @apply fixed top-[calc(env(safe-area-inset-top)+12px)] right-4 z-[200] px-3 py-1.5 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg flex items-center gap-2;
 }

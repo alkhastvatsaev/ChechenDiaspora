@@ -83,30 +83,32 @@ export default function Join() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fbfbfd] text-[#1d1d1f] selection:bg-black selection:text-white">
-      <div className="max-w-2xl mx-auto px-6 py-20 pb-safe">
+    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] selection:bg-black selection:text-white pb-safe">
+      <div className="max-w-2xl mx-auto px-6 py-12 md:py-20">
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16 text-center"
+          className="mb-10 text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Arial, sans-serif' }}>
-            Вайнах
-          </h1>
-          <p className="text-xl text-[#86868b] font-medium">Присоединяйтесь к диаспоре.</p>
+          <div className="w-16 h-16 bg-white rounded-3xl shadow-sm border border-black/5 flex items-center justify-center mx-auto mb-6">
+            <UserPlus size={28} className="text-black" />
+          </div>
+          <h1 className="text-3xl font-black tracking-tight mb-2">Присоединиться</h1>
+          <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Сеть Вайнахской Диаспоры</p>
         </motion.div>
 
         <motion.form 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.8 }}
+          transition={{ delay: 0.1 }}
           onSubmit={handleSubmit} 
           className="space-y-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+          <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-black/5 space-y-6">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 ml-2">Основная Информация</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input required type="text" name="prenom" value={formData.prenom} onChange={handleChange} 
                      className="w-full bg-white px-5 py-4 rounded-2xl text-lg font-medium border-0 ring-1 ring-black/5 focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-[#86868b]" 
                      placeholder="Имя" />

@@ -22,42 +22,29 @@ let storage: any;
 
 const hasValidConfig = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
-if (hasValidConfig) {
-  if (!getApps().length) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    app = getApp();
-  }
-  auth = getAuth(app);
-  db = getDatabase(app);
-  firestore = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
-  });
-  storage = getStorage(app);
-} else {
-  // During build or if config is missing, we initialize with placeholders to avoid crashes in SDK functions
-  // but we warn so the developer knows.
-  const placeholderConfig = {
+if (!hasValidConfig && typeof window !== 'undefined') {
+  console.warn("⚠️ Firebase configuration missing! App is running in placeholder mode. Please check Vercel environment variables.");
+}
+
+if (!getApps().length) {
+  app = initializeApp(hasValidConfig ? firebaseConfig : {
     apiKey: "placeholder",
     authDomain: "placeholder",
     projectId: "placeholder",
     storageBucket: "placeholder",
     messagingSenderId: "placeholder",
     appId: "placeholder",
-    databaseURL: "https://placeholder.firebaseio.com"
-  };
-  
-  if (!getApps().length) {
-    app = initializeApp(placeholderConfig);
-  } else {
-    app = getApp();
-  }
-  auth = getAuth(app);
-  db = getDatabase(app);
-  firestore = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
+    databaseURL: "https://placeholder-default-rtdb.firebaseio.com"
   });
-  storage = getStorage(app);
+} else {
+  app = getApp();
 }
 
-export { auth, db, firestore, storage };
+auth = getAuth(app);
+db = getDatabase(app);
+firestore = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
+storage = getStorage(app);
+
+export { app, auth, db, firestore, storage, hasValidConfig };
