@@ -172,6 +172,7 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
 
   useEffect(() => {
     if (isMounted) {
+      // Reverting to the high-end clean diaspora-only borders
       fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
         .then(res => res.json())
         .then(data => {
@@ -202,14 +203,13 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
           const filtered = {
             ...data,
             features: data.features.filter((f: any) => {
-              const name = f.properties.ADMIN || f.properties.name || f.properties.NAME;
-              if (!name) return false;
+              const name = f.properties.ADMIN || f.properties.name || f.properties.NAME || "";
               return allTargetNames.some(tn => name.includes(tn) || tn.includes(name));
             })
           };
           setCountryGeoJson(filtered);
         })
-        .catch(err => console.error("Failed to load country borders", err));
+        .catch(err => console.error("Failed to load map data", err));
     }
   }, [isMounted]);
 
@@ -234,9 +234,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
       >
         <ZoomHandler />
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png"
           attribution=""
-          className="map-tiles-premium grayscale-[20%] contrast-[110%]"
+          className="map-tiles-premium contrast-[105%] brightness-[102%]"
         />
 
         {center && <ChangeView center={center} />}
@@ -247,9 +247,9 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <GeoJSON 
                 data={countryGeoJson}
                 style={{
-                  color: '#333333',
-                  weight: 1,
-                  opacity: 0.25,
+                  color: '#D4AF37',
+                  weight: 1.5,
+                  opacity: 0.8,
                   fillColor: 'transparent',
                   fillOpacity: 0
                 }}
