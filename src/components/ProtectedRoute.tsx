@@ -16,12 +16,17 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
   useEffect(() => {
     if (isMounted && !loading) {
-      const isAuth = user || communityMember;
-      if (!isAuth && pathname !== '/login') {
-        router.replace('/login');
+      // TEMPORARY: Bypass login check and redirect `/login` to `/`
+      // const isAuth = user || communityMember;
+      // if (!isAuth && pathname !== '/login') {
+      //   router.replace('/login');
+      // }
+      
+      if (pathname === '/login') {
+        router.replace('/');
       }
     }
-  }, [user, communityMember, loading, router, pathname, isMounted]);
+  }, [loading, router, pathname, isMounted]);
 
   // Immediately render if we are on the login page to avoid recursion/loops
   if (pathname === '/login') {

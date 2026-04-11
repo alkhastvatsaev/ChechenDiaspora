@@ -27,7 +27,6 @@ test('Home page renders without SSR crash', () => {
   const hubButton = screen.getByText(/ХАБ/i)
   expect(hubButton).toBeDefined()
   
-  // Vérifier l'indicateur Live (В СЕТИ and Live text)
-  expect(screen.getByText(/В СЕТИ/i)).toBeInTheDocument()
-  expect(screen.getByText(/LIVE/i)).toBeInTheDocument()
+  // Verify the new main admin request button
+  expect(screen.getByText(/Создать запрос администратору/i)).toBeInTheDocument()
 })

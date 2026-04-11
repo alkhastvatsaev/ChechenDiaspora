@@ -28,17 +28,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [communityMember, setCommunityMember] = useState(false);
 
   useEffect(() => {
-    // Correct way: access browser APIs only inside useEffect
+    // TEMPORARY: Auto-verify everyone and skip passphrase login
     if (typeof window !== 'undefined') {
-      const verified = sessionStorage.getItem('vainakh_verified') === 'true';
-      if (verified) {
-        setCommunityMember(true);
-      }
+      setCommunityMember(true);
+      sessionStorage.setItem('vainakh_verified', 'true');
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user);
+        setLoading(false);
+      } else {
+        try {
+          await signInAnonymously(auth);
+          // onAuthStateChanged will fire again with the new user
+        } catch (error) {
+          console.error("Auto-login error:", error);
+          setLoading(false); // prevent infinite loading if auth fails
+        }
+      }
     });
 
     return () => unsubscribe();
