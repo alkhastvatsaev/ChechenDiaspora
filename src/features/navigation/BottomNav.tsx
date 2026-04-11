@@ -35,7 +35,8 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
 
   const handleCategoryClick = (id: string) => {
     setSelectedExpertType(id);
-    setActiveTab('hub');
+    // Remove automatic hub switch to keep it as a popup first
+    // setActiveTab('hub'); 
     setIsSearchFocused(false);
   };
 
@@ -43,6 +44,62 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
     <div className="fixed bottom-0 inset-x-0 z-[100] px-6 pb-[calc(env(safe-area-inset-bottom)+24px)] pointer-events-none">
       <div className="max-w-2xl mx-auto pointer-events-auto">
         
+        {/* Expert Discovery Popup (Floating Overlay) */}
+        <AnimatePresence>
+          {logic.selectedExpertType && logic.filteredMembers.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              className="mb-4 glass-premium rounded-[2.5rem] border border-white/50 shadow-2xl overflow-hidden max-h-[350px] flex flex-col"
+            >
+              <div className="px-6 py-4 border-b border-black/[0.03] flex items-center justify-between shrink-0">
+                <h3 className="text-[12px] font-black uppercase tracking-widest text-brand-blue">Доступные эксперты</h3>
+                <button 
+                  onClick={() => logic.setSelectedExpertType(null)}
+                  className="w-8 h-8 flex items-center justify-center bg-black/5 rounded-full hover:bg-black/10 transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-hide">
+                {logic.filteredMembers.map((m: any) => (
+                  <div key={m.id} className="p-4 bg-white/60 rounded-3xl border border-white/40 flex items-center justify-between shadow-sm hover:bg-white transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-brand-blue/10 text-brand-blue rounded-xl flex items-center justify-center font-black text-xs">
+                        {m.prenom[0]}
+                      </div>
+                      <div>
+                        <div className="text-sm font-black text-text-primary">{m.prenom} {m.nom}</div>
+                        <div className="text-[10px] font-bold text-text-tertiary">{m.profession}</div>
+                      </div>
+                    </div>
+                    <a 
+                      href={`https://wa.me/${m.phone || '33600000000'}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-success text-white rounded-xl flex items-center justify-center active:scale-90 transition-all shadow-md"
+                    >
+                      <MessageSquare size={18} />
+                    </a>
+                  </div>
+                ))}
+              </div>
+              <div className="px-6 py-3 bg-brand-blue/5 text-center">
+                <button 
+                  onClick={() => {
+                    logic.setSelectedExpertType(null);
+                    setActiveTab('hub');
+                  }}
+                  className="text-[10px] font-black uppercase tracking-tight text-brand-blue"
+                >
+                  Посмотреть всех в центре Бёлхи →
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Quick Expertise Bubbles */}
         <AnimatePresence>
           {isSearchFocused && !isRecording && !audioUrl && (
