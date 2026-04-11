@@ -12,7 +12,7 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
   const { ticketDraft, setTicketDraft, submitTicket, isListening, setIsListening, finalTranscript } = logic;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-[100] px-6 pb-[calc(env(safe-area-inset-bottom)+160px)] pointer-events-none">
+    <div className="fixed bottom-0 inset-x-0 z-[100] px-6 pb-[calc(env(safe-area-inset-bottom)+24px)] pointer-events-none">
       <div className="max-w-2xl mx-auto pointer-events-auto">
         <div className="glass-premium rounded-full p-2 shadow-2xl border border-black/[0.05] flex items-center gap-2">
           {/* View Toggle (Subtle) */}
