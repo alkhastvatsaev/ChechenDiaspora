@@ -11,6 +11,11 @@ interface HubPanelProps {
   setSearchQuery: (val: string) => void;
   filteredMembers: Member[];
   onMemberClick: (m: Member) => void;
+  selectedTeip?: string | null;
+  setSelectedTeip?: (val: string | null) => void;
+  selectedVillage?: string | null;
+  setSelectedVillage?: (val: string | null) => void;
+  [key: string]: any;
 }
 
 const CATEGORY_ICONS: Record<string, any> = {
