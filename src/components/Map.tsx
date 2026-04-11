@@ -227,22 +227,34 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
 
   const [selectedCountryInfo, setSelectedCountryInfo] = useState<{name: string, count: string} | null>(null);
 
-  const DIASPORA_STATS: {[key: string]: string} = {
-    'France': '67,000+',
-    'Germany': '50,000+',
-    'Austria': '30,000+',
-    'Belgium': '17,000+',
-    'Turkey': '100,000+',
-    'Jordan': '15,000+',
-    'Palestine': '10,000+', // Historical link
-    'Kazakhstan': '45,000+',
-    'Poland': '15,000+',
-    'Norway': '10,000+',
-    'Georgia': '8,000+',
-    'Iraq': '15,000+',
-    'United Kingdom': '5,000+',
-    'Finland': '3,000+'
-  };
+  const DIASPORA_REGIONS = [
+    // France
+    { name: 'Paris & Région', count: '25,000+', lat: 48.8566, lng: 2.3522, radius: 80000 },
+    { name: 'Nice & Riviera', count: '12,000+', lat: 43.7102, lng: 7.2620, radius: 60000 },
+    { name: 'Strasbourg & Grand Est', count: '10,000+', lat: 48.5734, lng: 7.7521, radius: 50000 },
+    // Turquie
+    { name: 'Istanbul & Yalova', count: '45,000+', lat: 41.0082, lng: 28.9784, radius: 120000 },
+    { name: 'Sivas & Anatolie Central', count: '15,000+', lat: 39.7505, lng: 37.0150, radius: 100000 },
+    // Kazakhstan
+    { name: 'Almaty & Sud', count: '20,000+', lat: 43.2220, lng: 76.8512, radius: 150000 },
+    { name: 'Astana & Nord', count: '15,000+', lat: 51.1605, lng: 71.4272, radius: 120000 },
+    { name: 'Karaganda', count: '10,000+', lat: 49.8019, lng: 73.1021, radius: 80000 },
+    // Jordanie
+    { name: 'Amman & Zarqa', count: '15,000+', lat: 31.9454, lng: 35.9284, radius: 70000 },
+    // Géorgie
+    { name: 'Pankissi (Duisi)', count: '8,000+', lat: 42.1866, lng: 45.2443, radius: 40000 },
+    // Allemagne
+    { name: 'Bremen & Hambourg', count: '15,000+', lat: 53.0793, lng: 8.8017, radius: 90000 },
+    { name: 'Berlin', count: '12,000+', lat: 52.5200, lng: 13.4050, radius: 70000 },
+    // Autriche
+    { name: 'Vienne & Linz', count: '25,000+', lat: 48.2082, lng: 16.3738, radius: 90000 },
+    // Belgique
+    { name: 'Bruxelles & Anvers', count: '15,000+', lat: 50.8503, lng: 4.3517, radius: 60000 },
+    // Norvège
+    { name: 'Oslo Region', count: '8,000+', lat: 59.9139, lng: 10.7522, radius: 60000 },
+    // USA
+    { name: 'NJ & New York', count: '5,000+', lat: 40.7128, lng: -74.0060, radius: 100000 },
+  ];
 
   if (!isMounted || !icons) {
     return (
@@ -283,28 +295,37 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <GeoJSON 
                 data={countryGeoJson}
                 style={{
-                  color: '#007AFF', // Brand Blue
-                  weight: 1.5,
-                  opacity: 0.6,
-                  fillColor: '#007AFF',
-                  fillOpacity: 0.15
-                }}
-                onEachFeature={(feature, layer) => {
-                  layer.on({
-                    click: (e) => {
-                      L.DomEvent.stopPropagation(e);
-                      const name = feature.properties.ADMIN || feature.properties.name || "";
-                      const stats = DIASPORA_STATS[name] || DIASPORA_STATS[name.split(' ')[0]] || null;
-                      if (stats) {
-                        setSelectedCountryInfo({ name, count: stats });
-                      } else {
-                        setSelectedCountryInfo(null);
-                      }
-                    }
-                  });
+                  color: '#1d1d1f',
+                  weight: 0.8,
+                  opacity: 0.1,
+                  fillColor: 'transparent',
+                  fillOpacity: 0
                 }}
               />
             )}
+
+            {/* Localized Diaspora Presence Halos */}
+            {DIASPORA_REGIONS.map((region, idx) => (
+              <Circle
+                key={`region-${idx}`}
+                center={[region.lat, region.lng]}
+                radius={region.radius}
+                pathOptions={{
+                  color: '#007AFF',
+                  weight: 1,
+                  opacity: 0.4,
+                  fillColor: '#007AFF',
+                  fillOpacity: 0.15,
+                  className: 'diaspora-halo'
+                }}
+                eventHandlers={{
+                  click: (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    setSelectedCountryInfo({ name: region.name, count: region.count });
+                  }
+                }}
+              />
+            ))}
 
             <GeoJSON 
               data={diasporaBorders as any}
@@ -319,8 +340,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
                 layer.on({
                   click: (e) => {
                     L.DomEvent.stopPropagation(e);
-                    // Handle clicks on custom borders if 
-                    setSelectedCountryInfo(null); // Reset or specific logic
+                    const name = feature.properties.name || "Zone d'influence";
+                    setSelectedCountryInfo({ name, count: "Forte concentration" });
                   }
                 });
               }}
