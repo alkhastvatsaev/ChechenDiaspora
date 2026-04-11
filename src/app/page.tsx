@@ -14,6 +14,7 @@ import StoryOverlay from '@/components/StoryOverlay';
 import WisdomCard from '@/components/WisdomCard';
 import IntegrationRoadmap from '@/components/IntegrationRoadmap';
 import Manifesto from '@/components/Manifesto';
+import { useAuth } from '@/contexts/AuthContext';
 
 
 
@@ -67,6 +68,9 @@ declare global {
 }
 
 export default function Home() {
+  // Auth Context
+  const { user, loading, communityMember } = useAuth();
+
   // Core State
   const [activeTab, setActiveTab] = useState<'map' | 'hub' | 'council'>('map');
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
@@ -75,7 +79,7 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<'amanat' | 'perevozchik' | 'administrative' | 'union-son' | 'union-daughter' | 'berkat-form' | 'roadmap' | null>(null);
+  const [activeModal, setActiveModal] = useState<'amanat' | 'perevozchik' | 'administrative' | 'mentorship' | 'union-son' | 'union-daughter' | 'berkat-form' | 'roadmap' | null>(null);
 
   const [showBerkat, setShowBerkat] = useState(false);
   
@@ -101,6 +105,7 @@ export default function Home() {
     pays: 'Франция',
     lat: '',
     lng: '',
+    isEmergency: false,
   });
   const [selectedTicket, setSelectedTicket] = useState<TicketItem | null>(null);
   const [ticketInputMode, setTicketInputMode] = useState<'voice' | 'text'>('voice');
@@ -274,6 +279,7 @@ export default function Home() {
       pays: 'Франция',
       lat: '',
       lng: '',
+      isEmergency: false,
     });
     setTicketInputMode('voice');
     setIsListening(false);
