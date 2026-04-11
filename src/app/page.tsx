@@ -209,11 +209,13 @@ export default function Home() {
 
   const submitTicket = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const title = ticketDraft.title.trim();
-    const description = ticketDraft.description.trim();
-    const ville = ticketDraft.ville.trim();
-    const pays = ticketDraft.pays.trim();
-    if (!title || !description || !ville || !pays) return;
+    const title = ticketDraft.title.trim() || 'Аудио-запрос';
+    const description = ticketDraft.description.trim() || (audioBlob ? 'Аудио-сообщение' : '');
+    const ville = ticketDraft.ville.trim() || 'Не указан';
+    const pays = ticketDraft.pays.trim() || 'Не указан';
+    
+    // Must have either a description (text) or an audio recording
+    if (!description && !audioBlob) return;
 
     const lat = Number(ticketDraft.lat);
     const lng = Number(ticketDraft.lng);
@@ -811,11 +813,11 @@ export default function Home() {
           <button
             onClick={() => setIsTicketModalOpen(true)}
             className="flex-1 h-14 bg-kherch-dark text-vainakh-stone rounded-full flex items-center justify-center gap-2 px-5 active:scale-95 transition-all shadow-xl shadow-kherch-dark/20 min-w-0"
-            aria-label="Создать запрос администратору"
-            title="Создать запрос администратору"
+            aria-label="Créer une demande"
+            title="Créer une demande"
           >
             <ShieldCheck size={18} strokeWidth={2.5} className="shrink-0 text-hearth-amber" />
-            <span className="text-[11px] font-black uppercase tracking-widest truncate">Запрос Админу</span>
+            <span className="text-[11px] font-black uppercase tracking-widest truncate">Créer une demande</span>
           </button>
         </div>
       </div>
@@ -849,8 +851,8 @@ export default function Home() {
                     <ShieldCheck size={28} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-kherch-dark tracking-tight">Запрос</h2>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Администратору</p>
+                    <h2 className="text-2xl font-black text-kherch-dark tracking-tight">Demande</h2>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Administrateur</p>
                   </div>
                 </div>
                 <button
@@ -866,188 +868,55 @@ export default function Home() {
                 </button>
               </div>
 
-              <form onSubmit={submitTicket} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Тема</label>
-                  <input
-                    value={ticketDraft.title}
-                    onChange={(e) => setTicketDraft((d) => ({ ...d, title: e.target.value }))}
-                    placeholder="Напр: Нужна справка..."
-                    className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
-                  />
+              <form onSubmit={submitTicket} className="flex flex-col items-center justify-center space-y-12 py-10">
+                
+                <div className="text-center space-y-2">
+                  <div className="text-lg font-black text-kherch-dark tracking-tight">Parlez pour créer la demande</div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Moins d'écriture, plus d'action</div>
                 </div>
 
-                <div className="bg-white border border-black/5 rounded-[2rem] p-5 shadow-sm">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Сообщение</div>
-                      <div className="text-sm font-black text-kherch-dark mt-0.5">
-                        {ticketInputMode === 'voice' ? 'Озвучка текста' : 'Описание'}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTicketInputMode('text');
-                          stopListening();
-                        }}
-                        className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all active:scale-95 ${
-                          ticketInputMode === 'text' ? 'bg-white border-black/10 shadow-sm' : 'bg-transparent border-black/5'
-                        }`}
-                        aria-label="Писать текст"
-                        title="Писать текст"
-                      >
-                        <PenLine size={18} strokeWidth={2.5} className="text-gray-700" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTicketInputMode('voice');
-                          if (isListening) stopListening();
-                          else startListening();
-                        }}
-                        className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all active:scale-95 ${
-                          isListening ? 'bg-red-50 border-red-200' : 'bg-white border-black/10 shadow-sm'
-                        }`}
-                        aria-label={isListening ? 'Остановить запись' : 'Начать запись'}
-                        title={isListening ? 'Остановить запись' : 'Начать запись'}
-                      >
-                        {isListening ? (
-                          <Square size={18} strokeWidth={2.5} className="text-red-600" />
-                        ) : (
-                          <Mic size={18} strokeWidth={2.5} className="text-gray-900" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {!speechSupported && ticketInputMode === 'voice' && (
-                    <div className="mt-3 text-xs font-bold text-amber-700">
-                      Голосовой ввод не поддерживается в этом браузере. Переключись на текст (или используй системную диктовку клавиатуры).
-                    </div>
+                <div className="relative">
+                  {isRecordingAudio && (
+                    <div className="absolute inset-0 bg-red-500/20 rounded-full animate-ping scale-150" />
                   )}
-
-                  <div className="mt-3">
-                    <textarea
-                      value={ticketDraft.description}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, description: e.target.value }))}
-                      placeholder={ticketInputMode === 'voice' ? 'Нажми на микрофон и говори — текст появится здесь…' : 'Опиши ситуацию (что случилось, что нужно, сроки)'}
-                      rows={4}
-                      className={`w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/10 resize-none transition-colors ${
-                        ticketInputMode === 'voice' ? 'opacity-90' : ''
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-white border border-black/5 rounded-[2rem] p-5 shadow-sm">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Голос</div>
-                      <div className="text-sm font-black text-kherch-dark mt-0.5">Аудио-запись</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isRecordingAudio) stopAudioRecording();
-                        else void startAudioRecording();
-                      }}
-                      className={`px-4 h-11 rounded-full font-black text-[11px] uppercase tracking-widest border transition-all active:scale-95 ${
-                        isRecordingAudio
-                          ? 'bg-red-50 border-red-200 text-red-700'
-                          : 'bg-white border-black/10 text-gray-900 shadow-sm'
-                      }`}
-                      aria-label={isRecordingAudio ? 'Остановить аудио-запись' : 'Начать аудио-запись'}
-                      title={isRecordingAudio ? 'Остановить' : 'Записать'}
-                    >
-                      {isRecordingAudio ? 'Стоп' : 'Записать'}
-                    </button>
-                  </div>
-
-                  {audioUrlLocal && (
-                    <div className="mt-3">
-                      <audio controls src={audioUrlLocal} className="w-full" />
-                      <div className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        Аудио прикрепится к запросу и будет доступно админу.
-                      </div>
-                    </div>
-                  )}
-
-                  {!audioUrlLocal && !isRecordingAudio && (
-                    <div className="mt-3 text-xs font-bold text-gray-500">
-                      Запиши голосовое сообщение — как в WhatsApp.
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Категория</label>
-                    <select
-                      value={ticketDraft.category}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, category: e.target.value }))}
-                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
-                    >
-                      <option value="administrative">Административное</option>
-                      <option value="legal">Юридическое</option>
-                      <option value="translation">Перевод</option>
-                      <option value="housing">Жилье</option>
-                      <option value="job">Работа</option>
-                      <option value="other">Другое</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Город</label>
-                    <input
-                      value={ticketDraft.ville}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, ville: e.target.value }))}
-                      placeholder="Напр: Paris"
-                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Страна</label>
-                    <input
-                      value={ticketDraft.pays}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, pays: e.target.value }))}
-                      placeholder="Напр: France"
-                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
-                    />
-                  </div>
-                  
-                  <div className="space-y-1">
-                     <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">GPS (опц.)</label>
-                     <div className="flex gap-2">
-                       <input
-                         value={ticketDraft.lat}
-                         onChange={(e) => setTicketDraft((d) => ({ ...d, lat: e.target.value }))}
-                         placeholder="lat"
-                         className="w-full bg-white border border-black/5 rounded-2xl px-2 py-4 text-xs font-bold outline-none text-center focus:border-kherch-dark/20 transition-colors"
-                       />
-                       <input
-                         value={ticketDraft.lng}
-                         onChange={(e) => setTicketDraft((d) => ({ ...d, lng: e.target.value }))}
-                         placeholder="lng"
-                         className="w-full bg-white border border-black/5 rounded-2xl px-2 py-4 text-xs font-bold outline-none text-center focus:border-kherch-dark/20 transition-colors"
-                       />
-                     </div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
                   <button
-                    type="submit"
-                    className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all shadow-kherch-dark/20 cursor-pointer"
+                    type="button"
+                    onClick={() => {
+                      if (isRecordingAudio) {
+                        stopAudioRecording();
+                        stopListening();
+                      } else {
+                        void startAudioRecording();
+                        setTicketInputMode('voice');
+                        if (!isListening) startListening();
+                      }
+                    }}
+                    className={`relative z-10 w-40 h-40 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      isRecordingAudio 
+                        ? 'bg-red-500 text-white shadow-[0_0_50px_rgba(239,68,68,0.5)] scale-105 active:scale-95' 
+                        : 'bg-kherch-dark text-white shadow-2xl shadow-kherch-dark/30 active:scale-95 hover:scale-105'
+                    }`}
                   >
-                    Опубликовать запрос
+                    {isRecordingAudio ? (
+                      <Square size={48} strokeWidth={2.5} className="animate-pulse" />
+                    ) : (
+                      <Mic size={56} strokeWidth={2} />
+                    )}
                   </button>
                 </div>
+
+                {audioUrlLocal && (
+                  <div className="w-full space-y-6 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <audio controls src={audioUrlLocal} className="w-full" />
+                    
+                    <button
+                      type="submit"
+                      className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all shadow-kherch-dark/20 cursor-pointer text-sm"
+                    >
+                      Отправить / Envoyer
+                    </button>
+                  </div>
+                )}
               </form>
             </motion.div>
           </div>

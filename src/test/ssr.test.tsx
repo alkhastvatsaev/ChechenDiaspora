@@ -28,5 +28,5 @@ test('Home page renders without SSR crash', () => {
   expect(hubButton).toBeDefined()
   
   // Verify the new main admin request button
-  expect(screen.getByText(/Запрос Админу/i)).toBeInTheDocument()
+  expect(screen.getByText(/Créer une demande/i)).toBeInTheDocument()
 })
