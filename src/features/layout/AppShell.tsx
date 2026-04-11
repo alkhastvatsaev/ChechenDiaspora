@@ -100,9 +100,9 @@ export default function AppShell() {
             
             <button 
               onClick={() => setActiveTab('map')}
-              className="fixed top-safe right-6 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-text-primary tap-haptic border border-black/5 z-[100] mt-4"
+              className="fixed top-[calc(env(safe-area-inset-top)+20px)] right-6 w-12 h-12 glass-premium rounded-full flex items-center justify-center text-text-primary shadow-2xl z-[110] active:scale-90 transition-transform border border-black/5"
             >
-              <X size={28} />
+              <X size={24} />
             </button>
           </motion.div>
         )}
