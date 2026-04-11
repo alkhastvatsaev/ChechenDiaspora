@@ -198,6 +198,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             'Netherlands': ['Netherlands'],
             'Syria': ['Syria', 'Syrian Arab Republic'],
             'Kazakhstan': ['Kazakhstan'],
+            'Uzbekistan': ['Uzbekistan'],
+            'Kyrgyzstan': ['Kyrgyzstan'],
             'Iraq': ['Iraq'],
             'Egypt': ['Egypt'],
             'Switzerland': ['Switzerland'],
