@@ -37,6 +37,9 @@ export interface Member {
   };
   isTraveling?: boolean;
   routePoints?: [number, number][];
+  isSocialHelper?: boolean;
+  lastTicketId?: string | null;
+  [key: string]: any;
 }
 
 export interface TicketItem {
