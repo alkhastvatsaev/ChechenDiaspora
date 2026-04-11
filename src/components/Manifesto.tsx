@@ -70,8 +70,8 @@ export default function Manifesto() {
       >
         <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-brand-amber/5 to-transparent opacity-30" />
         <div className="relative inline-block mb-2">
-           <div className="absolute -inset-4 bg-brand-amber/10 blur-2xl rounded-full animate-pulse-slow"></div>
-           <Flame size={48} className="relative text-brand-amber mx-auto" />
+           <div className="absolute -inset-4 bg-brand-blue/10 blur-2xl rounded-full animate-pulse-slow"></div>
+           <Shield size={48} className="relative text-brand-blue mx-auto" />
         </div>
         <h1 className="text-4xl font-black tracking-tighter uppercase leading-none text-text-primary">
           Манифест <span className="text-brand-amber">Сообщества</span>
