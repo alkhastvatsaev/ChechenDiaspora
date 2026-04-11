@@ -55,15 +55,6 @@ export default function AppShell() {
           <h1 className="text-2xl font-black tracking-tighter text-text-primary uppercase">Вайнах</h1>
         </div>
         <div className="flex items-center gap-3 pointer-events-auto">
-           <button 
-            onClick={() => {
-              setActiveTab('hub');
-              logic.setIsSearchFocused(true);
-            }}
-            className="w-11 h-11 glass-premium rounded-full flex items-center justify-center tap-haptic"
-          >
-            <Search size={20} className="text-text-primary" />
-          </button>
           {!isOnline && (
             <motion.div 
               initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
@@ -73,10 +64,6 @@ export default function AppShell() {
               ВНЕ СЕТИ
             </motion.div>
           )}
-          <button className="w-11 h-11 glass-premium rounded-full flex items-center justify-center tap-haptic overflow-hidden">
-             <div className="w-full h-full bg-gradient-to-br from-brand-blue to-success opacity-10"></div>
-             <Info size={20} className="text-text-primary absolute" />
-          </button>
         </div>
       </div>
 
