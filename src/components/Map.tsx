@@ -128,9 +128,16 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
         className: 'bg-transparent',
         html: `
           <div class="relative group flex flex-col items-center">
-            <!-- Curved Name Badge -->
+            <!-- Curved Name Badge with White Halo -->
             <svg class="absolute -top-1 w-16 h-10 overflow-visible pointer-events-none">
               <path id="curve-${name}" d="M 10,24 A 22,22 0 0,1 54,24" fill="transparent" />
+              <!-- White Halo (Background) -->
+              <text class="text-[7px] font-black tracking-[0.1em] uppercase fill-white stroke-white stroke-[3px]">
+                <textPath xlink:href="#curve-${name}" startOffset="50%" text-anchor="middle">
+                  ${name}
+                </textPath>
+              </text>
+              <!-- Primary Text -->
               <text class="text-[7px] font-black tracking-[0.1em] uppercase fill-[#059669]">
                 <textPath xlink:href="#curve-${name}" startOffset="50%" text-anchor="middle">
                   ${name}
