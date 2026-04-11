@@ -71,7 +71,11 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
                       </div>
                       <div>
                         <div className="text-sm font-black text-text-primary">{m.prenom} {m.nom}</div>
-                        <div className="text-[10px] font-bold text-text-tertiary">{m.profession}</div>
+                        <div className="text-[10px] font-bold text-text-tertiary flex items-center gap-1.5">
+                          <span>{m.profession}</span>
+                          <span className="w-1 h-1 bg-black/10 rounded-full" />
+                          <span className="text-brand-blue uppercase tracking-wider">{m.pays}</span>
+                        </div>
                       </div>
                     </div>
                     <a 
