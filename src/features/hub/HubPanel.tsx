@@ -55,22 +55,22 @@ export function HubPanel({
             </div>
 
             {/* Global Search Bar */}
-            <div className="sticky top-0 z-20 pt-2 pb-4 bg-bg-primary/5 mr-[-24px] pr-[24px]">
+            <div className="sticky top-0 z-20 pt-2 pb-4 mr-[-24px] pr-[24px]">
                <div className="relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-text-tertiary group-focus-within:text-brand-blue transition-colors" size={18} />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-text-primary group-focus-within:text-brand-blue transition-colors" size={18} />
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher un membre, un métier, un lieu..."
-                  className="w-full bg-white/80 backdrop-blur-xl rounded-2xl py-4 pl-12 pr-6 text-[15px] font-medium border border-black/[0.03] shadow-inner focus:outline-none focus:ring-2 focus:ring-brand-blue/10 transition-all placeholder:text-text-tertiary"
+                  className="w-full bg-white rounded-2xl py-5 pl-12 pr-6 text-[15px] font-bold border border-black/[0.08] shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-blue/5 transition-all placeholder:text-text-tertiary"
                 />
               </div>
             </div>
 
             {/* Main Expert Hub Filters */}
             <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary px-1">Expertise & Entraide</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary px-1">Expertise & Entraide</h3>
               <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide py-1">
                 {[
                   { id: 'isLegalDefender', label: 'Bouclier Juridique', icon: <ShieldCheck size={14} /> },
@@ -81,10 +81,10 @@ export function HubPanel({
                   <button 
                     key={chip.id}
                     onClick={() => logic.setSelectedExpertType(logic.selectedExpertType === chip.id ? null : chip.id)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-[13px] font-black tracking-tight transition-all shrink-0 border ${
+                    className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl text-[13px] font-black tracking-tight transition-all shrink-0 border-2 ${
                       logic.selectedExpertType === chip.id 
-                      ? 'bg-brand-blue text-white border-brand-blue shadow-lg' 
-                      : 'bg-white text-text-primary border-black/[0.05]'
+                      ? 'bg-brand-blue text-white border-brand-blue shadow-xl scale-105' 
+                      : 'bg-white text-text-primary border-black/[0.05] shadow-sm'
                     }`}
                   >
                     {chip.icon}
@@ -98,7 +98,7 @@ export function HubPanel({
             <div className="space-y-6">
                <div className="space-y-3">
                 <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary">Filtre par Teip (Clan)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Filtre par Teip (Clan)</h3>
                   {selectedTeip && (
                     <button onClick={() => setSelectedTeip('')} className="text-[10px] font-bold text-brand-blue uppercase">Annuler</button>
                   )}
@@ -108,8 +108,8 @@ export function HubPanel({
                     <button 
                       key={t}
                       onClick={() => setSelectedTeip(selectedTeip === t ? '' : t)}
-                      className={`px-5 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all shrink-0 ${
-                        selectedTeip === t ? 'nav-pill-active' : 'nav-pill-inactive'
+                      className={`px-5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shrink-0 border-1.5 ${
+                        selectedTeip === t ? 'bg-brand-blue text-white border-brand-blue shadow-md' : 'bg-white text-text-primary border-black/[0.08]'
                       }`}
                     >
                       {t}
