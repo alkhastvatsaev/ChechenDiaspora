@@ -810,19 +810,19 @@ export default function Home() {
 
           <button
             onClick={() => setIsTicketModalOpen(true)}
-            className="flex-1 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center gap-2 px-5 active:scale-95 transition-all shadow-lg shadow-blue-500/20 min-w-0"
+            className="flex-1 h-14 bg-kherch-dark text-vainakh-stone rounded-full flex items-center justify-center gap-2 px-5 active:scale-95 transition-all shadow-xl shadow-kherch-dark/20 min-w-0"
             aria-label="Создать запрос администратору"
             title="Создать запрос администратору"
           >
-            <Plus size={18} strokeWidth={3} className="shrink-0" />
-            <span className="text-xs font-black uppercase tracking-widest truncate">Создать запрос администратору</span>
+            <ShieldCheck size={18} strokeWidth={2.5} className="shrink-0 text-hearth-amber" />
+            <span className="text-[11px] font-black uppercase tracking-widest truncate">Запрос Админу</span>
           </button>
         </div>
       </div>
 
       <AnimatePresence>
         {isTicketModalOpen && (
-          <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-4">
+          <div className="fixed inset-0 z-[120] flex items-end justify-center">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -832,19 +832,26 @@ export default function Home() {
                 stopAudioRecording();
                 setIsTicketModalOpen(false);
               }}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-black/10 overflow-hidden"
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+30px)] shadow-2xl overflow-y-auto max-h-[90vh] scrollbar-hide"
             >
-              <div className="p-6 border-b border-black/5 flex items-start justify-between gap-6">
-                <div>
-                  <div className="text-2xl font-black tracking-tight">Запрос администратору</div>
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">бесплатно · в духе Нохчалла</div>
+              <div className="w-12 h-1.5 bg-kherch-dark/5 rounded-full mx-auto mb-6 flex-shrink-0" />
+              
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-kherch-dark shadow-sm border border-black/5">
+                    <ShieldCheck size={28} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-kherch-dark tracking-tight">Запрос</h2>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Администратору</p>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
@@ -852,27 +859,30 @@ export default function Home() {
                     stopAudioRecording();
                     setIsTicketModalOpen(false);
                   }}
-                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-kherch-dark shadow-sm border border-black/5 active:scale-90 transition-all font-black text-xs"
                   aria-label="Закрыть"
                 >
                   X
                 </button>
               </div>
 
-              <form onSubmit={submitTicket} className="p-6 space-y-4">
-                <input
-                  value={ticketDraft.title}
-                  onChange={(e) => setTicketDraft((d) => ({ ...d, title: e.target.value }))}
-                  placeholder="Коротко: какая проблема?"
-                  className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10"
-                />
+              <form onSubmit={submitTicket} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Тема</label>
+                  <input
+                    value={ticketDraft.title}
+                    onChange={(e) => setTicketDraft((d) => ({ ...d, title: e.target.value }))}
+                    placeholder="Напр: Нужна справка..."
+                    className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
+                  />
+                </div>
 
-                <div className="bg-gray-50 border border-black/5 rounded-3xl p-4">
+                <div className="bg-white border border-black/5 rounded-[2rem] p-5 shadow-sm">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Сообщение</div>
-                      <div className="text-sm font-bold text-gray-800 mt-1">
-                        {ticketInputMode === 'voice' ? 'Голос → текст' : 'Текст'}
+                      <div className="text-sm font-black text-kherch-dark mt-0.5">
+                        {ticketInputMode === 'voice' ? 'Озвучка текста' : 'Описание'}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -925,18 +935,18 @@ export default function Home() {
                       onChange={(e) => setTicketDraft((d) => ({ ...d, description: e.target.value }))}
                       placeholder={ticketInputMode === 'voice' ? 'Нажми на микрофон и говори — текст появится здесь…' : 'Опиши ситуацию (что случилось, что нужно, сроки)'}
                       rows={4}
-                      className={`w-full bg-white border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-black/10 resize-none ${
+                      className={`w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/10 resize-none transition-colors ${
                         ticketInputMode === 'voice' ? 'opacity-90' : ''
                       }`}
                     />
                   </div>
                 </div>
 
-                <div className="bg-gray-50 border border-black/5 rounded-3xl p-4">
+                <div className="bg-white border border-black/5 rounded-[2rem] p-5 shadow-sm">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">Голос</div>
-                      <div className="text-sm font-bold text-gray-800 mt-1">Аудио-запись</div>
+                      <div className="text-sm font-black text-kherch-dark mt-0.5">Аудио-запись</div>
                     </div>
                     <button
                       type="button"
@@ -972,68 +982,70 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <select
-                    value={ticketDraft.category}
-                    onChange={(e) => setTicketDraft((d) => ({ ...d, category: e.target.value }))}
-                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-bold outline-none"
-                  >
-                    <option value="administrative">Административное</option>
-                    <option value="legal">Юридическое</option>
-                    <option value="translation">Перевод</option>
-                    <option value="housing">Жилье</option>
-                    <option value="job">Работа</option>
-                    <option value="other">Другое</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Категория</label>
+                    <select
+                      value={ticketDraft.category}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, category: e.target.value }))}
+                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
+                    >
+                      <option value="administrative">Административное</option>
+                      <option value="legal">Юридическое</option>
+                      <option value="translation">Перевод</option>
+                      <option value="housing">Жилье</option>
+                      <option value="job">Работа</option>
+                      <option value="other">Другое</option>
+                    </select>
+                  </div>
 
-                  <input
-                    value={ticketDraft.ville}
-                    onChange={(e) => setTicketDraft((d) => ({ ...d, ville: e.target.value }))}
-                    placeholder="Город"
-                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input
-                    value={ticketDraft.pays}
-                    onChange={(e) => setTicketDraft((d) => ({ ...d, pays: e.target.value }))}
-                    placeholder="Страна"
-                    className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
-                  />
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Город</label>
                     <input
-                      value={ticketDraft.lat}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, lat: e.target.value }))}
-                      placeholder="lat"
-                      className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
-                    />
-                    <input
-                      value={ticketDraft.lng}
-                      onChange={(e) => setTicketDraft((d) => ({ ...d, lng: e.target.value }))}
-                      placeholder="lng"
-                      className="w-full bg-gray-50 border border-black/5 rounded-2xl px-4 py-3 text-sm font-medium outline-none"
+                      value={ticketDraft.ville}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, ville: e.target.value }))}
+                      placeholder="Напр: Paris"
+                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
                     />
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      stopListening();
-                      stopAudioRecording();
-                      setIsTicketModalOpen(false);
-                    }}
-                    className="flex-1 px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
-                  >
-                    Отмена
-                  </button>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">Страна</label>
+                    <input
+                      value={ticketDraft.pays}
+                      onChange={(e) => setTicketDraft((d) => ({ ...d, pays: e.target.value }))}
+                      placeholder="Напр: France"
+                      className="w-full bg-white border border-black/5 rounded-2xl px-4 py-4 text-sm font-bold outline-none focus:border-kherch-dark/20 transition-colors"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                     <label className="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-2">GPS (опц.)</label>
+                     <div className="flex gap-2">
+                       <input
+                         value={ticketDraft.lat}
+                         onChange={(e) => setTicketDraft((d) => ({ ...d, lat: e.target.value }))}
+                         placeholder="lat"
+                         className="w-full bg-white border border-black/5 rounded-2xl px-2 py-4 text-xs font-bold outline-none text-center focus:border-kherch-dark/20 transition-colors"
+                       />
+                       <input
+                         value={ticketDraft.lng}
+                         onChange={(e) => setTicketDraft((d) => ({ ...d, lng: e.target.value }))}
+                         placeholder="lng"
+                         className="w-full bg-white border border-black/5 rounded-2xl px-2 py-4 text-xs font-bold outline-none text-center focus:border-kherch-dark/20 transition-colors"
+                       />
+                     </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-3 rounded-2xl bg-black text-white text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                    className="w-full py-5 bg-kherch-dark text-vainakh-stone rounded-[2rem] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all shadow-kherch-dark/20 cursor-pointer"
                   >
-                    Отправить
+                    Опубликовать запрос
                   </button>
                 </div>
               </form>
@@ -1044,41 +1056,51 @@ export default function Home() {
 
       <AnimatePresence>
         {selectedTicket && (
-          <div className="fixed inset-0 z-[125] flex items-end sm:items-center justify-center p-4">
+          <div className="fixed inset-0 z-[125] flex items-end justify-center">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedTicket(null)}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-black/10 overflow-hidden"
+              className="relative w-full max-w-lg bg-vainakh-stone rounded-t-[3rem] p-8 pb-[calc(env(safe-area-inset-bottom)+30px)] shadow-2xl"
             >
-              <div className="p-6 border-b border-black/5 flex items-start justify-between gap-6">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-widest text-gray-400">Опубликованный запрос</div>
-                  <div className="text-2xl font-black tracking-tight mt-1">{selectedTicket.title}</div>
-                  <div className="text-sm font-bold text-gray-500 mt-2">
-                    {selectedTicket.ville}, {selectedTicket.pays}
+              <div className="w-12 h-1.5 bg-kherch-dark/5 rounded-full mx-auto mb-6 flex-shrink-0" />
+
+              <div className="flex items-start justify-between gap-6 mb-6">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm border border-black/5 mt-1 shrink-0">
+                    <ShieldCheck size={28} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-50 px-2 py-0.5 rounded-full inline-block mb-2">Активный Запрос</div>
+                    <div className="text-2xl font-black tracking-tight leading-tight text-kherch-dark">{selectedTicket.title}</div>
+                    <div className="text-xs font-bold text-gray-400 mt-2 uppercase tracking-widest">
+                      {selectedTicket.ville}, {selectedTicket.pays}
+                    </div>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedTicket(null)}
-                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-700 text-xs font-black tracking-widest uppercase active:scale-95 transition-all"
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-kherch-dark shadow-sm border border-black/5 active:scale-90 transition-all font-black text-xs shrink-0"
                   aria-label="Закрыть"
                 >
                   X
                 </button>
               </div>
 
-              <div className="p-6 space-y-4">
-                <div className="text-sm text-gray-700 font-medium leading-relaxed">{selectedTicket.description}</div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              <div className="space-y-6">
+                <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-black/5">
+                  <div className="text-sm text-kherch-dark font-medium leading-relaxed">{selectedTicket.description}</div>
+                </div>
+                
+                <div className="text-[10px] text-center font-bold text-gray-400 uppercase tracking-widest">
                   Это обращение опубликовано администратором для помощи общины.
                 </div>
               </div>
