@@ -9,13 +9,17 @@
   /* Brand Palette - Deeper for visibility */
   --color-brand-blue: hsl(210, 100%, 42%);
   --color-brand-blue-soft: hsl(210, 100%, 92%);
+  --color-brand-amber: hsl(38, 100%, 55%);
+  --color-brand-amber-soft: hsl(38, 100%, 15%);
   
   /* Neutral Palette - Drastically Darkened for Contrast */
   --color-bg-primary: hsl(0, 0%, 100%);
   --color-bg-secondary: hsl(240, 10%, 96%);
+  --color-bg-dark: hsl(240, 30%, 4%);      /* Deep Vainakh Black */
   --color-text-primary: hsl(240, 30%, 5%);   /* Almost Pure Black */
   --color-text-secondary: hsl(240, 15%, 25%); /* Rich Charcoal */
   --color-text-tertiary: hsl(240, 10%, 42%);  /* Dark Slate for Labels */
+  --color-text-on-dark: hsl(240, 5%, 95%);   /* Near White */
   
   /* Functional Colors - Saturated for importance */
   --color-success: hsl(150, 80%, 30%);
