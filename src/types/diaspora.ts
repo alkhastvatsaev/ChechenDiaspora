@@ -11,6 +11,9 @@ export interface Member {
   teip?: string;
   lat?: number;
   lng?: number;
+  phone?: string;
+  whatsapp?: string;
+  telegram?: string;
   isLive?: boolean;
   approved?: boolean;
   vouchCount?: number;
