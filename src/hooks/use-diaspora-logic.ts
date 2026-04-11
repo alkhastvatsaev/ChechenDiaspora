@@ -287,6 +287,20 @@ export function useDiasporaLogic() {
     }
   };
 
+  const deleteTicket = async (ticketId: string) => {
+    if (!user) return;
+    try {
+      await set(ref(db, `tickets/${ticketId}`), null);
+      
+      // Update local member state
+      setMembers(prev => prev.map(m => 
+        m.id === user.uid ? { ...m, hasActiveTicket: false, lastTicketId: null } : m
+      ));
+    } catch (e) {
+      console.error("Failed to delete ticket", e);
+    }
+  };
+
   return {
     user, loading, communityMember,
     activeTab, setActiveTab, activeModal, setActiveModal,
@@ -300,6 +314,7 @@ export function useDiasporaLogic() {
     ticketDraft, setTicketDraft, submitTicket,
     isListening, setIsListening, ticketInputMode, setTicketInputMode,
     finalTranscript, setFinalTranscript, interimTranscript,
-    isRecording, startRecording, stopRecording, audioUrl, resetAudio
+    isRecording, startRecording, stopRecording, audioUrl, resetAudio,
+    deleteTicket
   };
 }
