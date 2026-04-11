@@ -123,7 +123,6 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
                 onChange={(e) => setTicketDraft({ ...ticketDraft, description: e.target.value })}
                 onFocus={() => {
                   setIsSearchFocused(true);
-                  if (activeTab !== 'hub') setActiveTab('hub');
                 }}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Чем мы можем помочь?"
