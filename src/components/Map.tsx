@@ -131,8 +131,8 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
             <div class="px-1.5 py-0.5 bg-white/80 backdrop-blur-sm rounded-md shadow-sm border border-brand-blue/10 mb-1">
               <span class="text-[6px] font-bold text-brand-blue/60 tracking-wider uppercase select-none">${name}</span>
             </div>
-            <div class="w-9 h-9 bg-brand-blue/5 rounded-xl shadow-lg border-2 border-brand-blue/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <div className="w-9 h-9 bg-brand-blue/5 rounded-xl shadow-lg border-2 border-brand-blue/30 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
                 <path d="M15 18H9"></path>
                 <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
