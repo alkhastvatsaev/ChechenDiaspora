@@ -283,11 +283,11 @@ export default function Map({ members = [], center, onMemberClick, showHeatmap =
               <GeoJSON 
                 data={countryGeoJson}
                 style={{
-                  color: '#1d1d1f',
-                  weight: 0.8,
-                  opacity: 0.2,
-                  fillColor: 'transparent',
-                  fillOpacity: 0
+                  color: '#007AFF', // Brand Blue
+                  weight: 1.5,
+                  opacity: 0.6,
+                  fillColor: '#007AFF',
+                  fillOpacity: 0.15
                 }}
                 onEachFeature={(feature, layer) => {
                   layer.on({
