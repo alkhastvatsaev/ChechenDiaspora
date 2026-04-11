@@ -108,7 +108,6 @@ export function HubPanel({
                   ))
                 ) : (
                   <div className="p-10 text-center bg-white/50 rounded-3xl border-2 border-dashed border-black/[0.05]">
-                    <HelpingHand className="mx-auto text-brand-blue/30 mb-4" size={40} />
                     <p className="text-[14px] font-bold text-text-primary leading-relaxed">
                       Призывов о помощи пока нет.<br/>
                       <span className="text-[11px] text-text-tertiary font-medium">Это время для спокойствия, но помните: Бёлхи — это сердце нашего народа.</span>
