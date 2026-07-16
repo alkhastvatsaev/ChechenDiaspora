@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ref, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { UserPlus } from 'lucide-react';
 
 export default function Join() {
-  const router = useRouter();
+  const { user } = useAuth();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -28,6 +28,7 @@ export default function Join() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setIsSubmitting(true);
     
     try {
@@ -46,6 +47,7 @@ export default function Join() {
       const newMemberRef = push(membersRef);
       await set(newMemberRef, {
         ...formData,
+        ownerId: user.uid,
         lat,
         lng,
         approved: false,

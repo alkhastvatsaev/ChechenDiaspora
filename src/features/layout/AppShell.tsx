@@ -100,6 +100,7 @@ export default function AppShell() {
             
             <button 
               onClick={() => setActiveTab('map')}
+              aria-label="Close manifesto"
               className="fixed top-[calc(env(safe-area-inset-top)+20px)] right-6 w-12 h-12 glass-premium rounded-full flex items-center justify-center text-text-primary shadow-2xl z-[110] active:scale-90 transition-transform border border-black/5"
             >
               <X size={24} />

@@ -158,6 +158,7 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
           ) : (
             <button 
               onClick={() => setActiveTab(activeTab === 'map' ? 'hub' : 'map')}
+              aria-label={activeTab === 'map' ? 'Open community hub' : 'Return to map'}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                 activeTab === 'hub' ? 'bg-brand-blue text-white' : 'bg-bg-secondary text-text-primary'
               }`}
@@ -203,6 +204,7 @@ export function BottomNav({ activeTab, setActiveTab, logic }: BottomNavProps) {
             ) : (
               <button 
                 onClick={handleMicClick}
+                aria-label={isRecording ? 'Stop voice recording' : 'Start voice recording'}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${
                   isRecording ? 'bg-red-500 text-white scale-110 shadow-red-200' : 'bg-brand-blue text-white'
                 }`}

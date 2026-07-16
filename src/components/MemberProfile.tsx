@@ -34,6 +34,7 @@ export default function MemberProfile({ member, onClose, onVouch }: MemberProfil
           </div>
           <button 
             onClick={onClose}
+            aria-label="Закрыть профиль"
             className="absolute top-6 right-6 w-11 h-11 bg-white shadow-lg rounded-full flex items-center justify-center z-50 tap-haptic"
           >
             <X size={22} className="text-text-primary" />
@@ -138,12 +139,14 @@ export default function MemberProfile({ member, onClose, onVouch }: MemberProfil
             <div className="grid grid-cols-2 gap-3 pt-4">
               <button 
                 onClick={() => member.whatsapp && window.open(`https://wa.me/${member.whatsapp}`, '_blank')}
+                aria-label="Открыть WhatsApp"
                 className="flex items-center justify-center gap-3 py-5 bg-[#25D366]/5 text-[#25D366] rounded-[1.5rem] font-black text-[11px] tracking-widest border border-[#25D366]/10 tap-haptic"
               >
                 ВАТСАП <MessageCircle size={18} />
               </button>
               <button 
                 onClick={() => member.telegram && window.open(`https://t.me/${member.telegram?.replace('@', '')}`, '_blank')}
+                aria-label="Открыть Telegram"
                 className="flex items-center justify-center gap-3 py-5 bg-[#0088cc]/5 text-[#0088cc] rounded-[1.5rem] font-black text-[11px] tracking-widest border border-[#0088cc]/10 tap-haptic"
               >
                 ТЕЛЕГРАМ <Send size={18} />

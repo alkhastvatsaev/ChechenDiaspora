@@ -11,18 +11,15 @@ test.describe('Vainakh App E2E', () => {
   });
 
   test('should switch to Hub tab and show the search bar', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('vainakh_has_seen_manifesto', 'true');
+    });
     await page.goto('/');
 
-    // Click on the Hub tab (second button in the tab bar)
-    // The tab bar is an around-justified flexbox. 
-    // Let's find by text "Хаб"
-    const hubTab = page.getByText('Хаб', { exact: false });
-    await hubTab.click();
+    await page.getByRole('button', { name: 'Open community hub' }).click();
 
-    // Check if Hub title is visible
-    await expect(page.getByText('Кхерч / Хаб')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Вайнехан Бёлхи' })).toBeVisible();
 
-    // Check if search bar is present
-    await expect(page.getByPlaceholder(/Найти земляка/i)).toBeVisible();
+    await expect(page.getByPlaceholder('Чем мы можем помочь?')).toBeVisible();
   });
 });

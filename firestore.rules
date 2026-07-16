@@ -1,8 +1,23 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    match /members/{memberId} {
+      // The client queries only approved directory entries. Pending records
+      // remain private to trusted moderators.
+      allow read: if isAdmin() || (signedIn() && resource.data.approved == true);
+      allow create, update, delete: if isAdmin();
+    }
+
     match /{document=**} {
-      allow read, write: if true; // Temporary open for dev
+      allow read, write: if false;
     }
   }
 }

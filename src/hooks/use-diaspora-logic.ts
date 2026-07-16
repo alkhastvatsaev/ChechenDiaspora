@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { ref, onValue, push, set, get } from 'firebase/database';
+import { ref, onValue, push, set, query as databaseQuery, orderByChild, equalTo } from 'firebase/database';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db, firestore, storage } from '@/lib/firebase';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, firestore } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 import { Member, TicketItem, ActiveTab, ActiveModal } from '@/types/diaspora';
 
@@ -27,7 +26,6 @@ export function useDiasporaLogic() {
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [selectedStoryMember, setSelectedStoryMember] = useState<Member | null>(null);
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   
   // -- Filter States --
@@ -63,6 +61,8 @@ export function useDiasporaLogic() {
 
   // -- Data Sync (Firebase) --
   useEffect(() => {
+    if (!user) return;
+
     const travelers = [
       { 
         id: 'V1', 
@@ -93,7 +93,7 @@ export function useDiasporaLogic() {
       const mergedFromDB = Array.from(dataMap.values()).filter(m => m.approved !== false);
       
       // Starting list: Sample Experts
-      let final: Member[] = [...sampleExperts];
+      const final: Member[] = [...sampleExperts];
       
       // Merge logic with deduplication by Name + City
       mergedFromDB.forEach(dbMember => {
@@ -134,7 +134,8 @@ export function useDiasporaLogic() {
       }
     }
 
-    const unsubRTDB = onValue(ref(db, 'members'), (snapshot) => {
+    const approvedMembers = databaseQuery(ref(db, 'members'), orderByChild('approved'), equalTo(true));
+    const unsubRTDB = onValue(approvedMembers, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         Object.entries(data).forEach(([key, val]: [string, any]) => { dataMap.set(key, { id: key, ...val }); });
@@ -144,7 +145,8 @@ export function useDiasporaLogic() {
       console.warn("RTDB Members Listen Error (Permissions):", error.message);
     });
 
-    const unsubTickets = onValue(ref(db, 'tickets'), (snapshot) => {
+    const publishedTicketQuery = databaseQuery(ref(db, 'tickets'), orderByChild('status'), equalTo('published'));
+    const unsubTickets = onValue(publishedTicketQuery, (snapshot) => {
       const data = snapshot.val();
       if (!data) return setPublishedTickets([]);
       const list: TicketItem[] = Object.entries(data)
@@ -173,7 +175,7 @@ export function useDiasporaLogic() {
     }
 
     return () => { unsubRTDB(); unsubTickets(); if (unsubFirestore) unsubFirestore(); };
-  }, []);
+  }, [user]);
 
   // -- Audio / Transcription Engine (WhatsApp-Style) --
   const [ticketInputMode, setTicketInputMode] = useState<'voice' | 'text'>('voice');
@@ -183,7 +185,6 @@ export function useDiasporaLogic() {
   
   const recognitionRef = useRef<any | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   
@@ -228,7 +229,6 @@ export function useDiasporaLogic() {
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'audio/webm' });
         setAudioUrl(URL.createObjectURL(blob));
-        setAudioChunks(chunks);
       };
 
       mediaRecorderRef.current = recorder;
@@ -253,24 +253,14 @@ export function useDiasporaLogic() {
 
   const resetAudio = () => {
     setAudioUrl(null);
-    setAudioChunks([]);
     setFinalTranscript('');
     setInterimTranscript('');
   };
 
   // -- Actions --
-  const handleVouch = async (memberId: string) => {
-    if (!communityMember) return;
-    try {
-      const mRef = ref(db, `members/${memberId}`);
-      const snap = await get(mRef);
-      if (snap.exists()) {
-        const d = snap.val();
-        const vouches = d.vouchedBy || [];
-        if (vouches.includes(user?.uid)) return;
-        await set(mRef, { ...d, vouchedBy: [...vouches, user?.uid], vouchCount: vouches.length + 1 });
-      }
-    } catch {}
+  const handleVouch = (_memberId: string) => {
+    // Disabled until vouches are handled by a trusted backend. Client-side
+    // counters cannot be made authoritative with anonymous authentication.
   };
 
   const filteredMembers = useMemo(() => {

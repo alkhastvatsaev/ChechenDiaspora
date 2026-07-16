@@ -2,24 +2,22 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import Home from './page'
 import { describe, it, expect, vi } from 'vitest'
 
-// Mock de components qui pourraient avoir des effets de bord
 vi.mock('@/components/Map', () => ({
   default: () => <div data-testid="mock-map">Map Mock</div>
 }))
 
 describe('Home Page', () => {
-  it('renders the main title after clicking Hub', () => {
+  it('opens the community hub from the map controls', () => {
     render(<Home />)
-    fireEvent.click(screen.getByText(/ХАБ/i))
-    // Nous vérifions que le titre "Кхерч / Хаб" est bien rendu
-    const title = screen.getByText(/Кхерч \/ Хаб/i)
-    expect(title).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /return to map/i }))
+    fireEvent.click(screen.getByRole('button', { name: /open community hub/i }))
+
+    expect(screen.getByRole('heading', { name: /Вайнехан Бёлхи/i })).toBeInTheDocument()
   })
 
-  it('renders the "Join" button after clicking Hub', () => {
+  it('renders the help input in the navigation bar', () => {
     render(<Home />)
-    fireEvent.click(screen.getByText(/ХАБ/i))
-    const joinButton = screen.getByText(/Вступить в Сеть/i)
-    expect(joinButton).toBeInTheDocument()
+
+    expect(screen.getByPlaceholderText(/Чем мы можем помочь/i)).toBeInTheDocument()
   })
 })

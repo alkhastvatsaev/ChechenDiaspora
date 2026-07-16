@@ -20,13 +20,8 @@ vi.mock('next/dynamic', () => ({
 }))
 
 test('Home page renders without SSR crash', () => {
-  // Simuler le rendu initial
   render(<Home />)
-  
-  // Vérifier la présence d'éléments clés du design Apple/Vainakh (toujours visibles)
-  const hubButton = screen.getByText(/ХАБ/i)
-  expect(hubButton).toBeDefined()
-  
-  // Verify the new main admin request button
-  expect(screen.getByText(/Créer une demande/i)).toBeInTheDocument()
+
+  expect(screen.getByRole('heading', { name: 'Вайнах', level: 1 })).toBeInTheDocument()
+  expect(screen.getByPlaceholderText(/Чем мы можем помочь/i)).toBeInTheDocument()
 })

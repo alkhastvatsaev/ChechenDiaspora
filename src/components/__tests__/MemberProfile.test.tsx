@@ -43,10 +43,10 @@ describe('MemberProfile Component', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('contains WhatsApp and Telegram buttons', () => {
+  it('contains WhatsApp and Telegram actions', () => {
     render(<MemberProfile member={mockMember} onClose={mockOnClose} />);
     
-    expect(screen.getByText(/WHATSAPP/i)).toBeInTheDocument();
-    expect(screen.getByText(/TELEGRAM/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /WhatsApp/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Telegram/i })).toBeInTheDocument();
   });
 });

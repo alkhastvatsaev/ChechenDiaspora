@@ -14,10 +14,8 @@ import {
   MapPin, 
   MessageCircle,
   Tag,
-  Filter,
   X,
-  Flame,
-  ShieldCheck
+  Flame
 } from 'lucide-react';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
@@ -48,7 +46,7 @@ const CATEGORIES = [
 ];
 
 export default function BelkhiPage() {
-  const { communityMember } = useAuth();
+  const { user } = useAuth();
   const [ads, setAds] = useState<Ad[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,6 +64,8 @@ export default function BelkhiPage() {
   });
 
   useEffect(() => {
+    if (!user) return;
+
     const adsRef = ref(db, 'ads');
     const unsubscribe = onValue(adsRef, (snapshot) => {
       const data = snapshot.val();
@@ -80,7 +80,7 @@ export default function BelkhiPage() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const filteredAds = useMemo(() => {
     return ads.filter(ad => {
@@ -95,7 +95,7 @@ export default function BelkhiPage() {
 
   const handlePostAd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAd.title || !newAd.description) return;
+    if (!user || !newAd.title || !newAd.description) return;
 
     const adsRef = ref(db, 'ads');
     const newAdRef = push(adsRef);
@@ -103,8 +103,8 @@ export default function BelkhiPage() {
     await set(newAdRef, {
       ...newAd,
       createdAt: Date.now(),
-      authorName: 'Анонимный брат/сестра', // To be updated with Auth later
-      authorId: 'system',
+      authorName: 'Анонимный брат/сестра',
+      authorId: user.uid,
     });
 
     setIsPosting(false);
