@@ -6,6 +6,15 @@ Waynakh Diaspora Hub is a mobile-first community directory prototype. It explore
 
 This repository is a portfolio case study, not a production-ready private directory. The live interface uses Russian and Chechen content; the engineering documentation is in English.
 
+![Waynakh Diaspora map on desktop](docs/screenshots/map-desktop.png)
+
+<details>
+<summary>Mobile view</summary>
+
+![Waynakh Diaspora map on mobile](docs/screenshots/map-mobile.png)
+
+</details>
+
 ## Product case study
 
 ### Problem
