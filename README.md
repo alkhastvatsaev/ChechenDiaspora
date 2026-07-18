@@ -131,6 +131,10 @@ GitHub Actions runs the deterministic checks for pull requests and pushes to `ma
 5. Complete the PWA lifecycle with generated icons, a service worker, offline fallbacks, and install tests.
 6. Consolidate the dual Firestore/Realtime Database member source and add typed data validation.
 
+## Author
+
+Built by [Alkhast Vatsaev](https://alkhastvatsaev.dev) — junior Full Stack JavaScript/TypeScript developer ([portfolio](https://alkhastvatsaev.dev), [FR](https://alkhastvatsaev.dev/fr/developpeur-full-stack)).
+
 ## License and data use
 
 No license is currently granted. Source availability does not imply permission to reuse community data. The bundled sample profiles are demonstrative; do not commit real personal data, production exports, credentials, or private contact lists.
